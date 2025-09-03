@@ -1,0 +1,25 @@
+package com.sergokuzneczow.models
+
+public data class Picture(
+    val key: String,
+    val url: String,
+    val shortUrl: String,
+    val views: Int,
+    val favorites: Int,
+    val source: String,
+    val purity: String,
+    val categories: String,
+    val dimensionX: Int,
+    val dimensionY: Int,
+    val resolution: String,
+    val ratio: String,
+    val fileSize: Int,
+    val fileType: String,
+    val createAt: String,
+    val path: String,
+    val large: String,
+    val original: String,
+    val small: String,
+    val tags: List<Tag> = emptyList(),
+    val colors: List<Color> = emptyList(),
+)
