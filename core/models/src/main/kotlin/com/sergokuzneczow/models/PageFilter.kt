@@ -1,6 +1,6 @@
 package com.sergokuzneczow.models
 
-public data class PictureFilter(
+public data class PageFilter(
     val pictureSorting: PictureSorting,
     val pictureOrder: PictureOrder,
     val picturePurities: PicturePurities,
@@ -8,7 +8,7 @@ public data class PictureFilter(
     val pictureColor: PictureColor,
 ) {
     public companion object {
-        public val DEFAULT: PictureFilter = PictureFilter(
+        public val DEFAULT: PageFilter = PageFilter(
             pictureSorting = PictureSorting.DATE_ADDED,
             pictureOrder = PictureOrder.DESC,
             picturePurities = PicturePurities(
