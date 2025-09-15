@@ -20,6 +20,4 @@ public data class Picture(
     val large: String,
     val original: String,
     val small: String,
-    val tags: List<Tag> = emptyList(),
-    val colors: List<Color> = emptyList(),
 )

@@ -54,7 +54,7 @@ internal data class PicturesPageRemoteModel(
     )
 }
 
-internal fun PicturesPageRemoteModel.PicturePreviewRemoteModel.toPicture(): Picture = Picture(
+internal fun PicturesPageRemoteModel.PicturePreviewRemoteModel.toPictureWithRelations(): Picture = Picture(
     key = this.id,
     url = this.url,
     shortUrl = this.shortUrl,
@@ -74,8 +74,6 @@ internal fun PicturesPageRemoteModel.PicturePreviewRemoteModel.toPicture(): Pict
     large = this.thumbs.large,
     original = this.thumbs.original,
     small = this.thumbs.small,
-    tags = emptyList(),
-    colors = emptyList(),
 )
 
-internal fun List<PicturesPageRemoteModel.PicturePreviewRemoteModel>.toPictures(): List<Picture> = this.map { it.toPicture() }
+internal fun List<PicturesPageRemoteModel.PicturePreviewRemoteModel>.toPictures(): List<Picture> = this.map { it.toPictureWithRelations() }

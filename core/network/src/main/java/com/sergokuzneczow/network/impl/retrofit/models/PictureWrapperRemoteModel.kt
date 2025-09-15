@@ -3,6 +3,7 @@ package com.sergokuzneczow.network.impl.retrofit.models
 import com.google.gson.annotations.SerializedName
 import com.sergokuzneczow.models.Color
 import com.sergokuzneczow.models.Picture
+import com.sergokuzneczow.models.PictureWithRelations
 import com.sergokuzneczow.network.impl.retrofit.models.TagWrapperRemoteModel.TagRemoteModel
 
 internal data class PictureWrapperRemoteModel(
@@ -66,31 +67,31 @@ internal data class PictureWrapperRemoteModel(
     )
 }
 
-internal fun PictureWrapperRemoteModel.PictureRemoteModel.toPicture(): Picture = Picture(
-    key = this.id,
-    url = this.url,
-    shortUrl = this.shortUrl,
-    views = this.views,
-    favorites = this.favorites,
-    source = this.source,
-    purity = this.purity,
-    categories = this.category,
-    dimensionX = this.dimensionX,
-    dimensionY = this.dimensionY,
-    resolution = this.resolution,
-    ratio = this.ratio,
-    fileSize = this.fileSize,
-    fileType = this.fileType,
-    createAt = this.createAt,
-    path = this.path,
-    large = this.thumbs.large,
-    original = this.thumbs.original,
-    small = this.thumbs.small,
+internal fun PictureWrapperRemoteModel.PictureRemoteModel.toPictureWithRelations(): PictureWithRelations = PictureWithRelations(
+    picture = Picture(
+        key = this.id,
+        url = this.url,
+        shortUrl = this.shortUrl,
+        views = this.views,
+        favorites = this.favorites,
+        source = this.source,
+        purity = this.purity,
+        categories = this.category,
+        dimensionX = this.dimensionX,
+        dimensionY = this.dimensionY,
+        resolution = this.resolution,
+        ratio = this.ratio,
+        fileSize = this.fileSize,
+        fileType = this.fileType,
+        createAt = this.createAt,
+        path = this.path,
+        large = this.thumbs.large,
+        original = this.thumbs.original,
+        small = this.thumbs.small,
+    ),
     tags = this.tags.toTags(),
     colors = this.colors.toColors(),
 )
-
-internal fun List<PictureWrapperRemoteModel.PictureRemoteModel>.toPictures(): List<Picture> = this.map { it.toPicture() }
 
 internal fun String.toColor(): Color = Color(this, this)
 

@@ -18,7 +18,7 @@ android {
         versionCode = 1
         versionName = "1.0"
 
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+//        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
@@ -42,13 +42,24 @@ kotlin {
 
 dependencies {
     // Dependencies
-     implementation(project(":core:ui"))
+    implementation(project(":core:ui"))
+    implementation(project(":core:models"))
+    implementation(project(":core:database"))
+    implementation(project(":core:datastore_picture"))
+    implementation(project(":core:network"))
+    implementation(project(":core:data"))
+    implementation(project(":core:domain"))
+    implementation(project(":core:utilities"))
+    implementation(project(":feature:home"))
+    implementation(project(":feature:settings"))
     // Android compose
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.foundation.layout)
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.ui)
     implementation(libs.androidx.ui.graphics)
+    implementation(libs.androidx.compose.adaptive)
+    implementation(libs.androidx.compose.material3.adaptive.navigation.suite)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.constraintlayout.compose)
     implementation(libs.androidx.material3)
@@ -69,15 +80,6 @@ dependencies {
     // Coil
     implementation(libs.coil.compose)
     implementation(libs.coil.network.okhttp)
-
-//    // Room
-//    implementation(libs.androidx.room)
-//    implementation(libs.androidx.room.ktx)
-//    ksp(libs.androidx.room.compiler)
-//    // Retrofit
-//    implementation(libs.squareup.retrofit2.retrofit)
-//    implementation(libs.squareup.retrofit2.converter.gson)
-//    implementation(libs.squareup.retrofit2.converter.jackson)
 //    //Tests
 //    testImplementation(libs.junit)
 //    androidTestImplementation(libs.androidx.junit)
