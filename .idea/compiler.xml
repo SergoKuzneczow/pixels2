@@ -6,7 +6,10 @@
       <module name="Pixels2.core.net" target="21" />
       <module name="Pixels2.di.components" target="21" />
       <module name="Pixels2.di.provider" target="21" />
+      <module name="Pixels2.feature.suggested_queri" target="21" />
+      <module name="Pixels2.feature.suggested_queries" target="21" />
       <module name="pixels2.Pixels2.core.dataOld" target="21" />
+      <module name="pixels2.Pixels2.feature.home" target="21" />
     </bytecodeTargetLevel>
   </component>
 </project>

@@ -1,11 +1,10 @@
 package com.sergokuzneczow.database.api
 
-import com.sergokuzneczow.models.Color
+import com.sergokuzneczow.models.Page
 import com.sergokuzneczow.models.PageFilter
 import com.sergokuzneczow.models.PageQuery
 import com.sergokuzneczow.models.Picture
 import com.sergokuzneczow.models.PictureWithRelations
-import com.sergokuzneczow.models.Tag
 import kotlinx.coroutines.flow.Flow
 
 public interface PixelsDatabaseDataSourceApi {
@@ -15,6 +14,10 @@ public interface PixelsDatabaseDataSourceApi {
         pageQuery: PageQuery = PageQuery.Empty(),
         pageFilter: PageFilter
     ): Long?
+
+    public suspend fun getPage(
+        pageKey: Long
+    ): Page
 
     public suspend fun getPageLoadTimeOrNull(
         pageNumber: Int,

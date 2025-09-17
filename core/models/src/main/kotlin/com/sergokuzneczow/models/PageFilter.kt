@@ -50,9 +50,9 @@ public data class PageFilter(
         val people: Boolean,
     )
 
-    public data class PictureColor(public val value: String) {
+    public data class PictureColor(public val colorName: String) {
         public companion object {
-            public val ANY: PictureColor = PictureColor(value = "")
+            public val ANY: PictureColor = PictureColor(colorName = "")
         }
     }
 }

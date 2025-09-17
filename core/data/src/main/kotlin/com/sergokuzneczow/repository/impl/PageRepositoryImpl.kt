@@ -1,6 +1,7 @@
 package com.sergokuzneczow.repository.impl
 
 import com.sergokuzneczow.database.api.PixelsDatabaseDataSourceApi
+import com.sergokuzneczow.models.Page
 import com.sergokuzneczow.models.PageFilter
 import com.sergokuzneczow.models.PageQuery
 import com.sergokuzneczow.models.Picture
@@ -17,7 +18,15 @@ public class PageRepositoryImpl @Inject constructor(
     private val networkApi: PixelsNetworkDataSourceApi,
 ) : PageRepositoryApi {
 
-    override suspend fun getPageLoadTime(pageNumber: Int, pageQuery: PageQuery, pageFilter: PageFilter): Long?{
+    override suspend fun getPageKey(pageNumber: Int, pageQuery: PageQuery, pageFilter: PageFilter): Long? {
+        return databaseApi.setPageGetKey(pageNumber, pageQuery, pageFilter)
+    }
+
+    override suspend fun getPage(pageKey: Long): Page {
+        return databaseApi.getPage(pageKey)
+    }
+
+    override suspend fun getPageLoadTime(pageNumber: Int, pageQuery: PageQuery, pageFilter: PageFilter): Long? {
         log(tag = "PageRepositoryImpl") { "getPageLoadTime(); enter point; pageNumber=$pageNumber, pageQuery=$pageQuery, pageFilter=$pageFilter" }
         return databaseApi.getPageLoadTimeOrNull(pageNumber, pageQuery, pageFilter)
     }

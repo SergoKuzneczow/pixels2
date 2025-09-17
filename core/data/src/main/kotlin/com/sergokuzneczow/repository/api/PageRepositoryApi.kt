@@ -1,5 +1,6 @@
 package com.sergokuzneczow.repository.api
 
+import com.sergokuzneczow.models.Page
 import com.sergokuzneczow.models.PageFilter
 import com.sergokuzneczow.models.PageQuery
 import com.sergokuzneczow.models.Picture
@@ -7,6 +8,16 @@ import com.sergokuzneczow.models.PictureWithRelations
 import kotlinx.coroutines.flow.Flow
 
 public interface PageRepositoryApi {
+
+    public suspend fun getPageKey(
+        pageNumber: Int = 1,
+        pageQuery: PageQuery = PageQuery.DEFAULT,
+        pageFilter: PageFilter,
+    ): Long?
+
+    public suspend fun getPage(
+        pageKey: Long
+    ): Page
 
     public suspend fun getPageLoadTime(
         pageNumber: Int,

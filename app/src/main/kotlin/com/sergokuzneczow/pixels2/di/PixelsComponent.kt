@@ -3,11 +3,14 @@ package com.sergokuzneczow.pixels2.di
 import android.content.Context
 import androidx.annotation.NonUiContext
 import com.sergokuzneczow.domain.get_home_screen_pager_use_case.GetHomeScreenPagerUseCase
-import com.sergokuzneczow.home.di.HomeScreenDependencies
+import com.sergokuzneczow.domain.get_suitable_pictures_screen_pager_use_case.GetSuitablePicturesScreenPagerUseCase
+import com.sergokuzneczow.home.impl.di.HomeFeatureDependencies
 import com.sergokuzneczow.pixels2.MainActivityViewModel
 import com.sergokuzneczow.pixels2.PixelsApplication
 import com.sergokuzneczow.repository.api.ImageLoaderApi
-import com.sergokuzneczow.settings.di.SettingsScreenDependencies
+import com.sergokuzneczow.repository.api.PageRepositoryApi
+import com.sergokuzneczow.settings.impl.di.SettingsFeatureDependencies
+import com.sergokuzneczow.suitable_pictures.impl.di.SuitablePicturesFeatureDependencies
 import dagger.BindsInstance
 import dagger.Component
 import jakarta.inject.Singleton
@@ -19,12 +22,17 @@ import jakarta.inject.Singleton
 )
 @Singleton
 internal interface PixelsComponent :
-    HomeScreenDependencies,
-    SettingsScreenDependencies {
+    HomeFeatureDependencies,
+    SettingsFeatureDependencies,
+    SuitablePicturesFeatureDependencies {
 
-    override fun getGetHomeScreenPagerUseCase(): GetHomeScreenPagerUseCase
+    override val getHomeScreenPagerUseCase: GetHomeScreenPagerUseCase
 
-    override fun getImageLoaderApi(): ImageLoaderApi
+    override val imageLoaderApi: ImageLoaderApi
+
+    override val pageRepositoryApi: PageRepositoryApi
+
+    override val getSuitablePicturesScreenPagerUseCase: GetSuitablePicturesScreenPagerUseCase
 
     fun inject(destination: MainActivityViewModel)
 

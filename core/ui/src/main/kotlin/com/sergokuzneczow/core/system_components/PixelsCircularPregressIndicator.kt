@@ -21,3 +21,12 @@ public fun BoxScope.PixelsCircularProgressIndicator(modifier: Modifier = Modifie
             .align(Alignment.Center)
     )
 }
+
+@Composable
+public fun PixelsCircularProgressIndicator(modifier: Modifier = Modifier) {
+    CircularProgressIndicator(
+        strokeWidth = CIRCULAR_PROGRESS_INDICATOR_STROKE_WIDTH,
+        modifier = modifier
+            .size(CIRCULAR_PROGRESS_INDICATOR_SIZE)
+    )
+}

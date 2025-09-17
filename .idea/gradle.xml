@@ -22,7 +22,10 @@
             <option value="$PROJECT_DIR$/core/utilities" />
             <option value="$PROJECT_DIR$/feature" />
             <option value="$PROJECT_DIR$/feature/home" />
+            <option value="$PROJECT_DIR$/feature/main_menu" />
+            <option value="$PROJECT_DIR$/feature/selected_picture" />
             <option value="$PROJECT_DIR$/feature/settings" />
+            <option value="$PROJECT_DIR$/feature/splash" />
             <option value="$PROJECT_DIR$/feature/suitable_pictures" />
           </set>
         </option>

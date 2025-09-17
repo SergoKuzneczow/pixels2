@@ -4,6 +4,7 @@ import com.sergokuzneczow.database.impl.framework.RoomHandler
 import com.sergokuzneczow.database.impl.framework.dao.PageDao
 import com.sergokuzneczow.database.impl.framework.entities.PageLocalModel
 import com.sergokuzneczow.database.impl.framework.entities.PictureLocalModel
+import com.sergokuzneczow.database.impl.framework.models.toPageQueryLocalModel
 import com.sergokuzneczow.database.impl.framework.models.toPictureCategoriesLocalModel
 import com.sergokuzneczow.database.impl.framework.models.toPictureColorLocalModel
 import com.sergokuzneczow.database.impl.framework.models.toPictureOrderLocalModel
@@ -18,7 +19,6 @@ import kotlinx.serialization.json.Json
 internal class PageLocalSource private constructor(val pageDao: PageDao) {
 
     private companion object {
-        private const val ANY_QUERY: String = "any_query"
     }
 
     internal constructor(roomHandler: RoomHandler) : this(roomHandler.providePageDao())
@@ -28,6 +28,7 @@ internal class PageLocalSource private constructor(val pageDao: PageDao) {
         pageQuery: PageQuery,
         pageFilter: PageFilter
     ): Long? {
+        val pageQuery = pageQuery.toPageQueryLocalModel()
         val sorting = pageFilter.pictureSorting.toPictureSortingLocalModel()
         val order = pageFilter.pictureOrder.toPictureOrderLocalModel()
         val purities = pageFilter.picturePurities.toPicturePuritiesLocalModel()
@@ -36,7 +37,7 @@ internal class PageLocalSource private constructor(val pageDao: PageDao) {
         val page = PageLocalModel(
             loadTime = System.currentTimeMillis(),
             number = pageNumber,
-            query = pageQuery.toQueryString(),
+            query =  Json.encodeToString(pageQuery),
             sorting = Json.encodeToString(sorting),
             order = Json.encodeToString(order),
             purities = Json.encodeToString(purities),
@@ -46,11 +47,16 @@ internal class PageLocalSource private constructor(val pageDao: PageDao) {
         return pageDao.insertOrIgnorePageReturnPageKey(page)
     }
 
+    internal suspend fun getPage(pageKey: Long): PageLocalModel {
+        return pageDao.getPages(pageKey).firstOrNull() ?: throw IllegalStateException("Page column for key=$pageKey not found.")
+    }
+
     internal suspend fun getPageLoadTimeOrNull(
         pageNumber: Int,
         pageQuery: PageQuery,
         pageFilter: PageFilter
     ): Long? {
+        val pageQuery = pageQuery.toPageQueryLocalModel()
         val sorting = pageFilter.pictureSorting.toPictureSortingLocalModel()
         val order = pageFilter.pictureOrder.toPictureOrderLocalModel()
         val purities = pageFilter.picturePurities.toPicturePuritiesLocalModel()
@@ -58,7 +64,7 @@ internal class PageLocalSource private constructor(val pageDao: PageDao) {
         val color = pageFilter.pictureColor.toPictureColorLocalModel()
         return pageDao.queryPageLoadTime(
             pageNumber = pageNumber,
-            query = pageQuery.toQueryString(),
+            query =  Json.encodeToString(pageQuery),
             sorting = Json.encodeToString(sorting),
             order = Json.encodeToString(order),
             purities = Json.encodeToString(purities),
@@ -72,6 +78,7 @@ internal class PageLocalSource private constructor(val pageDao: PageDao) {
         pageQuery: PageQuery,
         pageFilter: PageFilter,
     ): Flow<List<PictureLocalModel>> {
+        val pageQuery = pageQuery.toPageQueryLocalModel()
         val sorting = pageFilter.pictureSorting.toPictureSortingLocalModel()
         val order = pageFilter.pictureOrder.toPictureOrderLocalModel()
         val purities = pageFilter.picturePurities.toPicturePuritiesLocalModel()
@@ -79,7 +86,7 @@ internal class PageLocalSource private constructor(val pageDao: PageDao) {
         val color = pageFilter.pictureColor.toPictureColorLocalModel()
         return pageDao.queryPageWithPictures(
             pageNumber = pageNumber,
-            query = pageQuery.toQueryString(),
+            query =  Json.encodeToString(pageQuery),
             sorting = Json.encodeToString(sorting),
             order = Json.encodeToString(order),
             purities = Json.encodeToString(purities),
@@ -96,6 +103,7 @@ internal class PageLocalSource private constructor(val pageDao: PageDao) {
         pageQuery: PageQuery,
         pageFilter: PageFilter,
     ): Flow<List<PictureLocalModel.PictureWithRelations>> {
+        val pageQuery = pageQuery.toPageQueryLocalModel()
         val sorting = pageFilter.pictureSorting.toPictureSortingLocalModel()
         val order = pageFilter.pictureOrder.toPictureOrderLocalModel()
         val purities = pageFilter.picturePurities.toPicturePuritiesLocalModel()
@@ -103,7 +111,7 @@ internal class PageLocalSource private constructor(val pageDao: PageDao) {
         val color = pageFilter.pictureColor.toPictureColorLocalModel()
         return pageDao.queryPageWithPicturesWithRelations(
             pageNumber = pageNumber,
-            query = pageQuery.toQueryString(),
+            query =  Json.encodeToString(pageQuery),
             sorting = Json.encodeToString(sorting),
             order = Json.encodeToString(order),
             purities = Json.encodeToString(purities),
@@ -116,13 +124,14 @@ internal class PageLocalSource private constructor(val pageDao: PageDao) {
     }
 
     internal suspend fun deletePages(pageQuery: PageQuery, pageFilter: PageFilter) {
+        val pageQuery = pageQuery.toPageQueryLocalModel()
         val sorting = pageFilter.pictureSorting.toPictureSortingLocalModel()
         val order = pageFilter.pictureOrder.toPictureOrderLocalModel()
         val purities = pageFilter.picturePurities.toPicturePuritiesLocalModel()
         val categories = pageFilter.pictureCategories.toPictureCategoriesLocalModel()
         val color = pageFilter.pictureColor.toPictureColorLocalModel()
         pageDao.deletePage(
-            query = pageQuery.toQueryString(),
+            query =  Json.encodeToString(pageQuery),
             sorting = Json.encodeToString(sorting),
             order = Json.encodeToString(order),
             purities = Json.encodeToString(purities),
@@ -137,6 +146,7 @@ internal class PageLocalSource private constructor(val pageDao: PageDao) {
         pageQuery: PageQuery,
         pageFilter: PageFilter,
     ) {
+        val pageQuery = pageQuery.toPageQueryLocalModel()
         val sorting = pageFilter.pictureSorting.toPictureSortingLocalModel()
         val order = pageFilter.pictureOrder.toPictureOrderLocalModel()
         val purities = pageFilter.picturePurities.toPicturePuritiesLocalModel()
@@ -145,7 +155,7 @@ internal class PageLocalSource private constructor(val pageDao: PageDao) {
         val page = PageLocalModel(
             key = 0,
             number = pageNumber,
-            query = pageQuery.toQueryString(),
+            query =  Json.encodeToString(pageQuery),
             sorting = Json.encodeToString(sorting),
             order = Json.encodeToString(order),
             purities = Json.encodeToString(purities),
@@ -166,6 +176,7 @@ internal class PageLocalSource private constructor(val pageDao: PageDao) {
         pageQuery: PageQuery,
         pageFilter: PageFilter,
     ) {
+        val pageQuery = pageQuery.toPageQueryLocalModel()
         val sorting = pageFilter.pictureSorting.toPictureSortingLocalModel()
         val order = pageFilter.pictureOrder.toPictureOrderLocalModel()
         val purities = pageFilter.picturePurities.toPicturePuritiesLocalModel()
@@ -174,7 +185,7 @@ internal class PageLocalSource private constructor(val pageDao: PageDao) {
         val page = PageLocalModel(
             key = 0,
             number = pageNumber,
-            query = pageQuery.toQueryString(),
+            query =Json.encodeToString(pageQuery),
             sorting = Json.encodeToString(sorting),
             order = Json.encodeToString(order),
             purities = Json.encodeToString(purities),
@@ -187,14 +198,6 @@ internal class PageLocalSource private constructor(val pageDao: PageDao) {
             picturesWithRelations = pictureWithRelations,
         )
         pageDao.insertOrReplacePageWithPicturesWithRelations(pageWithPicturesWithRelations)
-    }
-
-    private fun PageQuery.toQueryString(): String = when (this) {
-        is PageQuery.Empty -> ANY_QUERY
-        is PageQuery.KeyWord -> this.word
-        is PageQuery.KeyWords -> this.words.joinToString(", ", postfix = "", prefix = "")
-        is PageQuery.Like -> this.pictureKey
-        is PageQuery.Tag -> "id:${this.tagKey}"
     }
 
     private fun List<PictureLocalModel>.sortingPicturesByPositionOnPage(pageKey: Long): List<PictureLocalModel> {

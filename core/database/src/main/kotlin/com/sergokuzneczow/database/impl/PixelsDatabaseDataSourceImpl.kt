@@ -10,6 +10,19 @@ import com.sergokuzneczow.database.impl.framework.entities.toPictureLocalModelPi
 import com.sergokuzneczow.database.impl.framework.entities.toPictureWithRelations
 import com.sergokuzneczow.database.impl.framework.impl.PageLocalSource
 import com.sergokuzneczow.database.impl.framework.impl.PictureLocalSource
+import com.sergokuzneczow.database.impl.framework.models.PageQueryLocalModel
+import com.sergokuzneczow.database.impl.framework.models.PictureCategoriesLocalModel
+import com.sergokuzneczow.database.impl.framework.models.PictureColorLocalModel
+import com.sergokuzneczow.database.impl.framework.models.PictureOrderLocalModel
+import com.sergokuzneczow.database.impl.framework.models.PicturePuritiesLocalModel
+import com.sergokuzneczow.database.impl.framework.models.PictureSortingLocalModel
+import com.sergokuzneczow.database.impl.framework.models.toPageFilterPictureCategories
+import com.sergokuzneczow.database.impl.framework.models.toPageFilterPictureColor
+import com.sergokuzneczow.database.impl.framework.models.toPageFilterPictureOrder
+import com.sergokuzneczow.database.impl.framework.models.toPageFilterPictureSorting
+import com.sergokuzneczow.database.impl.framework.models.toPageQuery
+import com.sergokuzneczow.database.impl.framework.models.toPicturePuritiesLocalModel
+import com.sergokuzneczow.models.Page
 import com.sergokuzneczow.models.PageFilter
 import com.sergokuzneczow.models.PageQuery
 import com.sergokuzneczow.models.Picture
@@ -18,6 +31,7 @@ import jakarta.inject.Inject
 import jakarta.inject.Singleton
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import kotlinx.serialization.json.Json
 
 @Singleton
 public class PixelsDatabaseDataSourceImpl private constructor(
@@ -37,6 +51,26 @@ public class PixelsDatabaseDataSourceImpl private constructor(
         pageFilter: PageFilter
     ): Long? {
         return pageLocalSource.setPageGetKey(pageNumber, pageQuery, pageFilter)
+    }
+
+    override suspend fun getPage(pageKey: Long): Page {
+        val pageLocalModel = pageLocalSource.getPage(pageKey)
+        val pageQuery: PageQuery = Json.decodeFromString<PageQueryLocalModel>(pageLocalModel.query).toPageQuery()
+        val pageFilter: PageFilter = PageFilter(
+            pictureSorting = Json.decodeFromString<PictureSortingLocalModel>(pageLocalModel.sorting).toPageFilterPictureSorting(),
+            pictureOrder = Json.decodeFromString<PictureOrderLocalModel>(pageLocalModel.order).toPageFilterPictureOrder(),
+            picturePurities = Json.decodeFromString<PicturePuritiesLocalModel>(pageLocalModel.purities).toPicturePuritiesLocalModel(),
+            pictureCategories = Json.decodeFromString<PictureCategoriesLocalModel>(pageLocalModel.categories).toPageFilterPictureCategories(),
+            pictureColor = Json.decodeFromString<PictureColorLocalModel>(pageLocalModel.color).toPageFilterPictureColor(),
+        )
+        val page: Page = Page(
+            key = pageLocalModel.key,
+            loadTime = pageLocalModel.loadTime,
+            number = pageLocalModel.number,
+            query = pageQuery,
+            filter = pageFilter
+        )
+        return page
     }
 
     override suspend fun getPageLoadTimeOrNull(

@@ -20,6 +20,15 @@ public interface PageDao : PagePictureDao {
     @Query(
         "select * " +
                 "from ${PageLocalModel.PAGES_TABLE_NAME} " +
+                "where ${PageLocalModel.PAGE_KEY_COLUMN_NAME}=:pageKey"
+    )
+    public suspend fun getPages(
+        pageKey: Long
+    ): List<PageLocalModel>
+
+    @Query(
+        "select * " +
+                "from ${PageLocalModel.PAGES_TABLE_NAME} " +
                 "where ${PageLocalModel.QUERY_COLUMN_NAME}=:query " +
                 "and ${PageLocalModel.SORTING_COLUMN_NAME}=:sorting " +
                 "and ${PageLocalModel.ORDER_COLUMN_NAME}=:order " +

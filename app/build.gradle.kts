@@ -52,6 +52,9 @@ dependencies {
     implementation(project(":core:utilities"))
     implementation(project(":feature:home"))
     implementation(project(":feature:settings"))
+    implementation(project(":feature:main_menu"))
+    implementation(project(":feature:splash"))
+    implementation(project(":feature:suitable_pictures"))
     // Android compose
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.foundation.layout)

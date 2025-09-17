@@ -9,7 +9,7 @@ internal data class PictureColorLocalModel(val value: String)
 private val ANY: PictureColorLocalModel = PictureColorLocalModel(value = "any")
 
 internal fun PageFilter.PictureColor.toPictureColorLocalModel(): PictureColorLocalModel {
-    return if (this.value.isEmpty()) ANY else PictureColorLocalModel(this.value)
+    return if (this.colorName.isEmpty()) ANY else PictureColorLocalModel(this.colorName)
 }
 
 internal fun PictureColorLocalModel.toPageFilterPictureColor(): PageFilter.PictureColor {
