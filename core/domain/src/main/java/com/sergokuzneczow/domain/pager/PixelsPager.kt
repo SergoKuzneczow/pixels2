@@ -3,6 +3,7 @@ package com.sergokuzneczow.domain.pager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharedFlow
+import java.util.TreeMap
 
 public interface PixelsPager<T> {
 
@@ -13,6 +14,8 @@ public interface PixelsPager<T> {
     }
 
     public fun dataFlow(): SharedFlow<Answer<T?>>
+
+    public fun mapFlow(): SharedFlow<TreeMap<Int, List<T?>>>
 
     public fun nextPage()
 

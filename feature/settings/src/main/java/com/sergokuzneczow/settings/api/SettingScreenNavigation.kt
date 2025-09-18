@@ -20,16 +20,16 @@ public fun NavController.navigateToSettingsScreenDestination(navOptions: NavOpti
 }
 
 public fun NavGraphBuilder.settingsScreenDestination(
-    titleState: MutableState<String>,
-    showProgressBar: (visible: Boolean) -> Unit,
+    titleTextState: MutableState<String>,
+    progressBarIsVisible: MutableState<Boolean>,
 ) {
     navigation<SettingsScreenBaseRoute>(
         startDestination = SettingsScreenRoute,
     ) {
         composable<SettingsScreenRoute> {
             SettingsScreenRoot(
-                showProgressBar = showProgressBar,
-                titleState = titleState
+                titleTextState = titleTextState,
+                progressBarIsVisible = progressBarIsVisible
             )
         }
     }

@@ -7,23 +7,23 @@ import com.sergokuzneczow.settings.api.settingsScreenDestination
 import com.sergokuzneczow.suitable_pictures.api.composableSuitablePicturesRoute
 
 internal fun NavGraphBuilder.mainMenuGraph(
-    titleState: MutableState<String>,
-    showProgressBar: (visible: Boolean) -> Unit,
+    titleTextState: MutableState<String>,
+    progressBarIsVisible: MutableState<Boolean>,
     navigateToSuitablePicturesDestination: (pageKey: Long) -> Unit,
 ) {
     this.navigationHomeBaseRoute(
         suitablePicturesDestination = {
             this.composableSuitablePicturesRoute(
-                titleState = titleState,
-                showProgressBar = showProgressBar,
+                titleTextState = titleTextState,
+                progressBarIsVisible = progressBarIsVisible,
             )
         },
         navigateToSuitablePicturesDestination = navigateToSuitablePicturesDestination,
-        titleState = titleState,
-        showProgressBar = showProgressBar,
+        titleTextState = titleTextState,
+        progressBarIsVisible = progressBarIsVisible,
     )
     settingsScreenDestination(
-        titleState = titleState,
-        showProgressBar = showProgressBar,
+        titleTextState = titleTextState,
+        progressBarIsVisible = progressBarIsVisible,
     )
 }

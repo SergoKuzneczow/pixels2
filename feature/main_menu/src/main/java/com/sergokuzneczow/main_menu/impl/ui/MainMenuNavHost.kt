@@ -11,8 +11,8 @@ import com.sergokuzneczow.suitable_pictures.api.navigateToSuitablePicturesRoute
 @Composable
 internal fun MainMenuNavHost(
     rootScreenState: MainMenuRootScreenState,
-    titleState: MutableState<String> ,
-    showProgressBar: (visible: Boolean) -> Unit,
+    titleTextState: MutableState<String>,
+    progressBarIsVisible: MutableState<Boolean>,
     modifier: Modifier = Modifier,
 ) {
     NavHost(
@@ -21,9 +21,9 @@ internal fun MainMenuNavHost(
         modifier = modifier,
     ) {
         this.mainMenuGraph(
-            navigateToSuitablePicturesDestination = { pageKey -> rootScreenState.navController.navigateToSuitablePicturesRoute(pageKey)},
-            titleState = titleState,
-            showProgressBar = showProgressBar,
+            navigateToSuitablePicturesDestination = { pageKey -> rootScreenState.navController.navigateToSuitablePicturesRoute(pageKey) },
+            titleTextState = titleTextState,
+            progressBarIsVisible = progressBarIsVisible
         )
     }
 }

@@ -21,8 +21,8 @@ public fun NavController.navigateToHomeRoute(navOptions: NavOptions) {
 
 public fun NavGraphBuilder.navigationHomeBaseRoute(
     suitablePicturesDestination: NavGraphBuilder.() -> Unit,
-    titleState: MutableState<String>,
-    showProgressBar: (visible: Boolean) -> Unit,
+    titleTextState: MutableState<String>,
+    progressBarIsVisible: MutableState<Boolean>,
     navigateToSuitablePicturesDestination: (pageKey: Long) -> Unit,
 ) {
     navigation<HomeBaseRoute>(
@@ -30,8 +30,8 @@ public fun NavGraphBuilder.navigationHomeBaseRoute(
     ) {
         composable<HomeRoute> {
             HomeScreenRoot(
-                showProgressBar = showProgressBar,
-                titleState = titleState,
+                progressBarIsVisible = progressBarIsVisible,
+                titleTextState = titleTextState,
                 navigateToSuitablePicturesDestination = navigateToSuitablePicturesDestination
             )
         }

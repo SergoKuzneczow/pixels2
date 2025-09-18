@@ -10,6 +10,7 @@ import jakarta.inject.Inject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharedFlow
+import java.util.TreeMap
 
 public class GetHomeScreenPagerUseCase @Inject constructor(
     private val pageRepositoryApi: PageRepositoryApi,
@@ -41,7 +42,7 @@ public class GetHomeScreenPagerUseCase @Inject constructor(
         loading: () -> Unit,
         completed: (lastPage: Int, isEmpty: Boolean) -> Unit,
         error: (throwable: Throwable) -> Unit,
-    ): SharedFlow<PixelsPager.Answer<PictureWithRelations?>> {
+    ): SharedFlow<TreeMap<Int, List<PictureWithRelations?>>> {
         pixelsPager = PixelsPager.Builder(
             coroutineScope = coroutineScope,
             sourceData = { pageNumber, pageSize -> dataSource(pageNumber, pageSize) },
@@ -55,7 +56,7 @@ public class GetHomeScreenPagerUseCase @Inject constructor(
             .setWithPlaceholder(true)
             .setStartStrategy(PixelsPager.StartStrategy.START_INSTANTLY)
             .build()
-        return pixelsPager?.dataFlow() ?: throw IllegalStateException("Property pager must initialize.")
+        return pixelsPager?.mapFlow() ?: throw IllegalStateException("Property pixelsPager must initialize.")
     }
 
     public fun nextPage() {

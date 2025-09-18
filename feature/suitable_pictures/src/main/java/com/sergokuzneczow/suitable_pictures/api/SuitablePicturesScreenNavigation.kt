@@ -17,15 +17,15 @@ public fun NavHostController.navigateToSuitablePicturesRoute(pageKey: Long, navO
 }
 
 public fun NavGraphBuilder.composableSuitablePicturesRoute(
-    titleState: MutableState<String>,
-    showProgressBar: (visible: Boolean) -> Unit,
+    titleTextState: MutableState<String>,
+    progressBarIsVisible: MutableState<Boolean>,
 ) {
     composable<SuitablePicturesRoute> { backStackEntry ->
         val data: SuitablePicturesRoute = backStackEntry.toRoute()
         SuitablePicturesRootScreen(
             pageKey = data.pageKey,
-            titleState = titleState,
-            showProgressBar = showProgressBar,
+            titleTextState = titleTextState,
+            progressBarIsVisible = progressBarIsVisible,
         )
     }
 }

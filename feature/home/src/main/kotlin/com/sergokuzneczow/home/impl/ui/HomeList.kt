@@ -1,0 +1,265 @@
+package com.sergokuzneczow.home.impl.ui
+
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
+import coil3.compose.AsyncImagePainter
+import coil3.compose.rememberAsyncImagePainter
+import com.sergokuzneczow.core.system_components.PixelsCircularProgressIndicator
+import com.sergokuzneczow.core.ui.PixelsTheme
+import com.sergokuzneczow.core.utilites.ThemePreviews
+import com.sergokuzneczow.home.impl.HomeListUiState
+import com.sergokuzneczow.home.impl.HomeListUiState.SuggestedQueriesPage
+import com.sergokuzneczow.models.PageFilter
+import com.sergokuzneczow.models.PageQuery
+
+private val FIRST_ITEM_TOP_PADDING: Dp = 96.dp
+private val PADDING_BETWEEN_BLOCKS: Dp = 16.dp
+private val ITEM_PADDINGS: Dp = 4.dp
+
+@Composable
+internal fun HomeList(
+    homeListUiState: HomeListUiState,
+    itemClick: (PageQuery, PageFilter) -> Unit,
+    nextPage: () -> Unit,
+) {
+    LazyColumn(
+        contentPadding = PaddingValues(start = 4.dp, end = 4.dp, top = FIRST_ITEM_TOP_PADDING, bottom = 4.dp),
+        modifier = Modifier.fillMaxSize()
+    ) {
+        when (homeListUiState) {
+            is HomeListUiState.Loading -> {
+                item {
+                    StandardQueries(
+                        standardQueries = homeListUiState.standardQuery,
+                        itemClick = itemClick,
+                    )
+                }
+            }
+
+            is HomeListUiState.Success -> {
+                item { Spacer(modifier = Modifier.height(PADDING_BETWEEN_BLOCKS)) }
+                item {
+                    StandardQueries(
+                        standardQueries = homeListUiState.standardQuery,
+                        itemClick = itemClick,
+                    )
+                }
+                item { Spacer(modifier = Modifier.height(PADDING_BETWEEN_BLOCKS)) }
+                itemsIndexed(homeListUiState.suggestedQueriesPages) { position, page ->
+                    SuggestedQueriesPage(
+                        suggestedQueriesPage = page,
+                        itemClick = itemClick,
+                    )
+                    if (homeListUiState.suggestedQueriesPages.size - 3 < position) nextPage.invoke()
+                }
+            }
+        }
+
+    }
+}
+
+@Composable
+private fun StandardQueries(
+    standardQueries: List<HomeListUiState.StandardQuery>,
+    itemClick: (PageQuery, PageFilter) -> Unit,
+) {
+    Row(
+        horizontalArrangement = Arrangement.SpaceEvenly,
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        standardQueries.forEach { standardQuery ->
+            Column(
+                modifier = Modifier
+                    .width(72.dp)
+                    .padding(ITEM_PADDINGS)
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(MaterialTheme.colorScheme.surfaceContainer)
+                    .clickable(onClick = { itemClick.invoke(standardQuery.pageQuery, standardQuery.pageFilter) })
+            ) {
+                Image(
+                    imageVector = standardQuery.vectorIcon,
+                    contentDescription = standardQuery.description,
+                    contentScale = ContentScale.Inside,
+                    modifier = Modifier
+                        .padding(4.dp)
+                        .fillMaxWidth()
+                )
+                Text(
+                    text = standardQuery.description,
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onSurface,
+                    style = MaterialTheme.typography.titleSmall,
+                    modifier = Modifier
+                        .padding(4.dp)
+                        .fillMaxWidth()
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun SuggestedQueriesPage(
+    suggestedQueriesPage: SuggestedQueriesPage,
+    itemClick: (PageQuery, PageFilter) -> Unit,
+) {
+    val rowSize = 2
+    val itemsCount = 6
+    val pageItems: List<HomeListUiState.SuggestedQuery?> = suggestedQueriesPage.items
+    if (itemsCount != pageItems.size) throw IllegalArgumentException("Unknown items count. Need add calculation column size.")
+    val itemsForRow: List<List<HomeListUiState.SuggestedQuery?>> = pageItems.chunked(rowSize)
+    itemsForRow.forEach { rowItems: List<HomeListUiState.SuggestedQuery?> ->
+        Row(
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            rowItems.forEach { item: HomeListUiState.SuggestedQuery? ->
+                Box(
+                    modifier = Modifier
+                        .padding(ITEM_PADDINGS)
+                        .weight(1f)
+                        .size(164.dp)
+                        .clip(RoundedCornerShape(12.dp))
+                        .background(MaterialTheme.colorScheme.surfaceContainer)
+                        .clickable(onClick = { if (item != null) itemClick.invoke(item.pageQuery, item.pageFilter) })
+                ) {
+                    if (item != null) PictureItem(item.previewPath, item.description)
+                    else PixelsCircularProgressIndicator()
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun BoxScope.PictureItem(previewPath: String, description: String) {
+    val painter: AsyncImagePainter = rememberAsyncImagePainter(previewPath)
+    val state: AsyncImagePainter.State by painter.state.collectAsState()
+    when (state) {
+        is AsyncImagePainter.State.Empty -> {
+            PixelsCircularProgressIndicator()
+        }
+
+        is AsyncImagePainter.State.Loading -> {
+            PixelsCircularProgressIndicator()
+        }
+
+        is AsyncImagePainter.State.Success -> {
+            Image(
+                painter = painter,
+                contentDescription = previewPath,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .fillMaxSize()
+            )
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .alpha(0.3f)
+                    .background(Color.Black)
+            )
+            Text(
+                text = description,
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.inverseOnSurface,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.align(Alignment.Center)
+            )
+        }
+
+        is AsyncImagePainter.State.Error -> {
+            painter.restart()
+        }
+    }
+}
+
+@ThemePreviews
+@Composable
+private fun StandardQueriesPreview() {
+    PixelsTheme {
+        StandardQueries(
+            standardQueries = HomeListUiState.Loading().standardQuery,
+            itemClick = { _, _ -> }
+        )
+    }
+}
+
+@ThemePreviews
+@Composable
+private fun SuggestedQueriesPagePreview() {
+    PixelsTheme {
+        SuggestedQueriesPage(
+            suggestedQueriesPage = SuggestedQueriesPage(
+                items = listOf(
+                    HomeListUiState.SuggestedQuery(
+                        description = "Preview",
+                        previewPath = "",
+                        pageQuery = PageQuery.DEFAULT,
+                        pageFilter = PageFilter.DEFAULT,
+                    ),
+                    HomeListUiState.SuggestedQuery(
+                        description = "Preview",
+                        previewPath = "",
+                        pageQuery = PageQuery.DEFAULT,
+                        pageFilter = PageFilter.DEFAULT,
+                    ),
+                    HomeListUiState.SuggestedQuery(
+                        description = "Preview",
+                        previewPath = "",
+                        pageQuery = PageQuery.DEFAULT,
+                        pageFilter = PageFilter.DEFAULT,
+                    ),
+                    HomeListUiState.SuggestedQuery(
+                        description = "Preview",
+                        previewPath = "",
+                        pageQuery = PageQuery.DEFAULT,
+                        pageFilter = PageFilter.DEFAULT,
+                    ),
+                    HomeListUiState.SuggestedQuery(
+                        description = "Preview",
+                        previewPath = "",
+                        pageQuery = PageQuery.DEFAULT,
+                        pageFilter = PageFilter.DEFAULT,
+                    ),
+                    HomeListUiState.SuggestedQuery(
+                        description = "Preview",
+                        previewPath = "",
+                        pageQuery = PageQuery.DEFAULT,
+                        pageFilter = PageFilter.DEFAULT,
+                    ),
+                ),
+            ),
+            itemClick = { _, _ -> }
+        )
+    }
+}

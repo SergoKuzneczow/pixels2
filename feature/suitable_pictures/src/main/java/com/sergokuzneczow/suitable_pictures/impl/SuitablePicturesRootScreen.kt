@@ -10,11 +10,11 @@ import com.sergokuzneczow.suitable_pictures.impl.ui.SuitablePicturesScreen
 @Composable
 internal fun SuitablePicturesRootScreen(
     pageKey: Long,
-    titleState: MutableState<String>,
-    showProgressBar: (visible: Boolean) -> Unit,
+    titleTextState: MutableState<String>,
+    progressBarIsVisible: MutableState<Boolean>,
 ) {
     val vm: SuitablePicturesViewModel = viewModel(factory = SuitablePicturesViewModel.Factory(pageKey, LocalContext.current))
-    titleState.value = vm.getTitleUiState().collectAsState().value.title
+    titleTextState.value = vm.getTitleUiState().collectAsState().value.title
     SuitablePicturesScreen(
         suitablePicturesUiState = vm.getSuitablePicturesUiState().collectAsState(),
         nextPage = vm::nextPage

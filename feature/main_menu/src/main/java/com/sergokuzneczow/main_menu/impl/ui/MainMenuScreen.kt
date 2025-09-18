@@ -7,10 +7,8 @@ import androidx.compose.material3.adaptive.WindowAdaptiveInfo
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavDestination
@@ -31,8 +29,8 @@ internal fun MainMenuScreen(
     rootScreenState: MainMenuRootScreenState = rememberMainMenuRootScreenState(),
     windowAdaptiveInfo: WindowAdaptiveInfo = currentWindowAdaptiveInfo(),
 ) {
-    val titleState: MutableState<String> = remember { mutableStateOf("Default") }
-    var visibleProgressbar: Boolean by remember { mutableStateOf(true) }
+    val titleTextState: MutableState<String> = remember { mutableStateOf("Default") }
+    val progressBarIsVisible: MutableState<Boolean> = remember { mutableStateOf(true) }
     val currentDestination = rootScreenState.currentDestination
 
     PixelsScaffold(
@@ -40,10 +38,6 @@ internal fun MainMenuScreen(
         navigationSuiteItems = {
             MainMenuTopDestination.entries.forEach { destination ->
                 item(
-//                    selected = (rootScreenState.currentTopLevelDestination == destination).also {
-//                        log(tag = "MainMenuScreen") { "rootScreenState.currentTopLevelDestination=${rootScreenState.currentTopLevelDestination}" }
-//                        log(tag = "MainMenuScreen") { "destination=$destination" }
-//                    },
                     selected = currentDestination.isRouteInHierarchy(destination.route),
                     onClick = {
                         when {
@@ -98,13 +92,13 @@ internal fun MainMenuScreen(
         content = {
             MainMenuNavHost(
                 rootScreenState = rootScreenState,
-                titleState = titleState,
-                showProgressBar = { visibleProgressbar = it },
+                titleTextState = titleTextState,
+                progressBarIsVisible = progressBarIsVisible,
                 modifier = Modifier.fillMaxSize()
             )
             PixelsTopBar(
-                title = titleState.value,
-                visibleProgressBar = visibleProgressbar,
+                title = titleTextState.value,
+                visibleProgressBar = progressBarIsVisible.value,
             )
         }
     )

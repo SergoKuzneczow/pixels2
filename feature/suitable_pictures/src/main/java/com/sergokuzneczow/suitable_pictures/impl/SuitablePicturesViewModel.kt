@@ -76,13 +76,27 @@ internal class SuitablePicturesViewModel(
     private fun Page.createScreenTitle(): TitleUiState {
         return when (this.query) {
             is PageQuery.Empty -> {
-                if (this.filter.pictureColor.colorName.isNotEmpty()) TitleUiState.Success("Color ${this.filter.pictureColor.colorName}")
-                else when (this.filter.pictureSorting) {
-                    PageFilter.PictureSorting.VIEWS -> TitleUiState.Success("View")
-                    PageFilter.PictureSorting.RANDOM -> TitleUiState.Success("Random")
-                    PageFilter.PictureSorting.FAVORITES -> TitleUiState.Success("Favorites")
-                    PageFilter.PictureSorting.TOP_LIST -> TitleUiState.Success("Top list")
-                    PageFilter.PictureSorting.DATE_ADDED -> TitleUiState.Success("Date added")
+                when {
+                    this.filter.pictureColor.colorName.isNotEmpty() -> TitleUiState.Success("Color ${this.filter.pictureColor.colorName}")
+                    this.filter.pictureOrder == PageFilter.PictureOrder.DESC ->{
+                        when (this.filter.pictureSorting) {
+                            PageFilter.PictureSorting.VIEWS -> TitleUiState.Success("View")
+                            PageFilter.PictureSorting.RANDOM -> TitleUiState.Success("Random")
+                            PageFilter.PictureSorting.FAVORITES -> TitleUiState.Success("Loved")
+                            PageFilter.PictureSorting.TOP_LIST -> TitleUiState.Success("Bests")
+                            PageFilter.PictureSorting.DATE_ADDED -> TitleUiState.Success("New")
+                        }
+                    }
+                    this.filter.pictureOrder == PageFilter.PictureOrder.ASC ->{
+                        when (this.filter.pictureSorting) {
+                            PageFilter.PictureSorting.VIEWS -> TitleUiState.Success("Invisible")
+                            PageFilter.PictureSorting.RANDOM -> TitleUiState.Success("Random")
+                            PageFilter.PictureSorting.FAVORITES -> TitleUiState.Success("Unloved")
+                            PageFilter.PictureSorting.TOP_LIST -> TitleUiState.Success("Worst")
+                            PageFilter.PictureSorting.DATE_ADDED -> TitleUiState.Success("Old")
+                        }
+                    }
+                    else -> TitleUiState.Success("Default")
                 }
             }
 

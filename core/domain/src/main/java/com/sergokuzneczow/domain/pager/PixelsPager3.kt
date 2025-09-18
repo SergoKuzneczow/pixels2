@@ -46,6 +46,12 @@ public class PixelsPager3<T>(
         onBufferOverflow = BufferOverflow.DROP_OLDEST,
     )
 
+    private val dataMapFlow: MutableSharedFlow<TreeMap<Int, List<T?>>> = MutableSharedFlow(
+        replay = 1,
+        extraBufferCapacity = 1,
+        onBufferOverflow = BufferOverflow.DROP_OLDEST,
+    )
+
     private val pagesMap: TreeMap<Int, List<T?>> = TreeMap()
 
     private val pagesMapMutex: Mutex = Mutex()
@@ -83,6 +89,8 @@ public class PixelsPager3<T>(
     }
 
     override fun dataFlow(): SharedFlow<PixelsPager.Answer<T?>> = dataFlow
+
+    override fun mapFlow(): SharedFlow<TreeMap<Int, List<T?>>> = dataMapFlow
 
     override fun nextPage() {
         if (nextPage <= lastPage) {
@@ -254,6 +262,7 @@ public class PixelsPager3<T>(
             )
         )
         dataFlow.emit(answer)
+        dataMapFlow.emit(pagesMap)
         pagesMap.onEach { entry -> log(tag = "Pager3", level = Level.VERBOSE) { "emitPage(); page number ${entry.key} emitted new data: ${entry.value}" } }
     }
 

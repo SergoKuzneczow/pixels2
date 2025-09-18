@@ -9,11 +9,9 @@ import com.sergokuzneczow.domain.get_home_screen_pager_use_case.GetHomeScreenPag
 import com.sergokuzneczow.home.impl.di.DaggerHomeScreenComponent
 import com.sergokuzneczow.home.impl.di.HomeScreenComponent
 import com.sergokuzneczow.home.impl.di.dependenciesProvider
-import com.sergokuzneczow.home.impl.ui.ProgressBarUiState
-import com.sergokuzneczow.home.impl.ui.SuggestedQueriesUiState
-import com.sergokuzneczow.home.impl.ui.toSuggestedQueries
 import com.sergokuzneczow.models.PageFilter
 import com.sergokuzneczow.models.PageQuery
+import com.sergokuzneczow.models.PictureWithRelations
 import com.sergokuzneczow.repository.api.PageRepositoryApi
 import com.sergokuzneczow.utilities.logger.log
 import kotlinx.coroutines.Dispatchers
@@ -24,11 +22,11 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
+import java.util.TreeMap
 import javax.inject.Inject
 
 internal class HomeScreenViewModel(
     @NonUiContext context: Context,
-    showProgressBar: (Boolean) -> Unit
 ) : ViewModel() {
 
     @Inject
@@ -43,32 +41,33 @@ internal class HomeScreenViewModel(
             .build()
     }
 
-    private val suggestedQueriesUiState: MutableStateFlow<SuggestedQueriesUiState> = MutableStateFlow(SuggestedQueriesUiState.Default())
+    private val homeListUiState: MutableStateFlow<HomeListUiState> = MutableStateFlow(HomeListUiState.Loading())
 
-    private val progressBarUiState: MutableStateFlow<ProgressBarUiState> = MutableStateFlow(ProgressBarUiState.Visible)
+    private val progressBarUiState: MutableStateFlow<Boolean> = MutableStateFlow(false)
 
     init {
         homeScreenComponent.inject(this)
 
         getHomeScreenPagerUseCase.execute(
             coroutineScope = viewModelScope + Dispatchers.IO,
-            loading = { showProgressBar.invoke(true) },
+            loading = { /*showProgressBar.invoke(true) */ },
             completed = { lastPage, isEmpty ->
-                if (lastPage == 1 && isEmpty) viewModelScope.launch { suggestedQueriesUiState.emit(SuggestedQueriesUiState.Empty) }
-                showProgressBar.invoke(false)
+                /*if (lastPage == 1 && isEmpty) viewModelScope.launch { suggestedQueriesUiState.emit(SuggestedQueriesUiState.Empty) }*/
+                /*showProgressBar.invoke(false)*/
             },
             error = { throwable -> }
-        ).onEach { answer ->
-            log(tag = "HomeScreenViewModel") { "getHomeScreenPagerUseCase.execute(); onEach; answer.items=${answer.items}" }
-            log(tag = "HomeScreenViewModel") { "getHomeScreenPagerUseCase.execute(); onEach; answer.items.size=${answer.items.size}" }
-            log(tag = "HomeScreenViewModel") { "getHomeScreenPagerUseCase.execute(); onEach; answer.meta=${answer.meta}" }
-            suggestedQueriesUiState.emit(SuggestedQueriesUiState.Success(answer.items.toSuggestedQueries()))
-        }.launchIn(viewModelScope)
+        )
+            .onEach { pages: TreeMap<Int, List<PictureWithRelations?>> ->
+                pages.entries.forEach { page: MutableMap.MutableEntry<Int, List<PictureWithRelations?>> ->
+                    log(tag = "HomeScreenViewModel") { "getHomeScreenPagerUseCase.executeMap(); map key=${page.key} value=${page.value}" }
+                }
+                homeListUiState.emit(HomeListUiState.Success(suggestedQueriesPages = pages.toSuggestedQueriesPages()))
+            }.launchIn(viewModelScope)
     }
 
-    fun getSuggestQueriesUiState(): StateFlow<SuggestedQueriesUiState> = suggestedQueriesUiState.asStateFlow()
+    fun getHomeListUiState(): StateFlow<HomeListUiState> = homeListUiState.asStateFlow()
 
-    fun getProgressBarUiState(): StateFlow<ProgressBarUiState> = progressBarUiState.asStateFlow()
+    fun getProgressBarUiState(): StateFlow<Boolean> = progressBarUiState.asStateFlow()
 
     fun nextPage() {
         getHomeScreenPagerUseCase.nextPage()
@@ -84,10 +83,10 @@ internal class HomeScreenViewModel(
         }
     }
 
-    internal class Factory(@NonUiContext private val context: Context, private val showProgressBar: (Boolean) -> Unit) : ViewModelProvider.Factory {
+    internal class Factory(@NonUiContext private val context: Context) : ViewModelProvider.Factory {
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
             if (modelClass.isAssignableFrom(HomeScreenViewModel::class.java)) {
-                return HomeScreenViewModel(context, showProgressBar) as T
+                return HomeScreenViewModel(context) as T
             }
             throw IllegalArgumentException("Unknown ViewModel class")
         }
