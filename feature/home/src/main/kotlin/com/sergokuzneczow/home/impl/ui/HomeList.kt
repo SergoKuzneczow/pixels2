@@ -21,6 +21,8 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.adaptive.WindowAdaptiveInfo
+import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -33,6 +35,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.window.core.layout.WindowWidthSizeClass
 import coil3.compose.AsyncImagePainter
 import coil3.compose.rememberAsyncImagePainter
 import com.sergokuzneczow.core.system_components.PixelsCircularProgressIndicator
@@ -121,7 +124,7 @@ private fun StandardQueries(
                     color = MaterialTheme.colorScheme.onSurface,
                     style = MaterialTheme.typography.titleSmall,
                     modifier = Modifier
-                        .padding(4.dp)
+                        .padding(bottom = 8.dp, start = 8.dp, end = 8.dp)
                         .fillMaxWidth()
                 )
             }
@@ -134,10 +137,8 @@ private fun SuggestedQueriesPage(
     suggestedQueriesPage: SuggestedQueriesPage,
     itemClick: (PageQuery, PageFilter) -> Unit,
 ) {
-    val rowSize = 2
-    val itemsCount = 6
     val pageItems: List<HomeListUiState.SuggestedQuery?> = suggestedQueriesPage.items
-    if (itemsCount != pageItems.size) throw IllegalArgumentException("Unknown items count. Need add calculation column size.")
+    val rowSize: Int = calculateRowSize(totalSize = pageItems.size)
     val itemsForRow: List<List<HomeListUiState.SuggestedQuery?>> = pageItems.chunked(rowSize)
     itemsForRow.forEach { rowItems: List<HomeListUiState.SuggestedQuery?> ->
         Row(
@@ -200,6 +201,43 @@ private fun BoxScope.PictureItem(previewPath: String, description: String) {
         is AsyncImagePainter.State.Error -> {
             painter.restart()
         }
+    }
+}
+
+@Composable
+private fun calculateRowSize(
+    totalSize: Int,
+    windowAdaptiveInfo: WindowAdaptiveInfo = currentWindowAdaptiveInfo(),
+): Int {
+    return when (windowAdaptiveInfo.windowSizeClass.windowWidthSizeClass) {
+        WindowWidthSizeClass.COMPACT -> {
+            when {
+                totalSize % 3 == 0 -> 3
+                totalSize % 2 == 0 -> 2
+                else -> 1
+            }
+        }
+
+        WindowWidthSizeClass.MEDIUM -> {
+            when {
+                totalSize % 5 == 0 -> 5
+                totalSize % 4 == 0 -> 4
+                totalSize % 3 == 0 -> 3
+                else -> 1
+            }
+        }
+
+        WindowWidthSizeClass.EXPANDED -> {
+            when {
+                totalSize % 7 == 0 -> 7
+                totalSize % 6 == 0 -> 6
+                totalSize % 5 == 0 -> 5
+                totalSize % 4 == 0 -> 4
+                else -> 1
+            }
+        }
+
+        else -> 1
     }
 }
 
