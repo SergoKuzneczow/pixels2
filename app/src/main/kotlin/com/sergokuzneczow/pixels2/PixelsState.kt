@@ -1,4 +1,4 @@
-package com.sergokuzneczow.pixels2.navigation
+package com.sergokuzneczow.pixels2
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable

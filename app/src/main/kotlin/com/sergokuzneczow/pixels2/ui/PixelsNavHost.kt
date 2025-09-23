@@ -5,7 +5,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import com.sergokuzneczow.dialog_page_filter.api.navigateToDialogPageFilterDestination
 import com.sergokuzneczow.main_menu.api.navigateToMainMenuDestination
-import com.sergokuzneczow.pixels2.navigation.PixelsState
+import com.sergokuzneczow.pixels2.PixelsState
 import com.sergokuzneczow.pixels2.navigation.pixelsGraph
 import com.sergokuzneczow.suitable_pictures.api.navigateToSuitablePicturesRoute
 

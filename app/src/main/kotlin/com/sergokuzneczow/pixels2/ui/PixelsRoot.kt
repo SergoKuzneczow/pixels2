@@ -7,7 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.sergokuzneczow.pixels2.navigation.PixelsState
+import com.sergokuzneczow.pixels2.PixelsState
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
