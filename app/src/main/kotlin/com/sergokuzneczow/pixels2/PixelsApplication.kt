@@ -1,6 +1,7 @@
 package com.sergokuzneczow.pixels2
 
 import android.app.Application
+import com.sergokuzneczow.dialog_page_filter.impl.di.DialogPageFilterDependencies
 import com.sergokuzneczow.home.impl.di.HomeFeatureDependencies
 import com.sergokuzneczow.pixels2.di.DaggerPixelsComponent
 import com.sergokuzneczow.pixels2.di.PixelsComponent
@@ -10,7 +11,8 @@ import com.sergokuzneczow.suitable_pictures.impl.di.SuitablePicturesFeatureDepen
 public class PixelsApplication : Application(),
     HomeFeatureDependencies.Contract,
     SettingsFeatureDependencies.Contract,
-    SuitablePicturesFeatureDependencies.Contract {
+    SuitablePicturesFeatureDependencies.Contract,
+    DialogPageFilterDependencies.Contract {
 
     internal val pixelsComponent: PixelsComponent by lazy {
         DaggerPixelsComponent.builder()
@@ -28,4 +30,6 @@ public class PixelsApplication : Application(),
     override fun settingsFeatureDependenciesProvide(): SettingsFeatureDependencies = pixelsComponent
 
     override fun suitablePicturesFeatureDependenciesProvider(): SuitablePicturesFeatureDependencies = pixelsComponent
+
+    override fun dialogPageFilterDependenciesProvider(): DialogPageFilterDependencies = pixelsComponent
 }

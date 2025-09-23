@@ -2,6 +2,7 @@ package com.sergokuzneczow.pixels2.di
 
 import android.content.Context
 import androidx.annotation.NonUiContext
+import com.sergokuzneczow.dialog_page_filter.impl.di.DialogPageFilterDependencies
 import com.sergokuzneczow.domain.get_home_screen_pager_use_case.GetHomeScreenPagerUseCase
 import com.sergokuzneczow.domain.get_suitable_pictures_screen_pager_use_case.GetSuitablePicturesScreenPagerUseCase
 import com.sergokuzneczow.home.impl.di.HomeFeatureDependencies
@@ -24,7 +25,8 @@ import jakarta.inject.Singleton
 internal interface PixelsComponent :
     HomeFeatureDependencies,
     SettingsFeatureDependencies,
-    SuitablePicturesFeatureDependencies {
+    SuitablePicturesFeatureDependencies,
+    DialogPageFilterDependencies {
 
     override val getHomeScreenPagerUseCase: GetHomeScreenPagerUseCase
 

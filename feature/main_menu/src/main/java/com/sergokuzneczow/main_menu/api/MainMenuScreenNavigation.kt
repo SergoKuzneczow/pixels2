@@ -4,7 +4,6 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
-import androidx.navigation.navOptions
 import com.sergokuzneczow.main_menu.impl.MainMenuRootScreen
 import kotlinx.serialization.Serializable
 
@@ -15,8 +14,8 @@ public fun NavHostController.navigateToMainMenuDestination(navOptions: NavOption
     this.navigate(route = MainMenuRoute, navOptions = navOptions)
 }
 
-public fun NavGraphBuilder.mainMenuRouteDestination() {
+public fun NavGraphBuilder.mainMenuRouteDestination(navigateToSuitablePicturesDestination: (Long) -> Unit) {
     composable<MainMenuRoute> {
-        MainMenuRootScreen()
+        MainMenuRootScreen(navigateToSuitablePicturesDestination)
     }
 }

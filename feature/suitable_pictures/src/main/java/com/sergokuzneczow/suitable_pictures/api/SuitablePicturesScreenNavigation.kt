@@ -1,6 +1,5 @@
 package com.sergokuzneczow.suitable_pictures.api
 
-import androidx.compose.runtime.MutableState
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.NavOptions
@@ -16,16 +15,12 @@ public fun NavHostController.navigateToSuitablePicturesRoute(pageKey: Long, navO
     this.navigate(route = SuitablePicturesRoute(pageKey), navOptions = navOptions)
 }
 
-public fun NavGraphBuilder.composableSuitablePicturesRoute(
-    titleTextState: MutableState<String>,
-    progressBarIsVisible: MutableState<Boolean>,
-) {
+public fun NavGraphBuilder.suitablePicturesDestination(navigateToDialogPageFilterDestination: (pageKey: Long) -> Unit) {
     composable<SuitablePicturesRoute> { backStackEntry ->
         val data: SuitablePicturesRoute = backStackEntry.toRoute()
         SuitablePicturesRootScreen(
             pageKey = data.pageKey,
-            titleTextState = titleTextState,
-            progressBarIsVisible = progressBarIsVisible,
+            navigateToDialogPageFilterDestination = navigateToDialogPageFilterDestination,
         )
     }
 }

@@ -16,24 +16,20 @@ import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.State
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImagePainter
 import coil3.compose.rememberAsyncImagePainter
 import com.sergokuzneczow.core.system_components.PixelsCircularProgressIndicator
-import com.sergokuzneczow.core.ui.PixelsTheme
-import com.sergokuzneczow.core.utilites.ThemePreviews
+import com.sergokuzneczow.suitable_pictures.impl.SuitablePicturesUiState
 
 private val MIN_PICTURE_WIDTH: Dp = 150.dp
 private val PICTURE_HEIGHT: Dp = 130.dp
@@ -84,18 +80,15 @@ private fun SuitablePicturesGrid(
         columns = GridCells.Adaptive(MIN_PICTURE_WIDTH + (PICTURE_PADDINGS * 2)),
         contentPadding = PaddingValues(start = 4.dp, end = 4.dp, top = 112.dp),
         state = rememberLazyGridState(),
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier.fillMaxSize(),
     ) {
         itemsIndexed(items) { position, suitablePicture ->
-            suitablePicture?.let {
+            if (suitablePicture != null) {
                 SuitablePicturesGridItem(
                     suitablePicture = suitablePicture,
                     onItemClick = onItemClick,
                 )
-            } ?: SuitablePicturesGridItem(
-                suitablePicture = null,
-                onItemClick = {}
-            )
+            } else Placeholder()
             if (items.size - 6 < position) nextPage.invoke()
         }
     }
@@ -103,7 +96,7 @@ private fun SuitablePicturesGrid(
 
 @Composable
 private fun SuitablePicturesGridItem(
-    suitablePicture: SuitablePicturesUiState.SuitablePicture? = null,
+    suitablePicture: SuitablePicturesUiState.SuitablePicture,
     onItemClick: (pictureKey: String) -> Unit,
 ) {
     Box(
@@ -113,91 +106,91 @@ private fun SuitablePicturesGridItem(
             .height(PICTURE_HEIGHT)
             .clip(RoundedCornerShape(12.dp))
             .background(MaterialTheme.colorScheme.surfaceContainer)
-            .clickable(onClick = { if (suitablePicture != null) onItemClick.invoke(suitablePicture.pictureKey) })
+            .clickable(onClick = {  onItemClick.invoke(suitablePicture.pictureKey) })
     ) {
-        if (suitablePicture != null) {
-            PictureItem(suitablePicture.previewPath)
-        } else PixelsCircularProgressIndicator()
+        val painter: AsyncImagePainter = rememberAsyncImagePainter(suitablePicture.previewPath)
+        val state: State<AsyncImagePainter.State> = painter.state.collectAsStateWithLifecycle()
+        when (state.value) {
+            is AsyncImagePainter.State.Empty -> {
+                PixelsCircularProgressIndicator()
+            }
+
+            is AsyncImagePainter.State.Loading -> {
+                PixelsCircularProgressIndicator()
+            }
+
+            is AsyncImagePainter.State.Success -> {
+                Image(
+                    painter = painter,
+                    contentDescription = null,
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(PICTURE_HEIGHT)
+                )
+            }
+
+            is AsyncImagePainter.State.Error -> {
+                painter.restart()
+            }
+        }
     }
 }
 
 @Composable
-private fun BoxScope.PictureItem(previewPath: String) {
-    val painter: AsyncImagePainter = rememberAsyncImagePainter(previewPath)
-    val state: AsyncImagePainter.State by painter.state.collectAsState()
-    when (state) {
-        is AsyncImagePainter.State.Empty -> {
-            PixelsCircularProgressIndicator()
-        }
-
-        is AsyncImagePainter.State.Loading -> {
-            PixelsCircularProgressIndicator()
-        }
-
-        is AsyncImagePainter.State.Success -> {
-            Image(
-                painter = painter,
-                contentDescription = previewPath,
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(PICTURE_HEIGHT)
-            )
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(PICTURE_HEIGHT)
-                    .alpha(0.3f)
-                    .background(Color.Black)
-            )
-        }
-
-        is AsyncImagePainter.State.Error -> {
-            painter.restart()
-        }
+private fun Placeholder() {
+    Box(
+        modifier = Modifier
+            .padding(PICTURE_PADDINGS)
+            .fillMaxWidth()
+            .height(PICTURE_HEIGHT)
+            .clip(RoundedCornerShape(12.dp))
+            .background(MaterialTheme.colorScheme.surfaceContainer)
+    ) {
+        PixelsCircularProgressIndicator()
     }
 }
 
-@ThemePreviews
-@Composable
-public fun SuggestedQueriesListPreview() {
-    PixelsTheme {
-        Surface {
-            SuitablePicturesList(
-                suitablePicturesUiState = SuitablePicturesUiState.Success(emptyList()),
-                onItemClick = {},
-                nextPage = {},
-            )
-        }
-    }
-}
-
-@ThemePreviews
-@Composable
-public fun SuitablePicturesUiStateIsEmpty() {
-    PixelsTheme {
-        Surface {
-            SuitablePicturesList(
-                suitablePicturesUiState = SuitablePicturesUiState.Empty,
-                onItemClick = {},
-                nextPage = {},
-            )
-        }
-    }
-}
-
-@ThemePreviews
-@Composable
-public fun SuggestedQueryItemPreview() {
-    PixelsTheme {
-        Surface {
-            SuitablePicturesGridItem(
-                suitablePicture = SuitablePicturesUiState.SuitablePicture(
-                    pictureKey = "",
-                    previewPath = ""
-                ),
-                onItemClick = {}
-            )
-        }
-    }
-}
+//@ThemePreviews
+//@Composable
+//public fun SuggestedQueriesListPreview() {
+//    PixelsTheme {
+//        Surface {
+//            SuitablePicturesList(
+//                suitablePicturesUiState = SuitablePicturesUiState.Success(emptyList()),
+//                onItemClick = {},
+//                nextPage = {},
+//            )
+//        }
+//    }
+//}
+//
+//@ThemePreviews
+//@Composable
+//public fun SuitablePicturesUiStateIsEmpty() {
+//    PixelsTheme {
+//        Surface {
+//            SuitablePicturesList(
+//                suitablePicturesUiState = SuitablePicturesUiState.Empty,
+//                onItemClick = {},
+//                nextPage = {},
+//            )
+//        }
+//    }
+//}
+//
+//@ThemePreviews
+//@Composable
+//public fun SuggestedQueryItemPreview() {
+//    PixelsTheme {
+//        Surface {
+//            SuitablePicturesGridItem(
+//                suitablePicture = SuitablePicturesUiState.SuitablePicture(
+//                    pictureKey = "",
+//                    previewPath = ""
+//                ),
+//                onItemClick = {}
+//            )
+//        }
+//    }
+//}

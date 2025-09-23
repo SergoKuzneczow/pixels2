@@ -1,0 +1,298 @@
+package com.sergokuzneczow.dialog_page_filter.impl.ui
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
+import com.sergokuzneczow.core.system_components.ColorsAccent
+import com.sergokuzneczow.core.system_components.PixelsCircularProgressIndicator
+import com.sergokuzneczow.core.system_components.PixelsMultiFilterChip
+import com.sergokuzneczow.core.system_components.PixelsMultiFilterChipItem
+import com.sergokuzneczow.core.system_components.PixelsMultiFilterStrategy
+import com.sergokuzneczow.core.system_components.PixelsPrimaryButton
+import com.sergokuzneczow.core.system_components.PixelsSingleFilterChip
+import com.sergokuzneczow.core.system_components.PixelsSingleFilterChipItem
+import com.sergokuzneczow.core.ui.PixelsTheme
+import com.sergokuzneczow.core.utilites.ThemePreviews
+import com.sergokuzneczow.dialog_page_filter.R
+import com.sergokuzneczow.dialog_page_filter.impl.PageUiState
+import com.sergokuzneczow.models.PageFilter
+import com.sergokuzneczow.models.PageQuery
+
+
+@Composable
+internal fun DialogPageFilterScreen(
+    pageUiState: PageUiState,
+    doneNewPageFilter: (pageQuery: PageQuery, pageFilter: PageFilter) -> Unit,
+) {
+
+    Column(
+        modifier = Modifier
+            .padding(8.dp)
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(12.dp))
+            .background(MaterialTheme.colorScheme.surfaceContainer)
+            .verticalScroll(rememberScrollState())
+    ) {
+        Text(
+            text = stringResource(R.string.dialog_page_filter_screen_title),
+            style = MaterialTheme.typography.titleMedium,
+            color = MaterialTheme.colorScheme.onSurface,
+            textAlign = TextAlign.Center,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp)
+        )
+
+        when (pageUiState) {
+            is PageUiState.Loading -> {
+                Box(modifier = Modifier.height(96.dp)) {
+                    PixelsCircularProgressIndicator()
+                }
+            }
+
+            is PageUiState.Success -> {
+                val selectedSorting: MutableState<PageFilter.PictureSorting> = remember { mutableStateOf(pageUiState.pageFilter.pictureSorting) }
+                val selectedOrder: MutableState<PageFilter.PictureOrder> = remember { mutableStateOf(pageUiState.pageFilter.pictureOrder) }
+                val selectedPurities: MutableState<PageFilter.PicturePurities> = remember { mutableStateOf(pageUiState.pageFilter.picturePurities) }
+                val selectedCategories: MutableState<PageFilter.PictureCategories> = remember { mutableStateOf(pageUiState.pageFilter.pictureCategories) }
+
+                SortingChips(
+                    startValue = pageUiState.pageFilter.pictureSorting,
+                    selectedValue = { value -> selectedSorting.value = value },
+                )
+                OrderChips(
+                    startValue = pageUiState.pageFilter.pictureOrder,
+                    selectedValue = { value -> selectedOrder.value = value }
+                )
+                PuritiesChips(
+                    startValue = pageUiState.pageFilter.picturePurities,
+                    selectedValue = { selectedValue -> selectedPurities.value = selectedValue }
+                )
+                CategoriesChips(
+                    startValue = pageUiState.pageFilter.pictureCategories,
+                    selectedValue = { selectedValue -> selectedCategories.value = selectedValue }
+                )
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(8.dp)
+                ) {
+                    PixelsPrimaryButton(
+                        text = "Done",
+                        onClick = {
+                            doneNewPageFilter.invoke(
+                                pageUiState.pageQuery,
+                                PageFilter(
+                                    pictureSorting = selectedSorting.value,
+                                    pictureOrder = selectedOrder.value,
+                                    picturePurities = selectedPurities.value,
+                                    pictureCategories = selectedCategories.value,
+                                    pictureColor = pageUiState.pageFilter.pictureColor,
+                                )
+                            )
+                        },
+                        modifier = Modifier.align(Alignment.CenterEnd)
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun SortingChips(
+    startValue: PageFilter.PictureSorting,
+    selectedValue: (sorting: PageFilter.PictureSorting) -> Unit,
+) {
+    val sortingChips: List<PixelsSingleFilterChipItem<PageFilter.PictureSorting>> = listOf(
+        PixelsSingleFilterChipItem(
+            title = "Views",
+            value = PageFilter.PictureSorting.VIEWS,
+        ),
+        PixelsSingleFilterChipItem(
+            title = "Loved",
+            value = PageFilter.PictureSorting.FAVORITES,
+        ),
+        PixelsSingleFilterChipItem(
+            title = "Bests",
+            value = PageFilter.PictureSorting.TOP_LIST,
+        ),
+        PixelsSingleFilterChipItem(
+            title = "Date",
+            value = PageFilter.PictureSorting.DATE_ADDED,
+        ),
+    )
+    Text(
+        text = stringResource(R.string.sorting_chips),
+        style = MaterialTheme.typography.titleSmall,
+        color = MaterialTheme.colorScheme.onSurface,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 8.dp, start = 16.dp)
+    )
+    PixelsSingleFilterChip(
+        chips = sortingChips,
+        startValue = startValue,
+        selectedValue = selectedValue,
+        modifier = Modifier.padding(8.dp)
+    )
+}
+
+@Composable
+private fun OrderChips(
+    startValue: PageFilter.PictureOrder,
+    selectedValue: (order: PageFilter.PictureOrder) -> Unit,
+) {
+    val sortingChips: List<PixelsSingleFilterChipItem<PageFilter.PictureOrder>> = listOf(
+        PixelsSingleFilterChipItem(
+            title = "Desc",
+            value = PageFilter.PictureOrder.DESC,
+        ),
+        PixelsSingleFilterChipItem(
+            title = "Asc",
+            value = PageFilter.PictureOrder.DESC,
+        ),
+    )
+    Text(
+        text = stringResource(R.string.order_chips),
+        style = MaterialTheme.typography.titleSmall,
+        color = MaterialTheme.colorScheme.onSurface,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 8.dp, start = 16.dp)
+    )
+    PixelsSingleFilterChip(
+        chips = sortingChips,
+        startValue = startValue,
+        selectedValue = selectedValue,
+        modifier = Modifier.padding(8.dp)
+    )
+}
+
+@Composable
+private fun PuritiesChips(
+    startValue: PageFilter.PicturePurities,
+    selectedValue: (value: PageFilter.PicturePurities) -> Unit,
+) {
+    val puritiesChips: List<PixelsMultiFilterChipItem> = listOf(
+        PixelsMultiFilterChipItem(
+            title = "Sfw",
+            startState = startValue.sfw,
+        ),
+        PixelsMultiFilterChipItem(
+            title = "Sketchy*",
+            startState = startValue.sketchy,
+        ),
+        PixelsMultiFilterChipItem(
+            title = "Nsfw*",
+            startState = startValue.nsfw,
+        ),
+    )
+    Text(
+        text = stringResource(R.string.purities_chips),
+        style = MaterialTheme.typography.titleSmall,
+        color = MaterialTheme.colorScheme.onSurface,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 8.dp, start = 16.dp)
+    )
+    PixelsMultiFilterChip(
+        chips = puritiesChips,
+        selectedValues = { selectedChips ->
+            val selectedPurities = PageFilter.PicturePurities(
+                sfw = selectedChips[0],
+                sketchy = selectedChips[1],
+                nsfw = selectedChips[2],
+            )
+            selectedValue.invoke(selectedPurities)
+        },
+        modifier = Modifier.padding(top = 8.dp, start = 8.dp, end = 8.dp),
+        multiFilterStrategy = PixelsMultiFilterStrategy.NOT_EMPTY,
+        colorAccentPredicate = { index, value ->
+            when (index) {
+                1 -> ColorsAccent.WARNING
+                2 -> ColorsAccent.DANGEROUS
+                else -> ColorsAccent.STANDARD
+            }
+        }
+    )
+    Text(
+        text = stringResource(R.string.nsfw_content),
+        style = MaterialTheme.typography.bodySmall,
+        color = MaterialTheme.colorScheme.onSurface,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(bottom = 8.dp, start = 16.dp)
+    )
+}
+
+@Composable
+private fun CategoriesChips(
+    startValue: PageFilter.PictureCategories,
+    selectedValue: (values: PageFilter.PictureCategories) -> Unit,
+) {
+    val puritiesChips: List<PixelsMultiFilterChipItem> = listOf(
+        PixelsMultiFilterChipItem(
+            title = "General",
+            startState = startValue.general,
+        ),
+        PixelsMultiFilterChipItem(
+            title = "Anime",
+            startState = startValue.anime,
+        ),
+        PixelsMultiFilterChipItem(
+            title = "People",
+            startState = startValue.people,
+        ),
+    )
+    Text(
+        text = stringResource(R.string.purities_chips),
+        style = MaterialTheme.typography.titleSmall,
+        color = MaterialTheme.colorScheme.onSurface,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 8.dp, start = 16.dp)
+    )
+    PixelsMultiFilterChip(
+        chips = puritiesChips,
+        selectedValues = { selectedChips ->
+            val selectedCategories = PageFilter.PictureCategories(
+                general = selectedChips[0],
+                anime = selectedChips[1],
+                people = selectedChips[2],
+            )
+            selectedValue.invoke(selectedCategories)
+        },
+        modifier = Modifier.padding(8.dp),
+        multiFilterStrategy = PixelsMultiFilterStrategy.NOT_EMPTY,
+    )
+}
+
+@ThemePreviews
+@Composable
+private fun DialogPageFilterScreenPreview() {
+    PixelsTheme {
+        DialogPageFilterScreen(
+            pageUiState = PageUiState.Loading,
+            doneNewPageFilter = { _, _ -> },
+        )
+    }
+}

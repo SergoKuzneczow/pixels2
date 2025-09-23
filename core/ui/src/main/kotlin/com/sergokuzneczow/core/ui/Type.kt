@@ -54,7 +54,7 @@ val ApplicationTypography = Typography(
     titleSmall = TextStyle(
         fontFamily = robotoFontFamily,
         fontWeight = FontWeight.Normal,
-        fontSize = 18.sp,
+        fontSize = 16.sp,
         lineHeight = 28.sp,
         letterSpacing = 0.sp
     ),

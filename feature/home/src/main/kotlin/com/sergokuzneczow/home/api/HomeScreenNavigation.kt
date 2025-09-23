@@ -15,12 +15,11 @@ public data object HomeRoute
 @Serializable
 public data object HomeBaseRoute
 
-public fun NavController.navigateToHomeRoute(navOptions: NavOptions) {
+public fun NavController.navigateToHomeDestination(navOptions: NavOptions) {
     this.navigate(route = HomeRoute, navOptions = navOptions)
 }
 
-public fun NavGraphBuilder.navigationHomeBaseRoute(
-    suitablePicturesDestination: NavGraphBuilder.() -> Unit,
+public fun NavGraphBuilder.navigationHomeBaseDestination(
     titleTextState: MutableState<String>,
     progressBarIsVisible: MutableState<Boolean>,
     navigateToSuitablePicturesDestination: (pageKey: Long) -> Unit,
@@ -35,6 +34,5 @@ public fun NavGraphBuilder.navigationHomeBaseRoute(
                 navigateToSuitablePicturesDestination = navigateToSuitablePicturesDestination
             )
         }
-        suitablePicturesDestination.invoke(this)
     }
 }

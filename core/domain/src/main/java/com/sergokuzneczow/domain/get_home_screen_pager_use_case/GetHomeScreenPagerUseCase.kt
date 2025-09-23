@@ -52,7 +52,7 @@ public class GetHomeScreenPagerUseCase @Inject constructor(
             .setPageSyncCompletedCallback { _, _, lastPage, isEmpty -> completed.invoke(lastPage, isEmpty) }
             .setSourceDataExceptionCallback { _, t -> error.invoke(t) }
             .setSyncDataExceptionCallback { _, t -> error.invoke(t) }
-            .setPageSize(6)
+            .setPageSize(8)
             .setWithPlaceholder(true)
             .setStartStrategy(PixelsPager.StartStrategy.START_INSTANTLY)
             .build()

@@ -6,6 +6,7 @@ import androidx.compose.material.icons.rounded.Home
 import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.runtime.Composable
 import com.sergokuzneczow.core.ui.icons.Favorites
+import com.sergokuzneczow.core.ui.icons.Filter
 import com.sergokuzneczow.core.ui.icons.New
 import com.sergokuzneczow.core.ui.icons.Top
 import com.sergokuzneczow.core.ui.icons.Views
@@ -17,9 +18,8 @@ object PixelsIcons {
     val new = PixelsIcons.New
     val topList = PixelsIcons.Top
     val views = PixelsIcons.Views
-
-
     val favorites = PixelsIcons.Favorites
+    val filter = PixelsIcons.Filter
 }
 
 @ThemePreviews
@@ -56,4 +56,10 @@ private fun DateAdded() {
 @Composable
 private fun Views() {
     Image(imageVector = PixelsIcons.views, contentDescription = null)
+}
+
+@ThemePreviews
+@Composable
+private fun Filter() {
+    Image(imageVector = PixelsIcons.filter, contentDescription = null)
 }

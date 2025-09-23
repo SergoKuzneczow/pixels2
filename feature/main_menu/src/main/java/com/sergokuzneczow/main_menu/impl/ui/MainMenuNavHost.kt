@@ -13,6 +13,7 @@ internal fun MainMenuNavHost(
     rootScreenState: MainMenuRootScreenState,
     titleTextState: MutableState<String>,
     progressBarIsVisible: MutableState<Boolean>,
+    navigateToSuitablePicturesDestination: (Long) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     NavHost(
@@ -21,7 +22,8 @@ internal fun MainMenuNavHost(
         modifier = modifier,
     ) {
         this.mainMenuGraph(
-            navigateToSuitablePicturesDestination = { pageKey -> rootScreenState.navController.navigateToSuitablePicturesRoute(pageKey) },
+            //navigateToSuitablePicturesDestination = { pageKey -> rootScreenState.navController.navigateToSuitablePicturesRoute(pageKey) },
+            navigateToSuitablePicturesDestination = navigateToSuitablePicturesDestination,
             titleTextState = titleTextState,
             progressBarIsVisible = progressBarIsVisible
         )

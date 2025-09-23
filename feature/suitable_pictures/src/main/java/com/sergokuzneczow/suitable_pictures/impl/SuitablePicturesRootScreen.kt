@@ -1,22 +1,25 @@
 package com.sergokuzneczow.suitable_pictures.impl
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.sergokuzneczow.suitable_pictures.impl.ui.SuitablePicturesScreen
 
 @Composable
 internal fun SuitablePicturesRootScreen(
     pageKey: Long,
-    titleTextState: MutableState<String>,
-    progressBarIsVisible: MutableState<Boolean>,
+    navigateToDialogPageFilterDestination: (pageKey: Long) -> Unit,
 ) {
     val vm: SuitablePicturesViewModel = viewModel(factory = SuitablePicturesViewModel.Factory(pageKey, LocalContext.current))
-    titleTextState.value = vm.getTitleUiState().collectAsState().value.title
+    val titleUiState: TitleUiState by vm.getTitleUiState().collectAsStateWithLifecycle()
+    val suitablePicturesUiState: SuitablePicturesUiState by vm.getSuitablePicturesUiState().collectAsStateWithLifecycle()
     SuitablePicturesScreen(
-        suitablePicturesUiState = vm.getSuitablePicturesUiState().collectAsState(),
-        nextPage = vm::nextPage
+        pageKey = pageKey,
+        titleUiState = titleUiState,
+        suitablePicturesUiState = suitablePicturesUiState,
+        nextPage = vm::nextPage,
+        navigateToDialogPageFilterDestination = navigateToDialogPageFilterDestination,
     )
 }

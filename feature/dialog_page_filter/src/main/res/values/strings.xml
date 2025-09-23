@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="dialog_page_filter_screen_title">Page filter</string>
+    <string name="sorting_chips">Sorting</string>
+    <string name="order_chips">Order</string>
+    <string name="purities_chips">Purities</string>
+    <string name="nsfw_content">* warning, content 18+</string>
+</resources>

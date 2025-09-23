@@ -17,6 +17,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.sergokuzneczow.core.ui.PixelsTheme
 import com.sergokuzneczow.core.utilites.ThemePreviews
@@ -42,11 +43,13 @@ public fun PixelsTopBar(
             .clip(CircleShape)
             .background(MaterialTheme.colorScheme.surfaceContainer)
     ) {
-
         Text(
             text = title,
             style = MaterialTheme.typography.titleMedium,
-            modifier = Modifier.align(Alignment.Center)
+            textAlign = TextAlign.Center,
+            modifier = Modifier
+                .align(Alignment.Center)
+                .fillMaxWidth()
         )
 
         AnimatedVisibility(

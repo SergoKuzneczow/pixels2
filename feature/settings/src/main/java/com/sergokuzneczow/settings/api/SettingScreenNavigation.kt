@@ -19,7 +19,7 @@ public fun NavController.navigateToSettingsScreenDestination(navOptions: NavOpti
     this.navigate(route = SettingsScreenRoute, navOptions = navOptions)
 }
 
-public fun NavGraphBuilder.settingsScreenDestination(
+public fun NavGraphBuilder.settingsScreenBaseDestination(
     titleTextState: MutableState<String>,
     progressBarIsVisible: MutableState<Boolean>,
 ) {

@@ -26,6 +26,7 @@ import kotlin.reflect.KClass
 
 @Composable
 internal fun MainMenuScreen(
+    navigateToSuitablePicturesDestination: (Long) -> Unit,
     rootScreenState: MainMenuRootScreenState = rememberMainMenuRootScreenState(),
     windowAdaptiveInfo: WindowAdaptiveInfo = currentWindowAdaptiveInfo(),
 ) {
@@ -94,6 +95,7 @@ internal fun MainMenuScreen(
                 rootScreenState = rootScreenState,
                 titleTextState = titleTextState,
                 progressBarIsVisible = progressBarIsVisible,
+                navigateToSuitablePicturesDestination = navigateToSuitablePicturesDestination,
                 modifier = Modifier.fillMaxSize()
             )
             PixelsTopBar(

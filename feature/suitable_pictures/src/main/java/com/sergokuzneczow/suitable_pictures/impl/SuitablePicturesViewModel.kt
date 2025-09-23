@@ -13,9 +13,6 @@ import com.sergokuzneczow.repository.api.PageRepositoryApi
 import com.sergokuzneczow.suitable_pictures.impl.di.DaggerSuitablePicturesFeatureComponent
 import com.sergokuzneczow.suitable_pictures.impl.di.SuitablePicturesFeatureComponent
 import com.sergokuzneczow.suitable_pictures.impl.di.dependenciesProvider
-import com.sergokuzneczow.suitable_pictures.impl.ui.SuitablePicturesUiState
-import com.sergokuzneczow.suitable_pictures.impl.ui.TitleUiState
-import com.sergokuzneczow.suitable_pictures.impl.ui.toSuitablePictures
 import com.sergokuzneczow.utilities.logger.log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -49,6 +46,7 @@ internal class SuitablePicturesViewModel(
     private val titleUiState: MutableStateFlow<TitleUiState> = MutableStateFlow(TitleUiState.Loading())
 
     init {
+        log(tag = "SuitablePicturesViewModel") { "init()" }
         suitablePicturesFeatureComponent.inject(this)
 
         viewModelScope.launch(Dispatchers.IO) {
@@ -78,7 +76,7 @@ internal class SuitablePicturesViewModel(
             is PageQuery.Empty -> {
                 when {
                     this.filter.pictureColor.colorName.isNotEmpty() -> TitleUiState.Success("Color ${this.filter.pictureColor.colorName}")
-                    this.filter.pictureOrder == PageFilter.PictureOrder.DESC ->{
+                    this.filter.pictureOrder == PageFilter.PictureOrder.DESC -> {
                         when (this.filter.pictureSorting) {
                             PageFilter.PictureSorting.VIEWS -> TitleUiState.Success("View")
                             PageFilter.PictureSorting.RANDOM -> TitleUiState.Success("Random")
@@ -87,7 +85,8 @@ internal class SuitablePicturesViewModel(
                             PageFilter.PictureSorting.DATE_ADDED -> TitleUiState.Success("New")
                         }
                     }
-                    this.filter.pictureOrder == PageFilter.PictureOrder.ASC ->{
+
+                    this.filter.pictureOrder == PageFilter.PictureOrder.ASC -> {
                         when (this.filter.pictureSorting) {
                             PageFilter.PictureSorting.VIEWS -> TitleUiState.Success("Invisible")
                             PageFilter.PictureSorting.RANDOM -> TitleUiState.Success("Random")
@@ -96,6 +95,7 @@ internal class SuitablePicturesViewModel(
                             PageFilter.PictureSorting.DATE_ADDED -> TitleUiState.Success("Old")
                         }
                     }
+
                     else -> TitleUiState.Success("Default")
                 }
             }
@@ -138,8 +138,7 @@ internal class SuitablePicturesViewModel(
                     pageKey = pageKey,
                     context = context,
                 ) as T
-            }
-            throw IllegalArgumentException("Unknown ViewModel class")
+            } else throw IllegalArgumentException("Unknown ViewModel class")
         }
     }
 }

@@ -3,11 +3,11 @@ package com.sergokuzneczow.pixels2.ui
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
-import androidx.navigation.navOptions
-import com.sergokuzneczow.main_menu.api.MainMenuRoute
+import com.sergokuzneczow.dialog_page_filter.api.navigateToDialogPageFilterDestination
 import com.sergokuzneczow.main_menu.api.navigateToMainMenuDestination
 import com.sergokuzneczow.pixels2.navigation.PixelsState
 import com.sergokuzneczow.pixels2.navigation.pixelsGraph
+import com.sergokuzneczow.suitable_pictures.api.navigateToSuitablePicturesRoute
 
 @Composable
 internal fun PixelsNavHost(
@@ -21,18 +21,11 @@ internal fun PixelsNavHost(
         startDestination = applicationState.startDestination,
         modifier = modifier,
     ) {
-//
-//        val navOptions = navOptions {
-//            popUpTo<MainMenuRoute> {
-//                saveState = true
-//                inclusive = true
-//            }
-//            launchSingleTop = true
-//            restoreState = true
-//        }
 
         this.pixelsGraph(
-            navigateToMainMenuDestination = {navOptions-> applicationState.navController.navigateToMainMenuDestination(navOptions) },
+            navigateToMainMenuDestination = { navOptions -> applicationState.navController.navigateToMainMenuDestination(navOptions) },
+            navigateToSuitablePicturesDestination = { pageKey: Long -> applicationState.navController.navigateToSuitablePicturesRoute(pageKey) },
+            navigateToDialogPageFilterDestination = {pageKey: Long -> applicationState.navController.navigateToDialogPageFilterDestination(pageKey)}
         )
     }
 }

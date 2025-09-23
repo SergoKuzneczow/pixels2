@@ -18,9 +18,8 @@ internal fun HomeScreenRoot(
     titleTextState.value = stringResource(com.sergokuzneczow.home.R.string.feature_home_title)
     val vm: HomeScreenViewModel = viewModel(factory = HomeScreenViewModel.Factory(LocalContext.current))
     progressBarIsVisible.value = vm.getProgressBarUiState().collectAsStateWithLifecycle().value
-    val homeListUiState: HomeListUiState by vm.getHomeListUiState().collectAsStateWithLifecycle()
     HomeScreen(
-        homeListUiState = homeListUiState,
+        homeListUiState = vm.getHomeListUiState().collectAsStateWithLifecycle().value,
         itemClick = { pageQuery, pageFilter ->
             vm.getPageKey(
                 pageQuery = pageQuery, pageFilter = pageFilter,

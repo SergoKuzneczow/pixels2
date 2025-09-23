@@ -1,7 +1,14 @@
 package com.sergokuzneczow.core.ui
+
 import androidx.compose.ui.graphics.Color
 
 val white = Color(0xFFFFFFFF)
+val transparent = Color(0x00FFFFFF)
+val chipWarningLight = Color(0xFFFFDF88)
+val chipWarning = Color(0xFFFFA200)
+val chipDangerous = Color(0xFFFFA9A9)
+val chipDangerousLight = Color(0xFFFF0000)
+
 val primaryLight = Color(0xFF1A66FF)
 val onPrimaryLight = Color(0xFFFFFFFF)
 val primaryContainerLight = Color(0xFFD7E3FF)

@@ -55,6 +55,7 @@ dependencies {
     implementation(project(":feature:main_menu"))
     implementation(project(":feature:splash"))
     implementation(project(":feature:suitable_pictures"))
+    implementation(project(":feature:dialog_page_filter"))
     // Android compose
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.foundation.layout)
