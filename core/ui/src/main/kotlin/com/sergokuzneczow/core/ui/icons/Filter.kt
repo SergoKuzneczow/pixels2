@@ -1,8 +1,6 @@
 package com.sergokuzneczow.core.ui.icons
 
 
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -10,7 +8,7 @@ import androidx.compose.ui.graphics.vector.path
 import androidx.compose.ui.unit.dp
 import com.sergokuzneczow.core.ui.PixelsIcons
 
-val PixelsIcons.Filter: ImageVector
+internal val PixelsIcons.Filter: ImageVector
     get() {
         if (_filter != null) {
             return _filter!!

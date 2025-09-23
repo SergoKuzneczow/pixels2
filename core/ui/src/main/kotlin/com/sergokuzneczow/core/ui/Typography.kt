@@ -8,14 +8,14 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 
-val robotoFontFamily: FontFamily = FontFamily(
+internal val robotoFontFamily: FontFamily = FontFamily(
     Font(R.font.roboto_light, FontWeight.Light),
     Font(R.font.roboto_regular, FontWeight.Normal),
     Font(R.font.roboto_italic, FontWeight.Normal, FontStyle.Italic),
     Font(R.font.roboto_medium, FontWeight.Medium),
     Font(R.font.roboto_bold, FontWeight.Bold)
 )
-val ApplicationTypography = Typography(
+internal val ApplicationTypography = Typography(
     bodyLarge = TextStyle(
         fontFamily = robotoFontFamily,
         fontWeight = FontWeight.Normal,

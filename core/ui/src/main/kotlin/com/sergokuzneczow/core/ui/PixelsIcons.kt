@@ -5,6 +5,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Home
 import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.vector.ImageVector
 import com.sergokuzneczow.core.ui.icons.Favorites
 import com.sergokuzneczow.core.ui.icons.Filter
 import com.sergokuzneczow.core.ui.icons.New
@@ -12,14 +13,14 @@ import com.sergokuzneczow.core.ui.icons.Top
 import com.sergokuzneczow.core.ui.icons.Views
 import com.sergokuzneczow.core.utilites.ThemePreviews
 
-object PixelsIcons {
-    val home = Icons.Rounded.Home
-    val settings = Icons.Rounded.Settings
-    val new = PixelsIcons.New
-    val topList = PixelsIcons.Top
-    val views = PixelsIcons.Views
-    val favorites = PixelsIcons.Favorites
-    val filter = PixelsIcons.Filter
+public object PixelsIcons {
+    public val home: ImageVector = Icons.Rounded.Home
+    public val settings: ImageVector  = Icons.Rounded.Settings
+    public val new: ImageVector  = PixelsIcons.New
+    public val topList: ImageVector  = PixelsIcons.Top
+    public val views: ImageVector  = PixelsIcons.Views
+    public val favorites: ImageVector  = PixelsIcons.Favorites
+    public val filter: ImageVector  = PixelsIcons.Filter
 }
 
 @ThemePreviews

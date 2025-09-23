@@ -28,7 +28,7 @@ import com.sergokuzneczow.core.ui.PixelsTheme
 import com.sergokuzneczow.core.utilites.ThemePreviews
 
 @Composable
-public fun RowScope.PixelsNavigationBarItem(
+private fun RowScope.PixelsNavigationBarItem(
     selected: Boolean,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
@@ -47,17 +47,17 @@ public fun RowScope.PixelsNavigationBarItem(
         label = label,
         alwaysShowLabel = alwaysShowLabel,
         colors = NavigationBarItemDefaults.colors(
-            selectedIconColor = PixelsNavigationDefaults.selected(),
-            unselectedIconColor = PixelsNavigationDefaults.unselected(),
-            selectedTextColor = PixelsNavigationDefaults.unselected(),
-            unselectedTextColor = PixelsNavigationDefaults.unselected(),
-            indicatorColor = PixelsNavigationDefaults.indicator(),
+            selectedIconColor = PixelsNavigationDefaults.selectedContent(),
+            unselectedIconColor = PixelsNavigationDefaults.content(),
+            selectedTextColor = PixelsNavigationDefaults.content(),
+            unselectedTextColor = PixelsNavigationDefaults.content(),
+            indicatorColor = PixelsNavigationDefaults.accent(),
         ),
     )
 }
 
 @Composable
-public fun PixelsNavigationBar(
+private fun PixelsNavigationBar(
     modifier: Modifier = Modifier,
     content: @Composable RowScope.() -> Unit,
 ) {
@@ -70,7 +70,7 @@ public fun PixelsNavigationBar(
 }
 
 @Composable
-public fun PixelsNavigationRailItem(
+private fun PixelsNavigationRailItem(
     selected: Boolean,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
@@ -89,17 +89,17 @@ public fun PixelsNavigationRailItem(
         label = label,
         alwaysShowLabel = alwaysShowLabel,
         colors = NavigationRailItemDefaults.colors(
-            selectedIconColor = PixelsNavigationDefaults.selected(),
-            unselectedIconColor = PixelsNavigationDefaults.unselected(),
-            selectedTextColor = PixelsNavigationDefaults.unselected(),
-            unselectedTextColor = PixelsNavigationDefaults.unselected(),
-            indicatorColor = PixelsNavigationDefaults.indicator(),
+            selectedIconColor = PixelsNavigationDefaults.selectedContent(),
+            unselectedIconColor = PixelsNavigationDefaults.content(),
+            selectedTextColor = PixelsNavigationDefaults.content(),
+            unselectedTextColor = PixelsNavigationDefaults.content(),
+            indicatorColor = PixelsNavigationDefaults.accent(),
         ),
     )
 }
 
 @Composable
-public fun PixelsNavigationRail(
+private fun PixelsNavigationRail(
     modifier: Modifier = Modifier,
     header: @Composable (ColumnScope.() -> Unit)? = null,
     content: @Composable ColumnScope.() -> Unit,
@@ -107,7 +107,7 @@ public fun PixelsNavigationRail(
     NavigationRail(
         modifier = modifier,
         containerColor = MaterialTheme.colorScheme.surface,
-        contentColor = PixelsNavigationDefaults.indicator(),
+        contentColor = PixelsNavigationDefaults.accent(),
         header = header,
         content = content,
     )
@@ -123,24 +123,24 @@ public fun PixelsScaffold(
     val layoutType = NavigationSuiteScaffoldDefaults.calculateFromAdaptiveInfo(windowAdaptiveInfo)
     val navigationSuiteItemColors = NavigationSuiteItemColors(
         navigationBarItemColors = NavigationBarItemDefaults.colors(
-            selectedIconColor = PixelsNavigationDefaults.selected(),
-            unselectedIconColor = PixelsNavigationDefaults.unselected(),
-            selectedTextColor = PixelsNavigationDefaults.unselected(),
-            unselectedTextColor = PixelsNavigationDefaults.unselected(),
-            indicatorColor = PixelsNavigationDefaults.indicator(),
+            selectedIconColor = PixelsNavigationDefaults.selectedContent(),
+            unselectedIconColor = PixelsNavigationDefaults.content(),
+            selectedTextColor = PixelsNavigationDefaults.content(),
+            unselectedTextColor = PixelsNavigationDefaults.content(),
+            indicatorColor = PixelsNavigationDefaults.accent(),
         ),
         navigationRailItemColors = NavigationRailItemDefaults.colors(
-            selectedIconColor = PixelsNavigationDefaults.selected(),
-            unselectedIconColor = PixelsNavigationDefaults.unselected(),
-            selectedTextColor = PixelsNavigationDefaults.unselected(),
-            unselectedTextColor = PixelsNavigationDefaults.unselected(),
-            indicatorColor = PixelsNavigationDefaults.indicator(),
+            selectedIconColor = PixelsNavigationDefaults.selectedContent(),
+            unselectedIconColor = PixelsNavigationDefaults.content(),
+            selectedTextColor = PixelsNavigationDefaults.content(),
+            unselectedTextColor = PixelsNavigationDefaults.content(),
+            indicatorColor = PixelsNavigationDefaults.accent(),
         ),
         navigationDrawerItemColors = NavigationDrawerItemDefaults.colors(
-            selectedIconColor = PixelsNavigationDefaults.selected(),
-            unselectedIconColor = PixelsNavigationDefaults.unselected(),
-            selectedTextColor = PixelsNavigationDefaults.unselected(),
-            unselectedTextColor = PixelsNavigationDefaults.unselected(),
+            selectedIconColor = PixelsNavigationDefaults.selectedContent(),
+            unselectedIconColor = PixelsNavigationDefaults.content(),
+            selectedTextColor = PixelsNavigationDefaults.content(),
+            unselectedTextColor = PixelsNavigationDefaults.content(),
         ),
     )
 
@@ -154,7 +154,7 @@ public fun PixelsScaffold(
         layoutType = layoutType,
         containerColor = Color.Transparent,
         navigationSuiteColors = NavigationSuiteDefaults.colors(
-            navigationBarContentColor = PixelsNavigationDefaults.indicator(),
+            navigationBarContentColor = PixelsNavigationDefaults.accent(),
             navigationRailContainerColor = Color.Transparent,
         ),
         modifier = modifier,
@@ -267,13 +267,12 @@ private fun PixelsNavigationRailPreview() {
 }
 
 private object PixelsNavigationDefaults {
+    @Composable
+    fun content() = MaterialTheme.colorScheme.onSurface
 
     @Composable
-    fun selected() = MaterialTheme.colorScheme.inverseOnSurface
+    fun selectedContent() = MaterialTheme.colorScheme.inverseOnSurface
 
     @Composable
-    fun unselected() = MaterialTheme.colorScheme.onSurface
-
-    @Composable
-    fun indicator() = MaterialTheme.colorScheme.secondaryContainer
+    fun accent() = MaterialTheme.colorScheme.secondaryContainer
 }

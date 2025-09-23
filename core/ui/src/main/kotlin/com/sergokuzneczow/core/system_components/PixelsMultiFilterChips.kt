@@ -133,15 +133,14 @@ public enum class ColorsAccent {
     DANGEROUS,
 }
 
-object WarningColors {
+private object WarningColors {
     val containerColor = Color(1f, 0.7f, 0.0f, 0.4f)
     val selectedContainerColor = Color(1f, 0.7f, 0.0f, 1f)
-
     val contentColor = Color(0.0f, 0.0f, 0.0f, 1f)
     val selectedContentColor = Color(1.0f, 1.0f, 1.0f, 1f)
 }
 
-object DangerousColors {
+private object DangerousColors {
     val containerColor = Color(1f, 0.0f, 0.0f, 0.4f)
     val selectedContainerColor = Color(1f, 0.0f, 0.0f, 1f)
     val contentColor = Color(0.0f, 0.0f, 0.0f, 1f)

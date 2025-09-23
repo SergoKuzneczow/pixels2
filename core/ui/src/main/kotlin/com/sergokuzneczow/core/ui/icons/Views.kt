@@ -10,7 +10,7 @@ import androidx.compose.ui.graphics.vector.path
 import androidx.compose.ui.unit.dp
 import com.sergokuzneczow.core.ui.PixelsIcons
 
-val PixelsIcons.Views: ImageVector
+internal val PixelsIcons.Views: ImageVector
     get() {
         if (_Views != null) {
             return _Views!!

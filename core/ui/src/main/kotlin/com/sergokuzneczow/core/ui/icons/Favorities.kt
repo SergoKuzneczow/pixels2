@@ -9,7 +9,7 @@ import androidx.compose.ui.graphics.vector.path
 import androidx.compose.ui.unit.dp
 import com.sergokuzneczow.core.ui.PixelsIcons
 
-val PixelsIcons.Favorites: ImageVector
+internal val PixelsIcons.Favorites: ImageVector
     get() {
         if (_favorites != null) {
             return _favorites!!

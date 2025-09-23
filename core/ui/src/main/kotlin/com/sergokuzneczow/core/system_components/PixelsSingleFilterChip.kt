@@ -16,9 +16,11 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.sergokuzneczow.core.ui.transparent
+import com.sergokuzneczow.core.ui.PixelsTheme
+import com.sergokuzneczow.core.utilites.ThemePreviews
 
 public data class PixelsSingleFilterChipItem<T>(
     val title: String,
@@ -63,7 +65,7 @@ public fun <T> PixelsSingleFilterChip(
                 },
                 shape = RoundedCornerShape(16.dp),
                 selected = selectedIndex == index,
-                border = BorderStroke(0.dp, transparent),
+                border = BorderStroke(0.dp, Color(0, 0, 0, 0)),
                 modifier = Modifier
                     .weight(1f)
                     .padding(4.dp)
@@ -72,18 +74,18 @@ public fun <T> PixelsSingleFilterChip(
     }
 }
 
-//@ThemePreviews
-//@Composable
-//internal fun PixelsSingleFilterChipPreview() {
-//    PixelsTheme {
-//        PixelsSingleFilterChip(
-//            chips = listOf(
-//                PixelsSingleFilterChipItem("Preview", 1),
-//                PixelsSingleFilterChipItem("Preview", 2),
-//                PixelsSingleFilterChipItem("Preview", 3),
-//            ),
-//            startValue = 1,
-//            selectedValue = {}
-//        )
-//    }
-//}
+@ThemePreviews
+@Composable
+private fun PixelsSingleFilterChipPreview() {
+    PixelsTheme {
+        PixelsSingleFilterChip(
+            chips = listOf(
+                PixelsSingleFilterChipItem("Preview", 1),
+                PixelsSingleFilterChipItem("Preview", 2),
+                PixelsSingleFilterChipItem("Preview", 3),
+            ),
+            startValue = 1,
+            selectedValue = {}
+        )
+    }
+}

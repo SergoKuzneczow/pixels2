@@ -9,19 +9,22 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.sergokuzneczow.core.ui.Dimensions
 import com.sergokuzneczow.core.ui.PixelsTheme
-import com.sergokuzneczow.core.utilites.ThemePreviews
+import com.sergokuzneczow.core.ui.pixelsShadow
+import com.sergokuzneczow.core.utilites.ThemeUiPreviews
 
+
+private val TOP_BAR_HEIGHT: Dp = 48.dp
 @Composable
 public fun PixelsTopBar(
     title: String,
@@ -30,17 +33,12 @@ public fun PixelsTopBar(
 ) {
     Box(
         modifier = modifier
-            .padding(top = 48.dp, start = 16.dp, end = 16.dp, bottom = 16.dp)
-            .shadow(
-                elevation = 1.dp,
-                shape = CircleShape,
-                ambientColor = MaterialTheme.colorScheme.surface,
-                spotColor = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
-            .padding(start = 1.dp, end = 1.dp)
+            .padding(top = 46.dp, start = 14.dp, end = 14.dp, bottom = 14.dp)
+            .pixelsShadow()
+            .padding(2.dp)
             .fillMaxWidth()
-            .height(48.dp)
-            .clip(CircleShape)
+            .height(TOP_BAR_HEIGHT)
+            .clip(Dimensions.PixelsShape)
             .background(MaterialTheme.colorScheme.surfaceContainer)
     ) {
         Text(
@@ -66,9 +64,9 @@ public fun PixelsTopBar(
     }
 }
 
-@ThemePreviews
+@ThemeUiPreviews
 @Composable
-internal fun PixelsTopBarPreview() {
+private fun PixelsTopBarPreview() {
     PixelsTheme {
         PixelsTopBar(
             title = "Default title",
