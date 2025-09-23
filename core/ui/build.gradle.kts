@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.dsl.ExplicitApiMode
+
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
@@ -25,6 +27,10 @@ android {
     kotlinOptions {
         jvmTarget = "11"
     }
+}
+
+kotlin{
+    explicitApi = ExplicitApiMode.Strict
 }
 
 dependencies {
