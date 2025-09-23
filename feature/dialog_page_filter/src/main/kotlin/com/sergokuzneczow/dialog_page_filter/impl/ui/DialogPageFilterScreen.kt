@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -26,9 +25,10 @@ import com.sergokuzneczow.core.system_components.PixelsCircularProgressIndicator
 import com.sergokuzneczow.core.system_components.PixelsMultiFilterChip
 import com.sergokuzneczow.core.system_components.PixelsMultiFilterChipItem
 import com.sergokuzneczow.core.system_components.PixelsMultiFilterStrategy
-import com.sergokuzneczow.core.system_components.PixelsPrimaryButton
 import com.sergokuzneczow.core.system_components.PixelsSingleFilterChip
 import com.sergokuzneczow.core.system_components.PixelsSingleFilterChipItem
+import com.sergokuzneczow.core.system_components.PixelsSurfaceButton
+import com.sergokuzneczow.core.ui.Dimensions
 import com.sergokuzneczow.core.ui.PixelsTheme
 import com.sergokuzneczow.core.utilites.ThemePreviews
 import com.sergokuzneczow.dialog_page_filter.R
@@ -45,9 +45,8 @@ internal fun DialogPageFilterScreen(
 
     Column(
         modifier = Modifier
-            .padding(8.dp)
             .fillMaxWidth()
-            .clip(RoundedCornerShape(12.dp))
+            .clip(Dimensions.PixelsShape)
             .background(MaterialTheme.colorScheme.surfaceContainer)
             .verticalScroll(rememberScrollState())
     ) {
@@ -58,12 +57,16 @@ internal fun DialogPageFilterScreen(
             textAlign = TextAlign.Center,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(8.dp)
+                .padding(top = Dimensions.Padding)
         )
 
         when (pageUiState) {
             is PageUiState.Loading -> {
-                Box(modifier = Modifier.height(96.dp)) {
+                Box(
+                    modifier = Modifier
+                        .height(96.dp)
+                        .fillMaxWidth()
+                ) {
                     PixelsCircularProgressIndicator()
                 }
             }
@@ -91,12 +94,10 @@ internal fun DialogPageFilterScreen(
                     selectedValue = { selectedValue -> selectedCategories.value = selectedValue }
                 )
                 Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(8.dp)
+                    modifier = Modifier.fillMaxWidth()
                 ) {
-                    PixelsPrimaryButton(
-                        text = "Done",
+                    PixelsSurfaceButton(
+                        text = stringResource(R.string.done),
                         onClick = {
                             doneNewPageFilter.invoke(
                                 pageUiState.pageQuery,
@@ -109,7 +110,9 @@ internal fun DialogPageFilterScreen(
                                 )
                             )
                         },
-                        modifier = Modifier.align(Alignment.CenterEnd)
+                        modifier = Modifier
+                            .align(Alignment.CenterEnd)
+                            .padding(Dimensions.LargePadding)
                     )
                 }
             }
@@ -146,13 +149,13 @@ private fun SortingChips(
         color = MaterialTheme.colorScheme.onSurface,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(top = 8.dp, start = 16.dp)
+            .padding(top = Dimensions.LargePadding, start = Dimensions.LargePadding)
     )
     PixelsSingleFilterChip(
         chips = sortingChips,
         startValue = startValue,
         selectedValue = selectedValue,
-        modifier = Modifier.padding(8.dp)
+        modifier = Modifier.padding(start = Dimensions.Padding, end = Dimensions.Padding)
     )
 }
 
@@ -168,7 +171,7 @@ private fun OrderChips(
         ),
         PixelsSingleFilterChipItem(
             title = "Asc",
-            value = PageFilter.PictureOrder.DESC,
+            value = PageFilter.PictureOrder.ASC,
         ),
     )
     Text(
@@ -177,13 +180,13 @@ private fun OrderChips(
         color = MaterialTheme.colorScheme.onSurface,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(top = 8.dp, start = 16.dp)
+            .padding(top = Dimensions.LargePadding, start = Dimensions.LargePadding)
     )
     PixelsSingleFilterChip(
         chips = sortingChips,
         startValue = startValue,
         selectedValue = selectedValue,
-        modifier = Modifier.padding(8.dp)
+        modifier = Modifier.padding(start = Dimensions.Padding, end = Dimensions.Padding)
     )
 }
 
@@ -212,7 +215,7 @@ private fun PuritiesChips(
         color = MaterialTheme.colorScheme.onSurface,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(top = 8.dp, start = 16.dp)
+            .padding(top = Dimensions.LargePadding, start = Dimensions.LargePadding)
     )
     PixelsMultiFilterChip(
         chips = puritiesChips,
@@ -224,7 +227,7 @@ private fun PuritiesChips(
             )
             selectedValue.invoke(selectedPurities)
         },
-        modifier = Modifier.padding(top = 8.dp, start = 8.dp, end = 8.dp),
+        modifier = Modifier.padding(start = Dimensions.Padding, end = Dimensions.Padding),
         multiFilterStrategy = PixelsMultiFilterStrategy.NOT_EMPTY,
         colorAccentPredicate = { index, value ->
             when (index) {
@@ -240,7 +243,7 @@ private fun PuritiesChips(
         color = MaterialTheme.colorScheme.onSurface,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(bottom = 8.dp, start = 16.dp)
+            .padding(start = 16.dp)
     )
 }
 
@@ -269,7 +272,7 @@ private fun CategoriesChips(
         color = MaterialTheme.colorScheme.onSurface,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(top = 8.dp, start = 16.dp)
+            .padding(top = Dimensions.LargePadding, start = Dimensions.LargePadding)
     )
     PixelsMultiFilterChip(
         chips = puritiesChips,
@@ -281,17 +284,31 @@ private fun CategoriesChips(
             )
             selectedValue.invoke(selectedCategories)
         },
-        modifier = Modifier.padding(8.dp),
+        modifier = Modifier.padding(start = Dimensions.Padding, end = Dimensions.Padding),
         multiFilterStrategy = PixelsMultiFilterStrategy.NOT_EMPTY,
     )
 }
 
 @ThemePreviews
 @Composable
-private fun DialogPageFilterScreenPreview() {
+private fun DialogPageFilterScreenLoadingPreview() {
     PixelsTheme {
         DialogPageFilterScreen(
             pageUiState = PageUiState.Loading,
+            doneNewPageFilter = { _, _ -> },
+        )
+    }
+}
+
+@ThemePreviews
+@Composable
+private fun DialogPageFilterScreenSuccessPreview() {
+    PixelsTheme {
+        DialogPageFilterScreen(
+            pageUiState = PageUiState.Success(
+                pageQuery = PageQuery.DEFAULT,
+                pageFilter = PageFilter.DEFAULT,
+            ),
             doneNewPageFilter = { _, _ -> },
         )
     }
