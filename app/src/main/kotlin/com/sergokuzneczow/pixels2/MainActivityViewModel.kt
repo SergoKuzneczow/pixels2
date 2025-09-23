@@ -11,18 +11,14 @@ import javax.inject.Inject
 
 internal class MainActivityViewModel(@NonUiContext context: Context) : ViewModel() {
 
-    private var networkMonitorApi: NetworkMonitorApi? = null
+    @Inject
+    lateinit var networkMonitorApi: NetworkMonitorApi
 
     init {
         context.applicationComponent.inject(this)
     }
 
-    @Inject
-    internal fun injectDependencies(_networkMonitorApi: NetworkMonitorApi) {
-        networkMonitorApi = _networkMonitorApi
-    }
-
-    internal fun getNetworkState(): Flow<Boolean> = networkMonitorApi?.networkStateFlow() ?: throw IllegalStateException("Property networkMonitorApi not implemented.")
+    internal fun getNetworkState(): Flow<Boolean> = networkMonitorApi.networkStateFlow()
 
     internal class Factory(internal val context: Context) : ViewModelProvider.Factory {
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
