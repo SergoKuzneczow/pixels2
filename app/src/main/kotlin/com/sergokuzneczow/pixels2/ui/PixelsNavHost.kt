@@ -12,8 +12,6 @@ import com.sergokuzneczow.suitable_pictures.api.navigateToSuitablePicturesRoute
 @Composable
 internal fun PixelsNavHost(
     applicationState: PixelsState,
-//    changeTitle: (title: String) -> Unit,
-//    showProgressBar: (visible: Boolean) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     NavHost(
