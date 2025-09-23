@@ -4,7 +4,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -18,7 +17,10 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -85,7 +87,8 @@ private fun SuitablePicturesGrid(
         itemsIndexed(items) { position, suitablePicture ->
             if (suitablePicture != null) {
                 SuitablePicturesGridItem(
-                    suitablePicture = suitablePicture,
+                    pictureKey = suitablePicture.pictureKey,
+                    previewPath = suitablePicture.previewPath,
                     onItemClick = onItemClick,
                 )
             } else Placeholder()
@@ -96,7 +99,8 @@ private fun SuitablePicturesGrid(
 
 @Composable
 private fun SuitablePicturesGridItem(
-    suitablePicture: SuitablePicturesUiState.SuitablePicture,
+    pictureKey: String,
+    previewPath: String,
     onItemClick: (pictureKey: String) -> Unit,
 ) {
     Box(
@@ -106,23 +110,22 @@ private fun SuitablePicturesGridItem(
             .height(PICTURE_HEIGHT)
             .clip(RoundedCornerShape(12.dp))
             .background(MaterialTheme.colorScheme.surfaceContainer)
-            .clickable(onClick = {  onItemClick.invoke(suitablePicture.pictureKey) })
+            .clickable(onClick = { onItemClick.invoke(pictureKey) })
     ) {
-        val painter: AsyncImagePainter = rememberAsyncImagePainter(suitablePicture.previewPath)
-        val state: State<AsyncImagePainter.State> = painter.state.collectAsStateWithLifecycle()
-        when (state.value) {
-            is AsyncImagePainter.State.Empty -> {
-                PixelsCircularProgressIndicator()
-            }
-
-            is AsyncImagePainter.State.Loading -> {
-                PixelsCircularProgressIndicator()
-            }
-
-            is AsyncImagePainter.State.Success -> {
+        val painter: AsyncImagePainter = rememberAsyncImagePainter(previewPath)
+        val state: AsyncImagePainter.State by painter.state.collectAsStateWithLifecycle()
+        var success: Boolean by rememberSaveable { mutableStateOf(false) }
+        when (state) {
+            is AsyncImagePainter.State.Empty -> success = false
+            is AsyncImagePainter.State.Loading -> success = false
+            is AsyncImagePainter.State.Success -> success = true
+            is AsyncImagePainter.State.Error -> painter.restart()
+        }
+        when (success) {
+            true -> {
                 Image(
                     painter = painter,
-                    contentDescription = null,
+                    contentDescription = pictureKey,
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
                         .fillMaxWidth()
@@ -130,9 +133,7 @@ private fun SuitablePicturesGridItem(
                 )
             }
 
-            is AsyncImagePainter.State.Error -> {
-                painter.restart()
-            }
+            false -> PixelsCircularProgressIndicator()
         }
     }
 }

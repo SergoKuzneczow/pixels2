@@ -24,8 +24,10 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.adaptive.WindowAdaptiveInfo
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -35,6 +37,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.window.core.layout.WindowWidthSizeClass
 import coil3.compose.AsyncImagePainter
 import coil3.compose.rememberAsyncImagePainter
@@ -165,17 +168,16 @@ private fun SuggestedQueriesPage(
 @Composable
 private fun BoxScope.PictureItem(previewPath: String, description: String) {
     val painter: AsyncImagePainter = rememberAsyncImagePainter(previewPath)
-    val state: AsyncImagePainter.State by painter.state.collectAsState()
+    val state: AsyncImagePainter.State by painter.state.collectAsStateWithLifecycle()
+    var success: Boolean by rememberSaveable { mutableStateOf(false) }
     when (state) {
-        is AsyncImagePainter.State.Empty -> {
-            PixelsCircularProgressIndicator()
-        }
-
-        is AsyncImagePainter.State.Loading -> {
-            PixelsCircularProgressIndicator()
-        }
-
-        is AsyncImagePainter.State.Success -> {
+        is AsyncImagePainter.State.Empty -> success = false
+        is AsyncImagePainter.State.Loading -> success = false
+        is AsyncImagePainter.State.Success -> success = true
+        is AsyncImagePainter.State.Error -> painter.restart()
+    }
+    when (success) {
+        true -> {
             Image(
                 painter = painter,
                 contentDescription = previewPath,
@@ -198,9 +200,7 @@ private fun BoxScope.PictureItem(previewPath: String, description: String) {
             )
         }
 
-        is AsyncImagePainter.State.Error -> {
-            painter.restart()
-        }
+        false -> PixelsCircularProgressIndicator()
     }
 }
 
