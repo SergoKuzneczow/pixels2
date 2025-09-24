@@ -7,13 +7,11 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.sergokuzneczow.splash.api.SplashScreenRoute
-import com.sergokuzneczow.utilities.logger.log
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlin.reflect.KClass
 
@@ -45,7 +43,6 @@ internal class PixelsState(
     val startDestination: KClass<*> = SplashScreenRoute::class
 
     val isOffline: StateFlow<Boolean> = networkMonitor.map(Boolean::not)
-        .onEach { log(tag = "PixelsState") { "isOffline.onEach().it=$it" } }
         .stateIn(
             scope = coroutineScope,
             started = SharingStarted.WhileSubscribed(5_000),

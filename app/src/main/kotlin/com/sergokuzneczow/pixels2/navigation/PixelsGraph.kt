@@ -2,10 +2,10 @@ package com.sergokuzneczow.pixels2.navigation
 
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
-import com.sergokuzneczow.dialog_page_filter.api.dialogPageFilterDestination
-import com.sergokuzneczow.main_menu.api.mainMenuRouteDestination
+import com.sergokuzneczow.dialog_page_filter.api.dialogPageFilterScreenDestination
+import com.sergokuzneczow.main_menu.api.mainMenuScreenDestination
 import com.sergokuzneczow.splash.api.splashScreenDestination
-import com.sergokuzneczow.suitable_pictures.api.suitablePicturesDestination
+import com.sergokuzneczow.suitable_pictures.api.suitablePicturesScreenDestination
 
 internal fun NavGraphBuilder.pixelsGraph(
     navigateToMainMenuDestination: (NavOptions?) -> Unit,
@@ -15,13 +15,13 @@ internal fun NavGraphBuilder.pixelsGraph(
     splashScreenDestination(
         navigateToMainMenu = navigateToMainMenuDestination
     )
-    mainMenuRouteDestination(
+    mainMenuScreenDestination(
         navigateToSuitablePicturesDestination = navigateToSuitablePicturesDestination,
     )
-    suitablePicturesDestination(
+    suitablePicturesScreenDestination(
         navigateToDialogPageFilterDestination = navigateToDialogPageFilterDestination,
     )
-    dialogPageFilterDestination(
+    dialogPageFilterScreenDestination(
         navigateToSuitablePicturesDestination = navigateToSuitablePicturesDestination,
     )
 }

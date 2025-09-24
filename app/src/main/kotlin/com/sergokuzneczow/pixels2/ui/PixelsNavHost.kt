@@ -2,6 +2,7 @@ package com.sergokuzneczow.pixels2.ui
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.navigation.NavOptions
 import androidx.navigation.compose.NavHost
 import com.sergokuzneczow.dialog_page_filter.api.navigateToDialogPageFilterDestination
 import com.sergokuzneczow.main_menu.api.navigateToMainMenuDestination
@@ -19,11 +20,10 @@ internal fun PixelsNavHost(
         startDestination = applicationState.startDestination,
         modifier = modifier,
     ) {
-
         this.pixelsGraph(
-            navigateToMainMenuDestination = { navOptions -> applicationState.navController.navigateToMainMenuDestination(navOptions) },
+            navigateToMainMenuDestination = { navOptions: NavOptions? -> applicationState.navController.navigateToMainMenuDestination(navOptions) },
             navigateToSuitablePicturesDestination = { pageKey: Long -> applicationState.navController.navigateToSuitablePicturesRoute(pageKey) },
-            navigateToDialogPageFilterDestination = {pageKey: Long -> applicationState.navController.navigateToDialogPageFilterDestination(pageKey)}
+            navigateToDialogPageFilterDestination = { pageKey: Long -> applicationState.navController.navigateToDialogPageFilterDestination(pageKey) }
         )
     }
 }

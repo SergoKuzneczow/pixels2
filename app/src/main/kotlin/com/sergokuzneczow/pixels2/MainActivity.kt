@@ -17,7 +17,7 @@ internal class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             val vm: MainActivityViewModel = viewModel(factory = MainActivityViewModel.Factory(LocalContext.current))
-            val applicationState = rememberPixelsState(
+            val applicationState: PixelsState = rememberPixelsState(
                 networkMonitor = vm.getNetworkState(),
             )
             PixelsTheme {
