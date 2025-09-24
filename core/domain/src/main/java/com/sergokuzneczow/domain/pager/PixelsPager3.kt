@@ -191,7 +191,10 @@ public class PixelsPager3<T>(
             if (refreshStrategy == PixelsPager.RefreshStrategy.REFRESH_INSTANTLY) {
                 log(tag = "Pager3") { "createSyncDataCoroutine(); create coroutine for page number $pageNumber" }
                 runCatching { /*if (firstPage == UNREACHABLE_PAGE)*/ firstPage = sourceGetFirstPageNumber.invoke() }
-                runCatching { /*if (lastPage == UNREACHABLE_PAGE)*/ lastPage = sourceGetLastPageNumber.invoke() }
+                runCatching { /*if (lastPage == UNREACHABLE_PAGE)*/
+                    lastPage = sourceGetLastPageNumber.invoke()
+                    /*if (lastPage < nextPage)*/ clearOverflow()
+                }
                 delayIfReloadingPage(pageNumber)
                 syncDataBlock(pageNumber, pageSize)
                 //clearPlaceholders(pageNumber)
@@ -245,9 +248,37 @@ public class PixelsPager3<T>(
         }
     }
 
+    private suspend fun clearOverflow() {
+        log(tag = "Pager3", level = Level.INFO) { "clearOverflow();" }
+        pagesMapMutex.withLock {
+            pagesMap.keys.forEach { key -> if (key > lastPage) deletePage(key) }
+        }
+    }
+
     private suspend fun emitPage(pageNumber: Int, data: List<T?>) {
         log(tag = "Pager3", level = Level.INFO) { "emitPage(); enter point; pagNumber=$pageNumber; data=$data" }
         pagesMap[pageNumber] = data
+        val temp: ArrayList<T?> = arrayListOf()
+        temp.ensureCapacity(pagesMap.size * pageSize)
+        pagesMap.values.forEach { temp.addAll(it) }
+
+        val answer: PixelsPager.Answer<T?> = PixelsPager.Answer(
+            items = temp,
+            meta = PixelsPager.Answer.Meta(
+                firstLoadedPage = pagesMap.keys.first(),
+                lastLoadedPage = pagesMap.keys.last(),
+                firstPage = firstPage,
+                lastPage = lastPage,
+            )
+        )
+        dataFlow.emit(answer)
+        dataMapFlow.emit(pagesMap)
+        pagesMap.onEach { entry -> log(tag = "Pager3", level = Level.VERBOSE) { "emitPage(); page number ${entry.key} emitted new data: ${entry.value}" } }
+    }
+
+    private suspend fun deletePage(pageNumber: Int) {
+        log(tag = "Pager3", level = Level.INFO) { "deletePage();" }
+        pagesMap.remove(pageNumber)
         val temp: ArrayList<T?> = arrayListOf()
         temp.ensureCapacity(pagesMap.size * pageSize)
         pagesMap.values.forEach { temp.addAll(it) }
