@@ -15,6 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -25,41 +26,51 @@ import com.sergokuzneczow.core.utilites.ThemeUiPreviews
 
 
 private val TOP_BAR_HEIGHT: Dp = 48.dp
+
 @Composable
 public fun PixelsTopBar(
     title: String,
     visibleProgressBar: Boolean,
     modifier: Modifier = Modifier,
 ) {
-    Box(
-        modifier = modifier
-            .padding(top = 46.dp, start = 14.dp, end = 14.dp, bottom = 14.dp)
-            .pixelsShadow()
-            .padding(2.dp)
-            .fillMaxWidth()
-            .height(TOP_BAR_HEIGHT)
-            .clip(Dimensions.PixelsShape)
-            .background(MaterialTheme.colorScheme.surfaceContainer)
-    ) {
-        Text(
-            text = title,
-            style = MaterialTheme.typography.titleMedium,
-            textAlign = TextAlign.Center,
-            modifier = Modifier
-                .align(Alignment.Center)
-                .fillMaxWidth()
-        )
 
-        AnimatedVisibility(
-            visible = visibleProgressBar,
-            enter = fadeIn(),
-            exit = fadeOut(),
-            modifier = Modifier
-                .padding(end = 16.dp)
-                .size(24.dp)
-                .align(Alignment.CenterEnd)
+    Box(
+        modifier = Modifier
+            .height(Dimensions.PixelsTopBarBoxHeight)
+            .background(Color(0, 0, 0, 0))
+    ) {
+        Box(
+            modifier = modifier
+                .padding(horizontal = Dimensions.LargePadding, vertical = Dimensions.LargePadding)
+                .pixelsShadow()
+//                .padding(2.dp)
+                .fillMaxWidth()
+                .height(TOP_BAR_HEIGHT)
+                .clip(Dimensions.PixelsShape)
+                .background(MaterialTheme.colorScheme.surfaceContainer)
+                .align(Alignment.BottomCenter)
         ) {
-            PixelsCircularProgressIndicator()
+            Text(
+                text = title,
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.onSurface,
+                textAlign = TextAlign.Center,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.Center)
+            )
+
+            AnimatedVisibility(
+                visible = visibleProgressBar,
+                enter = fadeIn(),
+                exit = fadeOut(),
+                modifier = Modifier
+                    .padding(end = 16.dp)
+                    .size(24.dp)
+                    .align(Alignment.CenterEnd)
+            ) {
+                PixelsCircularProgressIndicator()
+            }
         }
     }
 }
