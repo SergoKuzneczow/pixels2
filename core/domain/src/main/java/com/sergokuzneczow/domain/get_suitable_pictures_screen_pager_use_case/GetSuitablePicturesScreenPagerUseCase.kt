@@ -42,7 +42,7 @@ public class GetSuitablePicturesScreenPagerUseCase @Inject constructor(
         loading: () -> Unit,
         completed: (isLastPage: Boolean, isEmpty: Boolean) -> Unit,
         error: (throwable: Throwable) -> Unit,
-    ): SharedFlow<PixelsPager.Answer<Picture?>> {
+    ): SharedFlow<PixelsPager.Pages<Picture?>> {
         pixelsPager = PixelsPager.Builder(
             coroutineScope = coroutineScope,
             sourceData = { pageNumber, _ -> dataSource(pageNumber, pageQuery, pageFilter) },
@@ -57,7 +57,7 @@ public class GetSuitablePicturesScreenPagerUseCase @Inject constructor(
             .setWithPlaceholder(true)
             .setStartStrategy(PixelsPager.StartStrategy.START_INSTANTLY)
             .build()
-        return pixelsPager?.dataFlow() ?: throw IllegalStateException("Property pager must initialize.")
+        return pixelsPager?.mapFlow() ?: throw IllegalStateException("Property pager must initialize.")
     }
 
     public fun nextPage() {

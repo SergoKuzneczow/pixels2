@@ -15,7 +15,7 @@ public fun NavHostController.navigateToDialogPageFilterDestination(pageKey: Long
     this.navigate(route = DialogPageFilterRoute(pageKey), navOptions = navOptions)
 }
 
-public fun NavGraphBuilder.dialogPageFilterDestination(
+public fun NavGraphBuilder.dialogPageFilterScreenDestination(
     navigateToSuitablePicturesDestination: (pageKey: Long) -> Unit,
 ) {
     dialog<DialogPageFilterRoute> { backStackEntry ->

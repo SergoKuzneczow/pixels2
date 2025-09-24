@@ -41,7 +41,7 @@ internal class SuitablePicturesViewModel(
             .build()
     }
 
-    private val suitablePicturesUiState: MutableStateFlow<SuitablePicturesUiState> = MutableStateFlow(SuitablePicturesUiState.Default())
+    private val suitablePicturesUiState: MutableStateFlow<SuitablePicturesUiState> = MutableStateFlow(SuitablePicturesUiState.Loading)
 
     private val titleUiState: MutableStateFlow<TitleUiState> = MutableStateFlow(TitleUiState.Loading())
 
@@ -62,11 +62,11 @@ internal class SuitablePicturesViewModel(
                 loading = {},
                 completed = { isLastPage, isEmpty -> },
                 error = {}
-            ).onEach { answer ->
-                log(tag = "SuitablePicturesViewModel") { "getSuitablePicturesScreenPagerUseCase.execute(); onEach; answer.items=${answer.items}" }
-                log(tag = "SuitablePicturesViewModel") { "getSuitablePicturesScreenPagerUseCase.execute(); onEach; answer.items.size=${answer.items.size}" }
-                log(tag = "SuitablePicturesViewModel") { "getSuitablePicturesScreenPagerUseCase.execute(); onEach; answer.meta=${answer.meta}" }
-                suitablePicturesUiState.emit(SuitablePicturesUiState.Success(answer.items.toSuitablePictures()))
+            ).onEach { pages ->
+//                log(tag = "SuitablePicturesViewModel") { "getSuitablePicturesScreenPagerUseCase.execute(); onEach; answer.items=${answer.items}" }
+//                log(tag = "SuitablePicturesViewModel") { "getSuitablePicturesScreenPagerUseCase.execute(); onEach; answer.items.size=${answer.items.size}" }
+//                log(tag = "SuitablePicturesViewModel") { "getSuitablePicturesScreenPagerUseCase.execute(); onEach; answer.meta=${answer.meta}" }
+                suitablePicturesUiState.emit(SuitablePicturesUiState.Success(pages.pages.toSuitablePicturesPages()))
             }.launchIn(this)
         }
     }

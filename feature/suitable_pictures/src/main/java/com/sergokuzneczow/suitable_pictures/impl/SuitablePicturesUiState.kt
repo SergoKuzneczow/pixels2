@@ -1,17 +1,19 @@
 package com.sergokuzneczow.suitable_pictures.impl
 
 import com.sergokuzneczow.models.Picture
+import java.util.TreeMap
 
 internal sealed interface SuitablePicturesUiState {
 
     data object Empty : SuitablePicturesUiState
 
-    class Default private constructor(val suitablePictures: List<SuitablePicture?>) : SuitablePicturesUiState {
-        constructor() : this(suitablePictures = emptyList())
-    }
+    data object Loading : SuitablePicturesUiState
 
-    data class Success(val suitablePictures: List<SuitablePicture?>) : SuitablePicturesUiState
+    data class Success(val suitablePicturesPages: List<SuitablePicturesPage>) : SuitablePicturesUiState
 
+    data class SuitablePicturesPage(
+        val items: List<SuitablePicture?>,
+    )
     data class SuitablePicture(
         val pictureKey: String,
         val previewPath: String,
@@ -27,4 +29,8 @@ internal fun List<Picture?>.toSuitablePictures(): List<SuitablePicturesUiState.S
             )
         }
     }
+}
+
+internal fun TreeMap<Int, List<Picture?>>.toSuitablePicturesPages(): List<SuitablePicturesUiState.SuitablePicturesPage> {
+    return this.entries.map { SuitablePicturesUiState.SuitablePicturesPage(it.value.toSuitablePictures()) }
 }

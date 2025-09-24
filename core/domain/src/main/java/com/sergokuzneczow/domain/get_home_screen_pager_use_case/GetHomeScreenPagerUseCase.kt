@@ -10,7 +10,6 @@ import jakarta.inject.Inject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharedFlow
-import java.util.TreeMap
 
 public class GetHomeScreenPagerUseCase @Inject constructor(
     private val pageRepositoryApi: PageRepositoryApi,
@@ -42,7 +41,7 @@ public class GetHomeScreenPagerUseCase @Inject constructor(
         loading: () -> Unit,
         completed: (lastPage: Int, isEmpty: Boolean) -> Unit,
         error: (throwable: Throwable) -> Unit,
-    ): SharedFlow<TreeMap<Int, List<PictureWithRelations?>>> {
+    ): SharedFlow<PixelsPager.Pages<PictureWithRelations?>> {
         pixelsPager = PixelsPager.Builder(
             coroutineScope = coroutineScope,
             sourceData = { pageNumber, pageSize -> dataSource(pageNumber, pageSize) },

@@ -15,7 +15,7 @@ public interface PixelsPager<T> {
 
     public fun dataFlow(): SharedFlow<Answer<T?>>
 
-    public fun mapFlow(): SharedFlow<TreeMap<Int, List<T?>>>
+    public fun mapFlow(): SharedFlow<Pages<T?>>
 
     public fun nextPage()
 
@@ -187,13 +187,17 @@ public interface PixelsPager<T> {
     public data class Answer<T>(
         val items: List<T?>,
         val meta: Meta,
-    ) {
+    )
 
-        public data class Meta(
-            val firstLoadedPage: Int,
-            val lastLoadedPage: Int,
-            val firstPage: Int,
-            val lastPage: Int,
-        )
-    }
+    public data class Pages<T>(
+        val pages: TreeMap<Int, List<T?>>,
+        val meta: Meta,
+    )
+
+    public data class Meta(
+        val firstLoadedPage: Int,
+        val lastLoadedPage: Int,
+        val firstPage: Int,
+        val lastPage: Int,
+    )
 }

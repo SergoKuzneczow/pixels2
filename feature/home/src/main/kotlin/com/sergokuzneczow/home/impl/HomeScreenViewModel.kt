@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.sergokuzneczow.domain.get_home_screen_pager_use_case.GetHomeScreenPagerUseCase
+import com.sergokuzneczow.domain.pager.PixelsPager
 import com.sergokuzneczow.home.impl.di.DaggerHomeScreenComponent
 import com.sergokuzneczow.home.impl.di.HomeScreenComponent
 import com.sergokuzneczow.home.impl.di.dependenciesProvider
@@ -13,7 +14,6 @@ import com.sergokuzneczow.models.PageFilter
 import com.sergokuzneczow.models.PageQuery
 import com.sergokuzneczow.models.PictureWithRelations
 import com.sergokuzneczow.repository.api.PageRepositoryApi
-import com.sergokuzneczow.utilities.logger.log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -22,7 +22,6 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
-import java.util.TreeMap
 import javax.inject.Inject
 
 internal class HomeScreenViewModel(
@@ -57,11 +56,11 @@ internal class HomeScreenViewModel(
             },
             error = { throwable -> }
         )
-            .onEach { pages: TreeMap<Int, List<PictureWithRelations?>> ->
-                pages.entries.forEach { page: MutableMap.MutableEntry<Int, List<PictureWithRelations?>> ->
-                    log(tag = "HomeScreenViewModel") { "getHomeScreenPagerUseCase.executeMap(); map key=${page.key} value=${page.value}" }
-                }
-                homeListUiState.emit(HomeListUiState.Success(suggestedQueriesPages = pages.toSuggestedQueriesPages()))
+            .onEach { pages: PixelsPager.Pages<PictureWithRelations?> ->
+//                pages.entries.forEach { page: MutableMap.MutableEntry<Int, List<PictureWithRelations?>> ->
+//                    log(tag = "HomeScreenViewModel") { "getHomeScreenPagerUseCase.executeMap(); map key=${page.key} value=${page.value}" }
+//                }
+                homeListUiState.emit(HomeListUiState.Success(suggestedQueriesPages = pages.pages.toSuggestedQueriesPages()))
             }.launchIn(viewModelScope)
     }
 

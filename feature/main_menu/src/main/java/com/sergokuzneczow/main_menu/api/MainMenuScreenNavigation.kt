@@ -14,7 +14,7 @@ public fun NavHostController.navigateToMainMenuDestination(navOptions: NavOption
     this.navigate(route = MainMenuRoute, navOptions = navOptions)
 }
 
-public fun NavGraphBuilder.mainMenuRouteDestination(navigateToSuitablePicturesDestination: (Long) -> Unit) {
+public fun NavGraphBuilder.mainMenuScreenDestination(navigateToSuitablePicturesDestination: (pageKey: Long) -> Unit) {
     composable<MainMenuRoute> {
         MainMenuRootScreen(navigateToSuitablePicturesDestination)
     }

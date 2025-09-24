@@ -46,7 +46,7 @@ public class PixelsPager3<T>(
         onBufferOverflow = BufferOverflow.DROP_OLDEST,
     )
 
-    private val dataMapFlow: MutableSharedFlow<TreeMap<Int, List<T?>>> = MutableSharedFlow(
+    private val dataMapFlow: MutableSharedFlow<PixelsPager.Pages<T?>> = MutableSharedFlow(
         replay = 1,
         extraBufferCapacity = 1,
         onBufferOverflow = BufferOverflow.DROP_OLDEST,
@@ -90,7 +90,7 @@ public class PixelsPager3<T>(
 
     override fun dataFlow(): SharedFlow<PixelsPager.Answer<T?>> = dataFlow
 
-    override fun mapFlow(): SharedFlow<TreeMap<Int, List<T?>>> = dataMapFlow
+    override fun mapFlow(): SharedFlow<PixelsPager.Pages<T?>> = dataMapFlow
 
     override fun nextPage() {
         if (nextPage <= lastPage) {
@@ -235,18 +235,18 @@ public class PixelsPager3<T>(
 
     private suspend fun fillPageWithData(pageNumber: Int, data: List<T?>) {
         log(tag = "Pager3", level = Level.INFO) { "fillPageWithData(); enter point; pagNumber=$pageNumber; data=$data" }
-        pagesMapMutex.withLock { emitPage(pageNumber, data) }
+        pagesMapMutex.withLock { addPage(pageNumber, data) }
     }
 
-    private suspend fun clearPlaceholders(pageNumber: Int) {
-        log(tag = "Pager3", level = Level.INFO) { "clearPlaceholders(); enter point; pageNumber=$pageNumber" }
-        pagesMapMutex.withLock {
-            pagesMap[pageNumber]?.also { items: List<T?> ->
-                val itemsWithoutNull: List<T> = items.filterNotNull()
-                emitPage(pageNumber, itemsWithoutNull)
-            }
-        }
-    }
+//    private suspend fun clearPlaceholders(pageNumber: Int) {
+//        log(tag = "Pager3", level = Level.INFO) { "clearPlaceholders(); enter point; pageNumber=$pageNumber" }
+//        pagesMapMutex.withLock {
+//            pagesMap[pageNumber]?.also { items: List<T?> ->
+//                val itemsWithoutNull: List<T> = items.filterNotNull()
+//                emitPage(pageNumber, itemsWithoutNull)
+//            }
+//        }
+//    }
 
     private suspend fun clearOverflow() {
         log(tag = "Pager3", level = Level.INFO) { "clearOverflow();" }
@@ -255,45 +255,64 @@ public class PixelsPager3<T>(
         }
     }
 
-    private suspend fun emitPage(pageNumber: Int, data: List<T?>) {
+    private suspend fun addPage(pageNumber: Int, data: List<T?>) {
         log(tag = "Pager3", level = Level.INFO) { "emitPage(); enter point; pagNumber=$pageNumber; data=$data" }
         pagesMap[pageNumber] = data
-        val temp: ArrayList<T?> = arrayListOf()
-        temp.ensureCapacity(pagesMap.size * pageSize)
-        pagesMap.values.forEach { temp.addAll(it) }
-
-        val answer: PixelsPager.Answer<T?> = PixelsPager.Answer(
-            items = temp,
-            meta = PixelsPager.Answer.Meta(
-                firstLoadedPage = pagesMap.keys.first(),
-                lastLoadedPage = pagesMap.keys.last(),
-                firstPage = firstPage,
-                lastPage = lastPage,
-            )
-        )
-        dataFlow.emit(answer)
-        dataMapFlow.emit(pagesMap)
-        pagesMap.onEach { entry -> log(tag = "Pager3", level = Level.VERBOSE) { "emitPage(); page number ${entry.key} emitted new data: ${entry.value}" } }
+        emitPage()
     }
 
     private suspend fun deletePage(pageNumber: Int) {
         log(tag = "Pager3", level = Level.INFO) { "deletePage();" }
         pagesMap.remove(pageNumber)
+        emitPage()
+//        val temp: ArrayList<T?> = arrayListOf()
+//        temp.ensureCapacity(pagesMap.size * pageSize)
+//        pagesMap.values.forEach { temp.addAll(it) }
+//
+//        val meta = PixelsPager.Meta(
+//            firstLoadedPage = pagesMap.keys.first(),
+//            lastLoadedPage = pagesMap.keys.last(),
+//            firstPage = firstPage,
+//            lastPage = lastPage,
+//        )
+//        val answer: PixelsPager.Answer<T?> = PixelsPager.Answer(
+//            items = temp,
+//            meta = meta
+//        )
+//        dataFlow.emit(answer)
+//
+//        val pages: PixelsPager.Pages<T?> = PixelsPager.Pages(
+//            pages = pagesMap,
+//            meta = meta,
+//        )
+//        dataMapFlow.emit(pages)
+//        pagesMap.onEach { entry -> log(tag = "Pager3", level = Level.VERBOSE) { "emitPage(); page number ${entry.key} emitted new data: ${entry.value}" } }
+    }
+
+    private suspend fun emitPage() {
         val temp: ArrayList<T?> = arrayListOf()
         temp.ensureCapacity(pagesMap.size * pageSize)
         pagesMap.values.forEach { temp.addAll(it) }
 
-        val answer: PixelsPager.Answer<T?> = PixelsPager.Answer(
-            items = temp,
-            meta = PixelsPager.Answer.Meta(
-                firstLoadedPage = pagesMap.keys.first(),
-                lastLoadedPage = pagesMap.keys.last(),
-                firstPage = firstPage,
-                lastPage = lastPage,
+        val meta = PixelsPager.Meta(
+            firstLoadedPage = pagesMap.keys.first(),
+            lastLoadedPage = pagesMap.keys.last(),
+            firstPage = firstPage,
+            lastPage = lastPage,
+        )
+
+        dataFlow.emit(
+            PixelsPager.Answer(
+                items = temp,
+                meta = meta
             )
         )
-        dataFlow.emit(answer)
-        dataMapFlow.emit(pagesMap)
+        dataMapFlow.emit(
+            PixelsPager.Pages(
+                pages = pagesMap,
+                meta = meta,
+            )
+        )
         pagesMap.onEach { entry -> log(tag = "Pager3", level = Level.VERBOSE) { "emitPage(); page number ${entry.key} emitted new data: ${entry.value}" } }
     }
 
