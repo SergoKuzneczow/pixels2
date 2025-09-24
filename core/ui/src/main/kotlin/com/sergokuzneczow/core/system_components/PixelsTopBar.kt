@@ -25,7 +25,7 @@ import com.sergokuzneczow.core.ui.pixelsShadow
 import com.sergokuzneczow.core.utilites.ThemeUiPreviews
 
 
-private val TOP_BAR_HEIGHT: Dp = 48.dp
+private val TOP_BAR_HEIGHT: Dp = 56.dp
 
 @Composable
 public fun PixelsTopBar(
