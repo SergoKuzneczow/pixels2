@@ -42,6 +42,7 @@ import androidx.window.core.layout.WindowWidthSizeClass
 import coil3.compose.AsyncImagePainter
 import coil3.compose.rememberAsyncImagePainter
 import com.sergokuzneczow.core.system_components.PixelsCircularProgressIndicator
+import com.sergokuzneczow.core.ui.Dimensions
 import com.sergokuzneczow.core.ui.PixelsTheme
 import com.sergokuzneczow.core.utilites.ThemePreviews
 import com.sergokuzneczow.home.impl.HomeListUiState
@@ -49,7 +50,6 @@ import com.sergokuzneczow.home.impl.HomeListUiState.SuggestedQueriesPage
 import com.sergokuzneczow.models.PageFilter
 import com.sergokuzneczow.models.PageQuery
 
-private val FIRST_ITEM_TOP_PADDING: Dp = 96.dp
 private val PADDING_BETWEEN_BLOCKS: Dp = 16.dp
 private val ITEM_PADDINGS: Dp = 4.dp
 
@@ -60,7 +60,12 @@ internal fun HomeList(
     nextPage: () -> Unit,
 ) {
     LazyColumn(
-        contentPadding = PaddingValues(start = 4.dp, end = 4.dp, top = FIRST_ITEM_TOP_PADDING, bottom = 4.dp),
+        contentPadding = PaddingValues(
+            start = Dimensions.ContentPadding,
+            end = Dimensions.ContentPadding,
+            top = Dimensions.PixelsTopBarBoxHeight + Dimensions.ContentPadding,
+            bottom = Dimensions.ContentPadding
+        ),
         modifier = Modifier.fillMaxSize()
     ) {
         when (homeListUiState) {
@@ -74,7 +79,6 @@ internal fun HomeList(
             }
 
             is HomeListUiState.Success -> {
-                item { Spacer(modifier = Modifier.height(PADDING_BETWEEN_BLOCKS)) }
                 item {
                     StandardQueries(
                         standardQueries = homeListUiState.standardQuery,
@@ -108,7 +112,6 @@ private fun StandardQueries(
             Column(
                 modifier = Modifier
                     .width(72.dp)
-                    .padding(ITEM_PADDINGS)
                     .clip(RoundedCornerShape(12.dp))
                     .background(MaterialTheme.colorScheme.surfaceContainer)
                     .clickable(onClick = { itemClick.invoke(standardQuery.pageQuery, standardQuery.pageFilter) })
@@ -223,16 +226,17 @@ private fun calculateRowSize(
                 totalSize % 5 == 0 -> 5
                 totalSize % 4 == 0 -> 4
                 totalSize % 3 == 0 -> 3
+                totalSize % 2 == 0 -> 2
                 else -> 1
             }
         }
 
         WindowWidthSizeClass.EXPANDED -> {
             when {
-                totalSize % 7 == 0 -> 7
-                totalSize % 6 == 0 -> 6
                 totalSize % 5 == 0 -> 5
                 totalSize % 4 == 0 -> 4
+                totalSize % 3 == 0 -> 3
+                totalSize % 2 == 0 -> 2
                 else -> 1
             }
         }

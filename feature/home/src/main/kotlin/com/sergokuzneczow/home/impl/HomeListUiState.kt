@@ -12,7 +12,6 @@ internal sealed interface HomeListUiState {
 
     class Loading private constructor(
         val standardQuery: List<StandardQuery>,
-        val suggestedQueries: List<SuggestedQueriesPage> = emptyList()
     ) : HomeListUiState {
         constructor() : this(standardQuery = StandardQuery.standardQueries)
     }
