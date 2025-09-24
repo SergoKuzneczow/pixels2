@@ -15,6 +15,7 @@ internal fun SearchSuitablePicturesRootScreen(
     navigateToSuitablePicturesDestination: (pageKey: Long) -> Unit,
 ) {
     titleTextState.value = stringResource(R.string.feature_search_suitable_pictures_title)
+    progressBarIsVisible.value = false
     val vm: SearchSuitablePicturesViewModel = viewModel(factory = SearchSuitablePicturesViewModel.Factory(LocalContext.current))
 
     SearchSuitablePicturesScreen(
