@@ -17,6 +17,7 @@ import androidx.navigation.compose.rememberNavController
 import com.sergokuzneczow.core.ui.PixelsIcons
 import com.sergokuzneczow.home.api.HomeBaseRoute
 import com.sergokuzneczow.home.api.HomeRoute
+import com.sergokuzneczow.search_suitable_pictures.api.SearchSuitablePicturesRoute
 import com.sergokuzneczow.settings.api.SettingsScreenBaseRoute
 import com.sergokuzneczow.settings.api.SettingsScreenRoute
 import com.sergokuzneczow.utilities.logger.log
@@ -85,6 +86,11 @@ internal enum class MainMenuTopDestination(
         titleTextId = com.sergokuzneczow.home.R.string.feature_home_title,
         route = HomeRoute::class,
         baseRoute = HomeBaseRoute::class,
+    ),
+    SEARCH(
+        icon = PixelsIcons.search,
+        titleTextId = com.sergokuzneczow.settings.R.string.feature_settings_title,
+        route = SearchSuitablePicturesRoute::class,
     ),
     SETTINGS(
         icon = PixelsIcons.settings,

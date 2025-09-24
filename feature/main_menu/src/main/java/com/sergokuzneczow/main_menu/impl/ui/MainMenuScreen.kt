@@ -1,6 +1,7 @@
 package com.sergokuzneczow.main_menu.impl.ui
 
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.adaptive.WindowAdaptiveInfo
@@ -11,6 +12,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavDestination.Companion.hierarchy
@@ -20,6 +22,7 @@ import com.sergokuzneczow.core.system_components.PixelsTopBar
 import com.sergokuzneczow.main_menu.impl.MainMenuRootScreenState
 import com.sergokuzneczow.main_menu.impl.MainMenuTopDestination
 import com.sergokuzneczow.main_menu.impl.rememberMainMenuRootScreenState
+import com.sergokuzneczow.search_suitable_pictures.api.navigateToSearchSuitablePicturesDestination
 import com.sergokuzneczow.settings.api.navigateToSettingsScreenDestination
 import com.sergokuzneczow.suitable_pictures.api.SuitablePicturesRoute
 import kotlin.reflect.KClass
@@ -70,18 +73,22 @@ internal fun MainMenuScreen(
                             }
 
                             MainMenuTopDestination.SETTINGS -> rootScreenState.navController.navigateToSettingsScreenDestination(navOptions)
+
+                            MainMenuTopDestination.SEARCH -> rootScreenState.navController.navigateToSearchSuitablePicturesDestination(navOptions)
                         }
                     },
                     icon = {
                         Icon(
                             imageVector = destination.icon,
                             contentDescription = null,
+                            modifier = Modifier.size(24.dp)
                         )
                     },
                     selectedIcon = {
                         Icon(
                             imageVector = destination.icon,
                             contentDescription = null,
+                            modifier = Modifier.size(24.dp)
                         )
                     },
                     label = { Text(stringResource(destination.titleTextId)) },

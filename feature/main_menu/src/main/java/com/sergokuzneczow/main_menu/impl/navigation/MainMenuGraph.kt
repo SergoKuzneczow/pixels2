@@ -3,6 +3,7 @@ package com.sergokuzneczow.main_menu.impl.navigation
 import androidx.compose.runtime.MutableState
 import androidx.navigation.NavGraphBuilder
 import com.sergokuzneczow.home.api.navigationHomeBaseDestination
+import com.sergokuzneczow.search_suitable_pictures.api.searchSuitablePicturesDestination
 import com.sergokuzneczow.settings.api.settingsScreenBaseDestination
 
 internal fun NavGraphBuilder.mainMenuGraph(
@@ -18,5 +19,10 @@ internal fun NavGraphBuilder.mainMenuGraph(
     settingsScreenBaseDestination(
         titleTextState = titleTextState,
         progressBarIsVisible = progressBarIsVisible,
+    )
+    searchSuitablePicturesDestination(
+        titleTextState = titleTextState,
+        progressBarIsVisible = progressBarIsVisible,
+        navigateToSuitablePicturesDestination = navigateToSuitablePicturesDestination,
     )
 }
