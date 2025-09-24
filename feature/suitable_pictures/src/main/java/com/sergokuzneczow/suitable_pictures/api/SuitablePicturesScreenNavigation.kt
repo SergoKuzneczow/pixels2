@@ -15,12 +15,16 @@ public fun NavHostController.navigateToSuitablePicturesRoute(pageKey: Long, navO
     this.navigate(route = SuitablePicturesRoute(pageKey), navOptions = navOptions)
 }
 
-public fun NavGraphBuilder.suitablePicturesScreenDestination(navigateToDialogPageFilterDestination: (pageKey: Long) -> Unit) {
+public fun NavGraphBuilder.suitablePicturesScreenDestination(
+    navigateToDialogPageFilterDestination: (pageKey: Long) -> Unit,
+    navigateToSelectedPictureDestination: (pictureKey: String) -> Unit,
+) {
     composable<SuitablePicturesRoute> { backStackEntry ->
         val data: SuitablePicturesRoute = backStackEntry.toRoute()
         SuitablePicturesRootScreen(
             pageKey = data.pageKey,
             navigateToDialogPageFilterDestination = navigateToDialogPageFilterDestination,
+            navigateToSelectedPictureDestination = navigateToSelectedPictureDestination,
         )
     }
 }

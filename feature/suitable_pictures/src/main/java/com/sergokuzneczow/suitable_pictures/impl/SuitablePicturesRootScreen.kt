@@ -11,6 +11,7 @@ import com.sergokuzneczow.suitable_pictures.impl.ui.SuitablePicturesScreen
 internal fun SuitablePicturesRootScreen(
     pageKey: Long,
     navigateToDialogPageFilterDestination: (pageKey: Long) -> Unit,
+    navigateToSelectedPictureDestination: (pictureKey: String) -> Unit,
 ) {
     val vm: SuitablePicturesViewModel = viewModel(factory = SuitablePicturesViewModel.Factory(pageKey, LocalContext.current))
     val titleUiState: TitleUiState by vm.getTitleUiState().collectAsStateWithLifecycle()
@@ -21,5 +22,6 @@ internal fun SuitablePicturesRootScreen(
         suitablePicturesUiState = suitablePicturesUiState,
         nextPage = vm::nextPage,
         navigateToDialogPageFilterDestination = navigateToDialogPageFilterDestination,
+        navigateToSelectedPictureDestination=navigateToSelectedPictureDestination,
     )
 }

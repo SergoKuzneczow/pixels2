@@ -16,17 +16,13 @@ internal fun SuitablePicturesScreen(
     suitablePicturesUiState: SuitablePicturesUiState,
     nextPage: () -> Unit,
     navigateToDialogPageFilterDestination: (pageKey: Long) -> Unit,
+    navigateToSelectedPictureDestination: (pictureKey: String) -> Unit,
 ) {
     log(tag = "SuitablePicturesScreen") { "suitablePicturesUiState=$suitablePicturesUiState" }
     Box(modifier = Modifier.fillMaxSize()) {
-//        SuitablePicturesList(
-//            suitablePicturesUiState = suitablePicturesUiState,
-//            onItemClick = {},
-//            nextPage = nextPage,
-//        )
         SuitablePicturesList(
             suitablePicturesListUiState = suitablePicturesUiState,
-            onItemClick = {},
+            onItemClick = { navigateToSelectedPictureDestination.invoke(it) },
             nextPage = nextPage,
         )
         PixelsTopBar(

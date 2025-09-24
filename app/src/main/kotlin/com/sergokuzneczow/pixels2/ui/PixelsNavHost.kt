@@ -8,6 +8,7 @@ import com.sergokuzneczow.dialog_page_filter.api.navigateToDialogPageFilterDesti
 import com.sergokuzneczow.main_menu.api.navigateToMainMenuDestination
 import com.sergokuzneczow.pixels2.PixelsState
 import com.sergokuzneczow.pixels2.navigation.pixelsGraph
+import com.sergokuzneczow.selected_picture.api.navigateToSelectedPictureDestination
 import com.sergokuzneczow.suitable_pictures.api.navigateToSuitablePicturesRoute
 
 @Composable
@@ -23,7 +24,8 @@ internal fun PixelsNavHost(
         this.pixelsGraph(
             navigateToMainMenuDestination = { navOptions: NavOptions? -> applicationState.navController.navigateToMainMenuDestination(navOptions) },
             navigateToSuitablePicturesDestination = { pageKey: Long -> applicationState.navController.navigateToSuitablePicturesRoute(pageKey) },
-            navigateToDialogPageFilterDestination = { pageKey: Long -> applicationState.navController.navigateToDialogPageFilterDestination(pageKey) }
+            navigateToDialogPageFilterDestination = { pageKey: Long -> applicationState.navController.navigateToDialogPageFilterDestination(pageKey) },
+            navigateToSelectedPictureDestination = { pictureKey: String -> applicationState.navController.navigateToSelectedPictureDestination(pictureKey) }
         )
     }
 }

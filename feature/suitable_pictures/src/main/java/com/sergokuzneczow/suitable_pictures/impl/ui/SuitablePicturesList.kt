@@ -2,6 +2,7 @@ package com.sergokuzneczow.suitable_pictures.impl.ui
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.PaddingValues
@@ -44,7 +45,7 @@ private val ITEM_PADDINGS: Dp = 4.dp
 @Composable
 internal fun SuitablePicturesList(
     suitablePicturesListUiState: SuitablePicturesUiState,
-    onItemClick: () -> Unit,
+    onItemClick: (pictureKey: String) -> Unit,
     nextPage: () -> Unit,
 ) {
     when (suitablePicturesListUiState) {
@@ -90,7 +91,7 @@ internal fun SuitablePicturesList(
 @Composable
 private fun SuggestedQueriesPage(
     pageItems: List<SuitablePicture?>,
-    onItemClick: () -> Unit,
+    onItemClick: (pictureKey: String) -> Unit,
 ) {
     val rowSize: Int = calculateRowSize(totalSize = pageItems.size)
     val itemsForRow: List<List<SuitablePicture?>> = pageItems.chunked(rowSize)
@@ -106,7 +107,7 @@ private fun SuggestedQueriesPage(
                         .size(164.dp)
                         .clip(RoundedCornerShape(12.dp))
                         .background(MaterialTheme.colorScheme.surfaceContainer)
-                    /*.clickable(onClick = { if (item != null) itemClick.invoke(item.pageQuery, item.pageFilter) })*/
+                        .clickable(onClick = { if (item != null) onItemClick.invoke(item.pictureKey) })
                 ) {
                     if (item != null) PictureItem(item.previewPath)
                     else PixelsCircularProgressIndicator()
