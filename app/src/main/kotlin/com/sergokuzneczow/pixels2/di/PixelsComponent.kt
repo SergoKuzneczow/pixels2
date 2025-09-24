@@ -10,6 +10,7 @@ import com.sergokuzneczow.pixels2.MainActivityViewModel
 import com.sergokuzneczow.pixels2.PixelsApplication
 import com.sergokuzneczow.repository.api.ImageLoaderApi
 import com.sergokuzneczow.repository.api.PageRepositoryApi
+import com.sergokuzneczow.search_suitable_pictures.impl.di.SearchSuitablePicturesDependencies
 import com.sergokuzneczow.settings.impl.di.SettingsFeatureDependencies
 import com.sergokuzneczow.suitable_pictures.impl.di.SuitablePicturesFeatureDependencies
 import dagger.BindsInstance
@@ -26,7 +27,8 @@ internal interface PixelsComponent :
     HomeFeatureDependencies,
     SettingsFeatureDependencies,
     SuitablePicturesFeatureDependencies,
-    DialogPageFilterDependencies {
+    DialogPageFilterDependencies,
+    SearchSuitablePicturesDependencies {
 
     override val getHomeScreenPagerUseCase: GetHomeScreenPagerUseCase
 
