@@ -8,6 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.sergokuzneczow.core.ui.icons.Favorites
 import com.sergokuzneczow.core.ui.icons.Filter
+import com.sergokuzneczow.core.ui.icons.Information
 import com.sergokuzneczow.core.ui.icons.New
 import com.sergokuzneczow.core.ui.icons.Search
 import com.sergokuzneczow.core.ui.icons.Top
@@ -23,6 +24,7 @@ public object PixelsIcons {
     public val favorites: ImageVector  = PixelsIcons.Favorites
     public val filter: ImageVector  = PixelsIcons.Filter
     public val search: ImageVector  = PixelsIcons.Search
+    public val information: ImageVector  = PixelsIcons.Information
 }
 
 @ThemePreviews
@@ -71,4 +73,10 @@ private fun Filter() {
 @Composable
 private fun Search() {
     Image(imageVector = PixelsIcons.search, contentDescription = null)
+}
+
+@ThemePreviews
+@Composable
+private fun Information() {
+    Image(imageVector = PixelsIcons.information, contentDescription = null)
 }

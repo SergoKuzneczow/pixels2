@@ -1,5 +1,6 @@
 package com.sergokuzneczow.core.ui
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -15,11 +16,15 @@ public data object Dimensions {
     public val Padding: Dp = 8.dp
     public val LargePadding: Dp = 16.dp
     public val ContentPadding: Dp = 4.dp
+    public val Elevation: Dp = 4.dp
+    public val SmallElevation: Dp = 2.dp
+
+    public val Border: BorderStroke = BorderStroke(1.dp, Color(1, 1, 1, 10))
 }
 
 @Composable
 public fun Modifier.pixelsShadow(): Modifier = this.shadow(
-    elevation = 4.dp,
+    elevation = Dimensions.SmallElevation,
     shape = Dimensions.PixelsShape,
     ambientColor = Color(0, 0, 0, 0),
     spotColor = Color(0, 0, 0, 60),
