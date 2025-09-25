@@ -4,7 +4,9 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import com.sergokuzneczow.core.system_components.PixelsPrimaryFloatingActionButton
 import com.sergokuzneczow.core.system_components.PixelsTopBar
+import com.sergokuzneczow.core.ui.PixelsIcons
 import com.sergokuzneczow.suitable_pictures.impl.SuitablePicturesUiState
 import com.sergokuzneczow.suitable_pictures.impl.TitleUiState
 import com.sergokuzneczow.utilities.logger.log
@@ -30,7 +32,8 @@ internal fun SuitablePicturesScreen(
             visibleProgressBar = false,
             modifier = Modifier
         )
-        FilterFub(
+        PixelsPrimaryFloatingActionButton(
+            imageVector = PixelsIcons.filter,
             onCLick = { navigateToDialogPageFilterDestination.invoke(pageKey) }
         )
     }
