@@ -2,11 +2,14 @@ package com.sergokuzneczow.dialog_page_filter.impl.di
 
 import android.app.Application
 import android.content.Context
-import com.sergokuzneczow.repository.api.PageRepositoryApi
+import com.sergokuzneczow.domain.getPage.GetPage
+import com.sergokuzneczow.domain.get_first_page_key.GetFirstPageKey
 
 public interface DialogPageFilterDependencies {
 
-    public val pageRepositoryApi: PageRepositoryApi
+    public val getFirstPageKey: GetFirstPageKey
+
+    public val getPage: GetPage
 
     public interface Contract {
 

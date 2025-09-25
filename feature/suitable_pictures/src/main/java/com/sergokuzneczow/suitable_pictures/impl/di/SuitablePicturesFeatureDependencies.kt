@@ -2,14 +2,14 @@ package com.sergokuzneczow.suitable_pictures.impl.di
 
 import android.app.Application
 import android.content.Context
+import com.sergokuzneczow.domain.getPage.GetPage
 import com.sergokuzneczow.domain.get_suitable_pictures_screen_pager_use_case.GetSuitablePicturesScreenPagerUseCase
-import com.sergokuzneczow.repository.api.PageRepositoryApi
 
 public interface SuitablePicturesFeatureDependencies {
 
-    public val pageRepositoryApi: PageRepositoryApi
-
     public val getSuitablePicturesScreenPagerUseCase: GetSuitablePicturesScreenPagerUseCase
+
+    public val getPage: GetPage
 
     public interface Contract {
 

@@ -5,10 +5,10 @@ import androidx.annotation.NonUiContext
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.sergokuzneczow.domain.get_first_page_key.GetFirstPageKey
 import com.sergokuzneczow.domain.get_picture_with_relations_case.GetPictureWithRelationsCase
 import com.sergokuzneczow.models.PageFilter
 import com.sergokuzneczow.models.PageQuery
-import com.sergokuzneczow.repository.api.PageRepositoryApi
 import com.sergokuzneczow.selected_picture.impl.di.DaggerSelectedPictureFeatureComponent
 import com.sergokuzneczow.selected_picture.impl.di.SelectedPictureFeatureComponent
 import com.sergokuzneczow.selected_picture.impl.di.dependenciesProvider
@@ -30,7 +30,7 @@ internal class SelectedPictureViewModel(
     lateinit var getPictureWithRelationsCase: GetPictureWithRelationsCase
 
     @Inject
-    lateinit var pageRepository: PageRepositoryApi
+    lateinit var getFirstPageKey: GetFirstPageKey
 
     private val selectedPictureFeatureComponent: SelectedPictureFeatureComponent = DaggerSelectedPictureFeatureComponent.builder()
         .setDep(context.dependenciesProvider.selectedPictureFeatureDependenciesProvider())
@@ -63,10 +63,7 @@ internal class SelectedPictureViewModel(
 
     internal fun getPageKey(pageQuery: PageQuery, pageFilter: PageFilter, completed: (pageKey: Long) -> Unit) {
         viewModelScope.launch {
-            val pageKey: Long? = pageRepository.getPageKey(
-                pageQuery = pageQuery,
-                pageFilter = pageFilter,
-            )
+            val pageKey: Long? = getFirstPageKey.execute(pageQuery = pageQuery, pageFilter = pageFilter)
             pageKey?.let { pageKey -> completed.invoke(pageKey) }
         }
     }

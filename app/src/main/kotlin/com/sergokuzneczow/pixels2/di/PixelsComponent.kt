@@ -3,7 +3,10 @@ package com.sergokuzneczow.pixels2.di
 import android.content.Context
 import androidx.annotation.NonUiContext
 import com.sergokuzneczow.dialog_page_filter.impl.di.DialogPageFilterDependencies
+import com.sergokuzneczow.domain.getPage.GetPage
+import com.sergokuzneczow.domain.get_first_page_key.GetFirstPageKey
 import com.sergokuzneczow.domain.get_home_screen_pager_use_case.GetHomeScreenPagerUseCase
+import com.sergokuzneczow.domain.get_picture_with_relations_case.GetPictureWithRelationsCase
 import com.sergokuzneczow.domain.get_suitable_pictures_screen_pager_use_case.GetSuitablePicturesScreenPagerUseCase
 import com.sergokuzneczow.home.impl.di.HomeFeatureDependencies
 import com.sergokuzneczow.pixels2.MainActivityViewModel
@@ -36,9 +39,13 @@ internal interface PixelsComponent :
 
     override val imageLoaderApi: ImageLoaderApi
 
-    override val pageRepositoryApi: PageRepositoryApi
-
     override val getSuitablePicturesScreenPagerUseCase: GetSuitablePicturesScreenPagerUseCase
+
+    override val getPictureWithRelationsCase: GetPictureWithRelationsCase
+
+    override val getFirstPageKey: GetFirstPageKey
+
+    override val getPage: GetPage
 
     fun inject(destination: MainActivityViewModel)
 

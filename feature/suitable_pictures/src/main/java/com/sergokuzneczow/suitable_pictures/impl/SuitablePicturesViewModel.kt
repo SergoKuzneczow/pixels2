@@ -5,11 +5,11 @@ import androidx.annotation.NonUiContext
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.sergokuzneczow.domain.getPage.GetPage
 import com.sergokuzneczow.domain.get_suitable_pictures_screen_pager_use_case.GetSuitablePicturesScreenPagerUseCase
 import com.sergokuzneczow.models.Page
 import com.sergokuzneczow.models.PageFilter
 import com.sergokuzneczow.models.PageQuery
-import com.sergokuzneczow.repository.api.PageRepositoryApi
 import com.sergokuzneczow.suitable_pictures.impl.di.DaggerSuitablePicturesFeatureComponent
 import com.sergokuzneczow.suitable_pictures.impl.di.SuitablePicturesFeatureComponent
 import com.sergokuzneczow.suitable_pictures.impl.di.dependenciesProvider
@@ -33,7 +33,7 @@ internal class SuitablePicturesViewModel(
     lateinit var getSuitablePicturesScreenPagerUseCase: GetSuitablePicturesScreenPagerUseCase
 
     @Inject
-    lateinit var pageRepository: PageRepositoryApi
+    lateinit var getPage: GetPage
 
     private val suitablePicturesFeatureComponent: SuitablePicturesFeatureComponent by lazy {
         DaggerSuitablePicturesFeatureComponent.builder()
@@ -50,7 +50,7 @@ internal class SuitablePicturesViewModel(
         suitablePicturesFeatureComponent.inject(this)
 
         viewModelScope.launch(Dispatchers.IO) {
-            val page: Page = pageRepository.getPage(pageKey)
+            val page: Page = getPage.execute(pageKey)
             log(tag = "SuitablePicturesViewModel") { "pageRepository.getPage(pageKey); page=$page" }
 
             titleUiState.emit(page.createScreenTitle())
@@ -63,9 +63,9 @@ internal class SuitablePicturesViewModel(
                 completed = { isLastPage, isEmpty -> },
                 error = {}
             ).onEach { pages ->
-//                log(tag = "SuitablePicturesViewModel") { "getSuitablePicturesScreenPagerUseCase.execute(); onEach; answer.items=${answer.items}" }
-//                log(tag = "SuitablePicturesViewModel") { "getSuitablePicturesScreenPagerUseCase.execute(); onEach; answer.items.size=${answer.items.size}" }
-//                log(tag = "SuitablePicturesViewModel") { "getSuitablePicturesScreenPagerUseCase.execute(); onEach; answer.meta=${answer.meta}" }
+                pages.pages.forEach { (key, value) ->
+                    log(tag = "SuitablePicturesViewModel") { "getSuitablePicturesScreenPagerUseCase.execute().onEach().it=(key=$key, value=$value)" }
+                }
                 suitablePicturesUiState.emit(SuitablePicturesUiState.Success(pages.pages.toSuitablePicturesPages()))
             }.launchIn(this)
         }

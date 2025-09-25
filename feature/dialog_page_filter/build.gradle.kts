@@ -39,7 +39,7 @@ dependencies {
     // Dependencies
     implementation(project(":core:ui"))
     implementation(project(":core:models"))
-    implementation(project(":core:data"))
+    implementation(project(":core:domain"))
     implementation(project(":core:utilities"))
     // Android compose
     implementation(libs.androidx.activity.compose)

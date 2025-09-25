@@ -8,10 +8,11 @@ import androidx.lifecycle.viewModelScope
 import com.sergokuzneczow.dialog_page_filter.impl.di.DaggerDialogPageFilterComponent
 import com.sergokuzneczow.dialog_page_filter.impl.di.DialogPageFilterComponent
 import com.sergokuzneczow.dialog_page_filter.impl.di.dependenciesProvider
+import com.sergokuzneczow.domain.getPage.GetPage
+import com.sergokuzneczow.domain.get_first_page_key.GetFirstPageKey
 import com.sergokuzneczow.models.Page
 import com.sergokuzneczow.models.PageFilter
 import com.sergokuzneczow.models.PageQuery
-import com.sergokuzneczow.repository.api.PageRepositoryApi
 import com.sergokuzneczow.utilities.logger.log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -26,7 +27,10 @@ internal class DialogPageFilterViewModel(
 ) : ViewModel() {
 
     @Inject
-    lateinit var pageRepository: PageRepositoryApi
+    lateinit var getFirstPageKey: GetFirstPageKey
+
+    @Inject
+    lateinit var getPage: GetPage
 
     private val dialogPageFilterComponent: DialogPageFilterComponent by lazy {
         DaggerDialogPageFilterComponent.builder()
@@ -40,7 +44,7 @@ internal class DialogPageFilterViewModel(
         dialogPageFilterComponent.inject(this)
 
         viewModelScope.launch(Dispatchers.IO) {
-            val page: Page = pageRepository.getPage(pageKey)
+            val page: Page = getPage.execute(pageKey)
             log(tag = "DialogPageFilterViewModel") { "pageRepository.getPage(); page=$page" }
             pageUiState.emit(PageUiState.Success(pageQuery = page.query, pageFilter = page.filter))
         }
@@ -50,10 +54,7 @@ internal class DialogPageFilterViewModel(
 
     internal fun getPageKey(pageQuery: PageQuery, pageFilter: PageFilter, completed: (pageKey: Long) -> Unit) {
         viewModelScope.launch {
-            val pageKey: Long? = pageRepository.getPageKey(
-                pageQuery = pageQuery,
-                pageFilter = pageFilter,
-            )
+            val pageKey: Long? = getFirstPageKey.execute(pageQuery = pageQuery, pageFilter = pageFilter)
             pageKey?.let { pageKey -> completed.invoke(pageKey) }
         }
     }

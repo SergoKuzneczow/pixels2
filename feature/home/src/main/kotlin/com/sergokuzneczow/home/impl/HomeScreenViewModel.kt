@@ -5,6 +5,7 @@ import androidx.annotation.NonUiContext
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.sergokuzneczow.domain.get_first_page_key.GetFirstPageKey
 import com.sergokuzneczow.domain.get_home_screen_pager_use_case.GetHomeScreenPagerUseCase
 import com.sergokuzneczow.domain.pager.PixelsPager
 import com.sergokuzneczow.home.impl.di.DaggerHomeScreenComponent
@@ -13,7 +14,6 @@ import com.sergokuzneczow.home.impl.di.dependenciesProvider
 import com.sergokuzneczow.models.PageFilter
 import com.sergokuzneczow.models.PageQuery
 import com.sergokuzneczow.models.PictureWithRelations
-import com.sergokuzneczow.repository.api.PageRepositoryApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -32,7 +32,7 @@ internal class HomeScreenViewModel(
     lateinit var getHomeScreenPagerUseCase: GetHomeScreenPagerUseCase
 
     @Inject
-    lateinit var pageRepository: PageRepositoryApi
+    lateinit var getFirstPageKey: GetFirstPageKey
 
     private val homeScreenComponent: HomeScreenComponent by lazy {
         DaggerHomeScreenComponent.builder()
@@ -74,10 +74,7 @@ internal class HomeScreenViewModel(
 
     fun getPageKey(pageQuery: PageQuery, pageFilter: PageFilter, completed: (pageKey: Long) -> Unit) {
         viewModelScope.launch {
-            val pageKey: Long? = pageRepository.getPageKey(
-                pageQuery = pageQuery,
-                pageFilter = pageFilter,
-            )
+            val pageKey: Long? = getFirstPageKey.execute(pageQuery = pageQuery, pageFilter = pageFilter)
             pageKey?.let { pageKey -> completed.invoke(pageKey) }
         }
     }

@@ -27,5 +27,7 @@ internal fun NavGraphBuilder.pixelsGraph(
     dialogPageFilterScreenDestination(
         navigateToSuitablePicturesDestination = navigateToSuitablePicturesDestination,
     )
-    selectedPictureDestination()
+    selectedPictureDestination(
+        navigateToSuitablePicturesDestination = navigateToSuitablePicturesDestination,
+    )
 }
