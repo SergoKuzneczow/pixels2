@@ -2,8 +2,8 @@ package com.sergokuzneczow.network.impl.retrofit.api
 
 import com.sergokuzneczow.models.PageFilter
 import com.sergokuzneczow.models.PageQuery
-import com.sergokuzneczow.network.impl.retrofit.models.PicturesPageRemoteModel
 import com.sergokuzneczow.network.impl.retrofit.RetrofitHandler
+import com.sergokuzneczow.network.impl.retrofit.models.PicturesPageRemoteModel
 import retrofit2.http.GET
 import retrofit2.http.Query
 
@@ -27,6 +27,7 @@ internal interface PicturesPageApi {
         @Query("order") order: String,
         @Query("purity") purities: String,
         @Query("categories") categories: String,
+        @Query("colors") color: String,
     ): PicturesPageRemoteModel
 
     enum class SortingConstants(internal val value: String) {
@@ -47,11 +48,11 @@ internal class PicturesPageApiImpl private constructor(
     private val picturesPageApi: PicturesPageApi,
 ) {
 
-    internal constructor():this(RetrofitHandler.providePicturesPageApi())
+    internal constructor() : this(RetrofitHandler.providePicturesPageApi())
 
-     suspend fun getPicturesPage(
-         pageNumber: Int,
-         pageFilter: PageFilter,
+    suspend fun getPicturesPage(
+        pageNumber: Int,
+        pageFilter: PageFilter,
     ): List<PicturesPageRemoteModel.PicturePreviewRemoteModel> {
         val sorting: String = pageFilter.pictureSorting.toSortingString()
         val order: String = pageFilter.pictureOrder.toOrderString()
@@ -67,16 +68,17 @@ internal class PicturesPageApiImpl private constructor(
         ).data
     }
 
-     suspend fun getPicturesPage(
-         pageNumber: Int,
-         pageQuery: PageQuery,
-         pageFilter: PageFilter,
+    suspend fun getPicturesPage(
+        pageNumber: Int,
+        pageQuery: PageQuery,
+        pageFilter: PageFilter,
     ): List<PicturesPageRemoteModel.PicturePreviewRemoteModel> {
         val query: String = pageQuery.toQueryString()
         val sorting: String = pageFilter.pictureSorting.toSortingString()
         val order: String = pageFilter.pictureOrder.toOrderString()
         val purities: String = pageFilter.picturePurities.toPuritiesString()
         val categories: String = pageFilter.pictureCategories.toCategoriesString()
+        val color: String = pageFilter.pictureColor.colorName.deleteHashtag()
 
         return picturesPageApi.getByQuery(
             query = query,
@@ -85,15 +87,17 @@ internal class PicturesPageApiImpl private constructor(
             order = order,
             purities = purities,
             categories = categories,
+            color = color,
         ).data
     }
 
-     suspend fun getLastPageNumber(pageQuery: PageQuery, pageFilter: PageFilter): Int {
+    suspend fun getLastPageNumber(pageQuery: PageQuery, pageFilter: PageFilter): Int {
         val query: String = pageQuery.toQueryString()
         val sorting: String = pageFilter.pictureSorting.toSortingString()
         val order: String = pageFilter.pictureOrder.toOrderString()
         val purities: String = pageFilter.picturePurities.toPuritiesString()
         val categories: String = pageFilter.pictureCategories.toCategoriesString()
+        val color: String = pageFilter.pictureColor.colorName.deleteHashtag()
 
         return picturesPageApi.getByQuery(
             query = query,
@@ -102,6 +106,7 @@ internal class PicturesPageApiImpl private constructor(
             order = order,
             purities = purities,
             categories = categories,
+            color = color,
         ).meta.lastPage
     }
 
@@ -143,6 +148,12 @@ internal class PicturesPageApiImpl private constructor(
         is PageQuery.Like -> "like:${this.pictureKey}"
         is PageQuery.Empty -> ""
         is PageQuery.Tag -> "id:${this.tagKey}"
+    }
+
+    private fun String.deleteHashtag(): String {
+        var res: String = ""
+        this.forEach { ch -> if (ch != '#') res = res + ch }
+        return if (res.length == 6) res else ""
     }
 
     private companion object {
