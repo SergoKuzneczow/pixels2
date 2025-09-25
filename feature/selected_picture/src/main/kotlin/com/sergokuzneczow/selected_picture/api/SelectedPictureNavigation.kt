@@ -15,9 +15,14 @@ public fun NavHostController.navigateToSelectedPictureDestination(pictureKey: St
     this.navigate(route = SelectedPictureRoute(pictureKey), navOptions = navOptions)
 }
 
-public fun NavGraphBuilder.selectedPictureDestination() {
+public fun NavGraphBuilder.selectedPictureDestination(
+    navigateToSuitablePicturesDestination: (pageKey: Long) -> Unit,
+) {
     composable<SelectedPictureRoute> { backStackEntry ->
         val selectedPictureRoute: SelectedPictureRoute = backStackEntry.toRoute<SelectedPictureRoute>()
-        SelectedPictureRootScreen(pictureKey = selectedPictureRoute.pictureKey)
+        SelectedPictureRootScreen(
+            pictureKey = selectedPictureRoute.pictureKey,
+            navigateToSuitablePicturesDestination = navigateToSuitablePicturesDestination,
+        )
     }
 }
