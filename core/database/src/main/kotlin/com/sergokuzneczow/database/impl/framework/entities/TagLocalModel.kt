@@ -2,9 +2,13 @@ package com.sergokuzneczow.database.impl.framework.entities
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
-import com.sergokuzneczow.models.Tag
 import com.sergokuzneczow.database.impl.framework.entities.TagLocalModel.Companion.TAGS_TABLE_NAME
 import com.sergokuzneczow.database.impl.framework.entities.TagLocalModel.Companion.TAG_KEY_COLUMN_NAME
+import com.sergokuzneczow.database.impl.framework.models.TagPurityLocalModel
+import com.sergokuzneczow.database.impl.framework.models.toTagPurity
+import com.sergokuzneczow.database.impl.framework.models.toTagPurityLocalModel
+import com.sergokuzneczow.models.Tag
+import kotlinx.serialization.json.Json
 
 @Entity(
     tableName = TAGS_TABLE_NAME,
@@ -40,7 +44,7 @@ internal fun Tag.toTagLocalModel(): TagLocalModel {
         alias = this.alias,
         categoryId = this.categoryId,
         categoryName = this.categoryName,
-        purity = this.purity,
+        purity = Json.encodeToString(this.purity.toTagPurityLocalModel()),
         createdAt = this.createdAt,
     )
 }
@@ -52,7 +56,7 @@ internal fun TagLocalModel.toTag(): Tag {
         alias = this.alias,
         categoryId = this.categoryId,
         categoryName = this.categoryName,
-        purity = this.purity,
+        purity = Json.decodeFromString<TagPurityLocalModel>(this.purity).toTagPurity(),
         createdAt = this.createdAt,
     )
 }

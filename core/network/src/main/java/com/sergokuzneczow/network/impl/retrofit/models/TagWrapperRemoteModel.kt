@@ -23,8 +23,17 @@ internal fun TagWrapperRemoteModel.TagRemoteModel.toTag(): Tag = Tag(
     alias = this.alias,
     categoryId = this.categoryId,
     categoryName = this.categoryName,
-    purity = this.purity,
+    purity = this.purity.toTagPurity(),
     createdAt = this.createdAt,
 )
+
+private fun String.toTagPurity(): Tag.TagPurity {
+    return when (this) {
+        "sketchy" -> Tag.TagPurity.SKETCHY
+        "nsfw" -> Tag.TagPurity.NSFW
+        else -> Tag.TagPurity.SFW
+    }
+}
+
 
 internal fun List<TagWrapperRemoteModel.TagRemoteModel>.toTags(): List<Tag> = this.map { it.toTag() }
