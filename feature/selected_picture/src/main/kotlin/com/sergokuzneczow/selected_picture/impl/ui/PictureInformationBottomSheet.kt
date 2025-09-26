@@ -17,9 +17,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.core.graphics.toColorInt
-import com.sergokuzneczow.core.system_components.FlowSuggestionChips
-import com.sergokuzneczow.core.system_components.SuggestionChip
-import com.sergokuzneczow.core.system_components.SuggestionChipColorsAccent
+import com.sergokuzneczow.core.system_components.chip_segments.PixelsSuggestionFlowRow
+import com.sergokuzneczow.core.system_components.chip_segments.SuggestionChip
+import com.sergokuzneczow.core.system_components.chip_segments.SuggestionChipColorsAccent
 import com.sergokuzneczow.core.ui.Dimensions
 import com.sergokuzneczow.models.Tag
 import kotlinx.coroutines.CoroutineScope
@@ -75,7 +75,7 @@ private fun PictureInformation(
             style = MaterialTheme.typography.titleMedium
         )
 
-        FlowSuggestionChips(
+        PixelsSuggestionFlowRow(
             suggestionChips = tagsSuggestionChips,
             modifier = Modifier.padding(top = Dimensions.LargePadding, start = Dimensions.LargePadding, end = Dimensions.LargePadding),
             onItemClick = { index, _ -> onTagChipClick.invoke(tags[index]) },
@@ -98,7 +98,7 @@ private fun PictureInformation(
             style = MaterialTheme.typography.titleMedium
         )
 
-        FlowSuggestionChips(
+        PixelsSuggestionFlowRow(
             suggestionChips = colorsSuggestionChips,
             modifier = Modifier.padding(top = Dimensions.LargePadding, start = Dimensions.LargePadding, end = Dimensions.LargePadding),
             onItemClick = { index, _ -> onColorChipClick.invoke(colors[index]) },
