@@ -1,4 +1,4 @@
-package com.sergokuzneczow.core.system_components
+package com.sergokuzneczow.core.system_components.chip_segments
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Box

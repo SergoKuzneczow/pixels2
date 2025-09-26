@@ -1,4 +1,4 @@
-package com.sergokuzneczow.core.system_components
+package com.sergokuzneczow.core.system_components.chip_segments
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.FlowRow
@@ -19,7 +19,7 @@ import com.sergokuzneczow.core.ui.PixelsTheme
 import com.sergokuzneczow.core.utilites.ThemePreviews
 
 @Composable
-public fun FlowSuggestionChips(
+public fun PixelsSuggestionFlowRow(
     suggestionChips: List<SuggestionChip>,
     modifier: Modifier = Modifier,
     onItemClick: (index: Int, suggestionChip: SuggestionChip) -> Unit = { _, _ -> },
@@ -117,7 +117,7 @@ private object SuggestionChipDangerousColors {
 @Composable
 private fun FlowSuggestionChipsPreview() {
     PixelsTheme {
-        FlowSuggestionChips(
+        PixelsSuggestionFlowRow(
             suggestionChips = listOf(
                 SuggestionChip(label = "Preview"),
                 SuggestionChip(label = "Short"),

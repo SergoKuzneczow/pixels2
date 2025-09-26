@@ -1,4 +1,4 @@
-package com.sergokuzneczow.core.system_components
+package com.sergokuzneczow.core.system_components.chip_segments
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Box
@@ -21,15 +21,13 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.sergokuzneczow.core.ui.PixelsTheme
 import com.sergokuzneczow.core.utilites.ThemePreviews
-
-public data class PixelsSingleFilterChipItem<T>(
-    val title: String,
-    val value: T,
-)
+import kotlin.collections.forEachIndexed
+import kotlin.collections.indexOfFirst
 
 @Composable
-public fun <T> PixelsSingleFilterChip(
-    chips: List<PixelsSingleFilterChipItem<T>>,
+@Deprecated(message = "Now you need use implement PixelsFilterSegment.kt with filterSegmentStrategy=FilterSegmentStrategy.Single.")
+public fun <T> PixelsSingleFilterSegment(
+    chips: List<SingleFilterChip<T>>,
     startValue: T,
     selectedValue: (value: T) -> Unit,
     modifier: Modifier = Modifier,
@@ -74,15 +72,20 @@ public fun <T> PixelsSingleFilterChip(
     }
 }
 
+public data class SingleFilterChip<T>(
+    val title: String,
+    val value: T,
+)
+
 @ThemePreviews
 @Composable
 private fun PixelsSingleFilterChipPreview() {
     PixelsTheme {
-        PixelsSingleFilterChip(
+        PixelsSingleFilterSegment(
             chips = listOf(
-                PixelsSingleFilterChipItem("Preview", 1),
-                PixelsSingleFilterChipItem("Preview", 2),
-                PixelsSingleFilterChipItem("Preview", 3),
+                SingleFilterChip("Preview", 1),
+                SingleFilterChip("Preview", 2),
+                SingleFilterChip("Preview", 3),
             ),
             startValue = 1,
             selectedValue = {}

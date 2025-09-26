@@ -1,4 +1,4 @@
-package com.sergokuzneczow.core.system_components
+package com.sergokuzneczow.core.system_components.chip_segments
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.FlowRow
@@ -23,14 +23,14 @@ import com.sergokuzneczow.core.ui.PixelsTheme
 import com.sergokuzneczow.core.utilites.ThemePreviews
 
 @Composable
-public fun FlowFilterChips(
+public fun PixelsFilterFlowRow(
     chips: List<FilterChip>,
     modifier: Modifier = Modifier,
     onSelectedChanged: (chipsState: List<Boolean>) -> Unit = {},
     filterChipsStrategy: FilterChipsStrategy = FilterChipsStrategy.MAYBE_EMPTY,
     colorAccentPredicate: (index: Int, chip: FilterChip) -> FilterChipColorsAccent = { _, _ -> FilterChipColorsAccent.STANDARD }
 ) {
-    val choiceState: MutableState<List<Boolean>> = remember { mutableStateOf(chips.map { it.startState }) }
+    val chipState: MutableState<List<Boolean>> = remember { mutableStateOf(chips.map { it.startState }) }
 
     FlowRow(
         maxItemsInEachRow = 8,
@@ -39,9 +39,9 @@ public fun FlowFilterChips(
         chips.forEachIndexed { index, chip ->
             FilterChip(
                 onClick = {
-                    if (!choiceState.value[index]) choiceState.value = choiceState.value.selectElement(index, filterChipsStrategy)
-                    else choiceState.value = choiceState.value.deselectElement(index, filterChipsStrategy)
-                    onSelectedChanged.invoke(choiceState.value)
+                    if (!chipState.value[index]) chipState.value = chipState.value.selectElement(index, filterChipsStrategy)
+                    else chipState.value = chipState.value.deselectElement(index, filterChipsStrategy)
+                    onSelectedChanged.invoke(chipState.value)
                 },
                 label = {
                     Box {
@@ -56,7 +56,7 @@ public fun FlowFilterChips(
                 modifier = Modifier.padding(horizontal = 4.dp),
                 shape = RoundedCornerShape(16.dp),
                 colors = colorsAccent(colorAccentPredicate.invoke(index, chip)),
-                selected = choiceState.value[index],
+                selected = chipState.value[index],
                 border = Dimensions.Border,
             )
         }
@@ -182,7 +182,7 @@ private object FilterChipDangerousColors {
 @Composable
 private fun FlowFilterChipsPreview() {
     PixelsTheme {
-        FlowFilterChips(
+        PixelsFilterFlowRow(
             chips = listOf(
                 FilterChip(label = "Preview", startState = true),
                 FilterChip(label = "Short"),
