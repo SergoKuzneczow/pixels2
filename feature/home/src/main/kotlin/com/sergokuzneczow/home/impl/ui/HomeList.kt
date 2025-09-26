@@ -47,6 +47,7 @@ import com.sergokuzneczow.core.ui.PixelsTheme
 import com.sergokuzneczow.core.utilites.ThemePreviews
 import com.sergokuzneczow.home.impl.HomeListUiState
 import com.sergokuzneczow.home.impl.HomeListUiState.SuggestedQueriesPage
+import com.sergokuzneczow.home.impl.HomeListUiState.SuggestedQuery
 import com.sergokuzneczow.models.PageFilter
 import com.sergokuzneczow.models.PageQuery
 
@@ -143,14 +144,14 @@ private fun SuggestedQueriesPage(
     suggestedQueriesPage: SuggestedQueriesPage,
     itemClick: (PageQuery, PageFilter) -> Unit,
 ) {
-    val pageItems: List<HomeListUiState.SuggestedQuery?> = suggestedQueriesPage.items
+    val pageItems: List<SuggestedQuery?> = suggestedQueriesPage.items
     val rowSize: Int = calculateRowSize(totalSize = pageItems.size)
-    val itemsForRow: List<List<HomeListUiState.SuggestedQuery?>> = pageItems.chunked(rowSize)
-    itemsForRow.forEach { rowItems: List<HomeListUiState.SuggestedQuery?> ->
+    val itemsForRow: List<List<SuggestedQuery?>> = pageItems.chunked(rowSize)
+    itemsForRow.forEach { rowItems: List<SuggestedQuery?> ->
         Row(
             modifier = Modifier.fillMaxWidth()
         ) {
-            rowItems.forEach { item: HomeListUiState.SuggestedQuery? ->
+            rowItems.forEach { item: SuggestedQuery? ->
                 Box(
                     modifier = Modifier
                         .padding(ITEM_PADDINGS)
@@ -259,49 +260,74 @@ private fun StandardQueriesPreview() {
 @ThemePreviews
 @Composable
 private fun SuggestedQueriesPagePreview() {
+    val suggestedQueries: List<SuggestedQuery> = listOf(
+        SuggestedQuery(
+            description = "Preview",
+            previewPath = "",
+            pageQuery = PageQuery.DEFAULT,
+            pageFilter = PageFilter.DEFAULT,
+        ),
+        SuggestedQuery(
+            description = "Preview",
+            previewPath = "",
+            pageQuery = PageQuery.DEFAULT,
+            pageFilter = PageFilter.DEFAULT,
+        ),
+        SuggestedQuery(
+            description = "Preview",
+            previewPath = "",
+            pageQuery = PageQuery.DEFAULT,
+            pageFilter = PageFilter.DEFAULT,
+        ),
+        SuggestedQuery(
+            description = "Preview",
+            previewPath = "",
+            pageQuery = PageQuery.DEFAULT,
+            pageFilter = PageFilter.DEFAULT,
+        ),
+        SuggestedQuery(
+            description = "Preview",
+            previewPath = "",
+            pageQuery = PageQuery.DEFAULT,
+            pageFilter = PageFilter.DEFAULT,
+        ),
+        SuggestedQuery(
+            description = "Preview",
+            previewPath = "",
+            pageQuery = PageQuery.DEFAULT,
+            pageFilter = PageFilter.DEFAULT,
+        ),
+    )
     PixelsTheme {
         SuggestedQueriesPage(
-            suggestedQueriesPage = SuggestedQueriesPage(
-                items = listOf(
-                    HomeListUiState.SuggestedQuery(
-                        description = "Preview",
-                        previewPath = "",
-                        pageQuery = PageQuery.DEFAULT,
-                        pageFilter = PageFilter.DEFAULT,
-                    ),
-                    HomeListUiState.SuggestedQuery(
-                        description = "Preview",
-                        previewPath = "",
-                        pageQuery = PageQuery.DEFAULT,
-                        pageFilter = PageFilter.DEFAULT,
-                    ),
-                    HomeListUiState.SuggestedQuery(
-                        description = "Preview",
-                        previewPath = "",
-                        pageQuery = PageQuery.DEFAULT,
-                        pageFilter = PageFilter.DEFAULT,
-                    ),
-                    HomeListUiState.SuggestedQuery(
-                        description = "Preview",
-                        previewPath = "",
-                        pageQuery = PageQuery.DEFAULT,
-                        pageFilter = PageFilter.DEFAULT,
-                    ),
-                    HomeListUiState.SuggestedQuery(
-                        description = "Preview",
-                        previewPath = "",
-                        pageQuery = PageQuery.DEFAULT,
-                        pageFilter = PageFilter.DEFAULT,
-                    ),
-                    HomeListUiState.SuggestedQuery(
-                        description = "Preview",
-                        previewPath = "",
-                        pageQuery = PageQuery.DEFAULT,
-                        pageFilter = PageFilter.DEFAULT,
-                    ),
-                ),
-            ),
+            suggestedQueriesPage = SuggestedQueriesPage(items = suggestedQueries),
             itemClick = { _, _ -> }
+        )
+    }
+}
+
+@ThemePreviews
+@Composable
+private fun HomeListPreview() {
+    val homeListUiState = HomeListUiState.Success(
+        suggestedQueriesPages = listOf(
+            SuggestedQueriesPage(
+                items = listOf(
+                    SuggestedQuery(
+                        description = "",
+                        previewPath = "",
+                        pageQuery = PageQuery.DEFAULT,
+                        pageFilter = PageFilter.DEFAULT,
+                    )
+                )
+            )
+        )
+    )
+    PixelsTheme {
+        HomeList(
+            homeListUiState = homeListUiState,
+            itemClick = { _, _ -> },
+            nextPage = {},
         )
     }
 }
