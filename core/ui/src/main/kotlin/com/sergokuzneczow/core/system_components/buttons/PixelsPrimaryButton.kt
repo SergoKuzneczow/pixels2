@@ -1,6 +1,5 @@
-package com.sergokuzneczow.core.system_components
+package com.sergokuzneczow.core.system_components.buttons
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -26,7 +25,7 @@ import com.sergokuzneczow.core.ui.PixelsTheme
 import com.sergokuzneczow.core.utilites.ThemePreviews
 
 @Composable
-public fun PixelsSurfaceButton(
+public fun PixelsPrimaryButton(
     text: String,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
@@ -40,8 +39,8 @@ public fun PixelsSurfaceButton(
         modifier = modifier.semantics { role = Role.Button },
         enabled = enabled,
         shape = Dimensions.PixelsShape,
-        color = MaterialTheme.colorScheme.surface,
-        contentColor = MaterialTheme.colorScheme.onSurface,
+        color = MaterialTheme.colorScheme.primary,
+        contentColor = MaterialTheme.colorScheme.onPrimary,
         shadowElevation = 1.dp,
         interactionSource = interactionSource
     ) {
@@ -58,7 +57,7 @@ public fun PixelsSurfaceButton(
                 Text(
                     text = text,
                     style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurface,
+                    color = MaterialTheme.colorScheme.onPrimary,
                     textAlign = TextAlign.Center,
                     modifier = Modifier
                         .align(Alignment.CenterVertically)
@@ -70,10 +69,10 @@ public fun PixelsSurfaceButton(
 
 @ThemePreviews
 @Composable
-private fun PixelsSurfaceButtonPreview() {
+private fun PixelsPrimaryButtonPreview() {
     PixelsTheme {
         Box {
-            PixelsSurfaceButton(
+            PixelsPrimaryButton(
                 text = "Preview",
                 onClick = {},
             )

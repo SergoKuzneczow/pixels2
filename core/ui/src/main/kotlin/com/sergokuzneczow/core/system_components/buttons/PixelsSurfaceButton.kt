@@ -1,6 +1,5 @@
-package com.sergokuzneczow.core.system_components
+package com.sergokuzneczow.core.system_components.buttons
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -8,9 +7,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.ButtonElevation
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -18,7 +15,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
@@ -29,7 +25,7 @@ import com.sergokuzneczow.core.ui.PixelsTheme
 import com.sergokuzneczow.core.utilites.ThemePreviews
 
 @Composable
-public fun PixelsPrimaryButton(
+public fun PixelsSurfaceButton(
     text: String,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
@@ -43,8 +39,9 @@ public fun PixelsPrimaryButton(
         modifier = modifier.semantics { role = Role.Button },
         enabled = enabled,
         shape = Dimensions.PixelsShape,
-        color = MaterialTheme.colorScheme.primary,
-        contentColor = MaterialTheme.colorScheme.onPrimary,
+        color = MaterialTheme.colorScheme.surfaceContainer,
+        contentColor = MaterialTheme.colorScheme.onSurface,
+        border = Dimensions.Border,
         shadowElevation = 1.dp,
         interactionSource = interactionSource
     ) {
@@ -61,7 +58,7 @@ public fun PixelsPrimaryButton(
                 Text(
                     text = text,
                     style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onPrimary,
+                    color = MaterialTheme.colorScheme.onSurface,
                     textAlign = TextAlign.Center,
                     modifier = Modifier
                         .align(Alignment.CenterVertically)
@@ -73,10 +70,10 @@ public fun PixelsPrimaryButton(
 
 @ThemePreviews
 @Composable
-private fun PixelsPrimaryButtonPreview() {
+private fun PixelsSurfaceButtonPreview() {
     PixelsTheme {
         Box {
-            PixelsPrimaryButton(
+            PixelsSurfaceButton(
                 text = "Preview",
                 onClick = {},
             )
