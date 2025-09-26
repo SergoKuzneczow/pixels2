@@ -3,6 +3,7 @@ package com.sergokuzneczow.pixels2.navigation
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import com.sergokuzneczow.bottom_sheet_page_filter.api.bottomSheetPageFilterScreenDestination
+import com.sergokuzneczow.bottom_sheet_picture_info.api.bottomSheetPictureInfoDestination
 import com.sergokuzneczow.dialog_page_filter.api.dialogPageFilterScreenDestination
 import com.sergokuzneczow.main_menu.api.mainMenuScreenDestination
 import com.sergokuzneczow.selected_picture.api.selectedPictureDestination
@@ -16,6 +17,7 @@ internal fun NavGraphBuilder.pixelsGraph(
     navigateToDialogPageFilterDestination: (pageKey: Long) -> Unit,
     navigateToBottomSheetPageFilterDestination: (pageKey: Long, navOptions: NavOptions?) -> Unit,
     navigateToSelectedPictureDestination: (pictureKey: String) -> Unit,
+    navigateToBottomSheetPictureInfoDestination: (pictureKey: String, navOptions: NavOptions?) -> Unit,
 ) {
     splashScreenDestination(
         navigateToMainMenu = navigateToMainMenuDestination
@@ -31,14 +33,19 @@ internal fun NavGraphBuilder.pixelsGraph(
     dialogPageFilterScreenDestination(
         navigateToSuitablePicturesDestination = navigateToSuitablePicturesDestination,
     )
-    dialogPageFilterScreenDestination(
-        navigateToSuitablePicturesDestination = navigateToSuitablePicturesDestination,
-    )
+    //dialogPageFilterScreenDestination(
+    //    navigateToSuitablePicturesDestination = navigateToSuitablePicturesDestination,
+    //)
     bottomSheetPageFilterScreenDestination(
         navigateToSuitablePicturesDestination = navigateToSuitablePicturesDestination,
         popBackStack = popBackStack,
     )
     selectedPictureDestination(
+        //navigateToSuitablePicturesDestination = navigateToSuitablePicturesDestination,
+        navigateToBottomSheetPictureInfoDestination = navigateToBottomSheetPictureInfoDestination
+    )
+    bottomSheetPictureInfoDestination(
         navigateToSuitablePicturesDestination = navigateToSuitablePicturesDestination,
+        popBackStack = popBackStack,
     )
 }

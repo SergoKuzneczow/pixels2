@@ -2,10 +2,12 @@ package com.sergokuzneczow.pixels2
 
 import android.app.Application
 import com.sergokuzneczow.bottom_sheet_page_filter.impl.di.BottomSheetPageFilterDependencies
+import com.sergokuzneczow.bottom_sheet_picture_info.impl.di.BottomSheetPictureInformationFeatureDependencies
 import com.sergokuzneczow.dialog_page_filter.impl.di.DialogPageFilterDependencies
 import com.sergokuzneczow.home.impl.di.HomeFeatureDependencies
 import com.sergokuzneczow.pixels2.di.DaggerPixelsComponent
 import com.sergokuzneczow.pixels2.di.PixelsComponent
+import com.sergokuzneczow.pixels2.di.applicationComponent
 import com.sergokuzneczow.search_suitable_pictures.impl.di.SearchSuitablePicturesDependencies
 import com.sergokuzneczow.selected_picture.impl.di.SelectedPictureFeatureDependencies
 import com.sergokuzneczow.settings.impl.di.SettingsFeatureDependencies
@@ -18,7 +20,8 @@ public class PixelsApplication : Application(),
     DialogPageFilterDependencies.Contract,
     BottomSheetPageFilterDependencies.Contract,
     SearchSuitablePicturesDependencies.Contract,
-    SelectedPictureFeatureDependencies.Contract {
+    SelectedPictureFeatureDependencies.Contract,
+    BottomSheetPictureInformationFeatureDependencies.Contract {
 
     internal val pixelsComponent: PixelsComponent by lazy {
         DaggerPixelsComponent.builder()
@@ -44,4 +47,6 @@ public class PixelsApplication : Application(),
     override fun searchSuitablePicturesDependenciesProvider(): SearchSuitablePicturesDependencies = pixelsComponent
 
     override fun selectedPictureFeatureDependenciesProvider(): SelectedPictureFeatureDependencies = pixelsComponent
+
+    override fun bottomSheetPictureInformationFeatureDependenciesProvider(): BottomSheetPictureInformationFeatureDependencies = applicationComponent
 }

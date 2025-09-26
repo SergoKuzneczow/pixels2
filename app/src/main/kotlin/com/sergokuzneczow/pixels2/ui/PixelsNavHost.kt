@@ -5,6 +5,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.NavHost
 import com.sergokuzneczow.bottom_sheet_page_filter.api.navigateToBottomSheetPageFilterDestination
+import com.sergokuzneczow.bottom_sheet_picture_info.api.navigateToBottomSheetPictureInfoDestination
 import com.sergokuzneczow.dialog_page_filter.api.navigateToDialogPageFilterDestination
 import com.sergokuzneczow.main_menu.api.navigateToMainMenuDestination
 import com.sergokuzneczow.pixels2.PixelsState
@@ -29,11 +30,11 @@ internal fun PixelsNavHost(
             navigateToDialogPageFilterDestination = { pageKey: Long -> applicationState.navController.navigateToDialogPageFilterDestination(pageKey) },
             navigateToSelectedPictureDestination = { pictureKey: String -> applicationState.navController.navigateToSelectedPictureDestination(pictureKey) },
             navigateToBottomSheetPageFilterDestination = { pageKey: Long, navOptions: NavOptions? ->
-                applicationState.navController.navigateToBottomSheetPageFilterDestination(
-                    pageKey = pageKey,
-                    navOptions = navOptions,
-                )
+                applicationState.navController.navigateToBottomSheetPageFilterDestination(pageKey, navOptions)
             },
+            navigateToBottomSheetPictureInfoDestination = { pictureKey, navOptions ->
+                applicationState.navController.navigateToBottomSheetPictureInfoDestination(pictureKey, navOptions)
+            }
         )
     }
 }
