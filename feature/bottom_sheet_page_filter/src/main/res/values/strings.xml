@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="bottom_sheet_page_filter_screen_title">Page filter</string>
+    <string name="bottom_sheet_title">Filter</string>
+    <string name="sorting_chips">Sorting</string>
+    <string name="order_chips">Order</string>
+    <string name="purities_chips">Purities</string>
+    <string name="nsfw_content">* warning, content 18+</string>
+    <string name="done">Done</string>
+</resources>
