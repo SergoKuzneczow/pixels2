@@ -20,14 +20,14 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.sergokuzneczow.core.system_components.ColorsAccent
+import com.sergokuzneczow.core.system_components.chip_segments.FilterSegmentColorsAccent
 import com.sergokuzneczow.core.system_components.PixelsCircularProgressIndicator
-import com.sergokuzneczow.core.system_components.PixelsMultiFilterChip
-import com.sergokuzneczow.core.system_components.PixelsMultiFilterChipItem
-import com.sergokuzneczow.core.system_components.PixelsMultiFilterStrategy
-import com.sergokuzneczow.core.system_components.PixelsSingleFilterChip
-import com.sergokuzneczow.core.system_components.PixelsSingleFilterChipItem
-import com.sergokuzneczow.core.system_components.PixelsSurfaceButton
+import com.sergokuzneczow.core.system_components.chip_segments.PixelsFilterSegment
+import com.sergokuzneczow.core.system_components.chip_segments.FilterSegmentChip
+import com.sergokuzneczow.core.system_components.chip_segments.FilterSegmentStrategy
+import com.sergokuzneczow.core.system_components.chip_segments.PixelsSingleFilterSegment
+import com.sergokuzneczow.core.system_components.chip_segments.SingleFilterChip
+import com.sergokuzneczow.core.system_components.buttons.PixelsSurfaceButton
 import com.sergokuzneczow.core.ui.Dimensions
 import com.sergokuzneczow.core.ui.PixelsTheme
 import com.sergokuzneczow.core.utilites.ThemePreviews
@@ -125,20 +125,20 @@ private fun SortingChips(
     startValue: PageFilter.PictureSorting,
     selectedValue: (sorting: PageFilter.PictureSorting) -> Unit,
 ) {
-    val sortingChips: List<PixelsSingleFilterChipItem<PageFilter.PictureSorting>> = listOf(
-        PixelsSingleFilterChipItem(
+    val sortingChips: List<SingleFilterChip<PageFilter.PictureSorting>> = listOf(
+        SingleFilterChip(
             title = "Views",
             value = PageFilter.PictureSorting.VIEWS,
         ),
-        PixelsSingleFilterChipItem(
+        SingleFilterChip(
             title = "Loved",
             value = PageFilter.PictureSorting.FAVORITES,
         ),
-        PixelsSingleFilterChipItem(
+        SingleFilterChip(
             title = "Bests",
             value = PageFilter.PictureSorting.TOP_LIST,
         ),
-        PixelsSingleFilterChipItem(
+        SingleFilterChip(
             title = "Date",
             value = PageFilter.PictureSorting.DATE_ADDED,
         ),
@@ -151,7 +151,7 @@ private fun SortingChips(
             .fillMaxWidth()
             .padding(top = Dimensions.LargePadding, start = Dimensions.LargePadding)
     )
-    PixelsSingleFilterChip(
+    PixelsSingleFilterSegment(
         chips = sortingChips,
         startValue = startValue,
         selectedValue = selectedValue,
@@ -164,12 +164,12 @@ private fun OrderChips(
     startValue: PageFilter.PictureOrder,
     selectedValue: (order: PageFilter.PictureOrder) -> Unit,
 ) {
-    val sortingChips: List<PixelsSingleFilterChipItem<PageFilter.PictureOrder>> = listOf(
-        PixelsSingleFilterChipItem(
+    val sortingChips: List<SingleFilterChip<PageFilter.PictureOrder>> = listOf(
+        SingleFilterChip(
             title = "Desc",
             value = PageFilter.PictureOrder.DESC,
         ),
-        PixelsSingleFilterChipItem(
+        SingleFilterChip(
             title = "Asc",
             value = PageFilter.PictureOrder.ASC,
         ),
@@ -182,7 +182,7 @@ private fun OrderChips(
             .fillMaxWidth()
             .padding(top = Dimensions.LargePadding, start = Dimensions.LargePadding)
     )
-    PixelsSingleFilterChip(
+    PixelsSingleFilterSegment(
         chips = sortingChips,
         startValue = startValue,
         selectedValue = selectedValue,
@@ -195,16 +195,16 @@ private fun PuritiesChips(
     startValue: PageFilter.PicturePurities,
     selectedValue: (value: PageFilter.PicturePurities) -> Unit,
 ) {
-    val puritiesChips: List<PixelsMultiFilterChipItem> = listOf(
-        PixelsMultiFilterChipItem(
+    val puritiesChips: List<FilterSegmentChip> = listOf(
+        FilterSegmentChip(
             title = "Sfw",
             startState = startValue.sfw,
         ),
-        PixelsMultiFilterChipItem(
+        FilterSegmentChip(
             title = "Sketchy*",
             startState = startValue.sketchy,
         ),
-        PixelsMultiFilterChipItem(
+        FilterSegmentChip(
             title = "Nsfw*",
             startState = startValue.nsfw,
         ),
@@ -217,7 +217,7 @@ private fun PuritiesChips(
             .fillMaxWidth()
             .padding(top = Dimensions.LargePadding, start = Dimensions.LargePadding)
     )
-    PixelsMultiFilterChip(
+    PixelsFilterSegment(
         chips = puritiesChips,
         selectedValues = { selectedChips ->
             val selectedPurities = PageFilter.PicturePurities(
@@ -228,12 +228,12 @@ private fun PuritiesChips(
             selectedValue.invoke(selectedPurities)
         },
         modifier = Modifier.padding(start = Dimensions.Padding, end = Dimensions.Padding),
-        multiFilterStrategy = PixelsMultiFilterStrategy.NOT_EMPTY,
+        filterSegmentStrategy = FilterSegmentStrategy.NOT_EMPTY,
         colorAccentPredicate = { index, value ->
             when (index) {
-                1 -> ColorsAccent.WARNING
-                2 -> ColorsAccent.DANGEROUS
-                else -> ColorsAccent.STANDARD
+                1 -> FilterSegmentColorsAccent.WARNING
+                2 -> FilterSegmentColorsAccent.DANGEROUS
+                else -> FilterSegmentColorsAccent.STANDARD
             }
         }
     )
@@ -252,16 +252,16 @@ private fun CategoriesChips(
     startValue: PageFilter.PictureCategories,
     selectedValue: (values: PageFilter.PictureCategories) -> Unit,
 ) {
-    val puritiesChips: List<PixelsMultiFilterChipItem> = listOf(
-        PixelsMultiFilterChipItem(
+    val puritiesChips: List<FilterSegmentChip> = listOf(
+        FilterSegmentChip(
             title = "General",
             startState = startValue.general,
         ),
-        PixelsMultiFilterChipItem(
+        FilterSegmentChip(
             title = "Anime",
             startState = startValue.anime,
         ),
-        PixelsMultiFilterChipItem(
+        FilterSegmentChip(
             title = "People",
             startState = startValue.people,
         ),
@@ -274,7 +274,7 @@ private fun CategoriesChips(
             .fillMaxWidth()
             .padding(top = Dimensions.LargePadding, start = Dimensions.LargePadding)
     )
-    PixelsMultiFilterChip(
+    PixelsFilterSegment(
         chips = puritiesChips,
         selectedValues = { selectedChips ->
             val selectedCategories = PageFilter.PictureCategories(
@@ -285,7 +285,7 @@ private fun CategoriesChips(
             selectedValue.invoke(selectedCategories)
         },
         modifier = Modifier.padding(start = Dimensions.Padding, end = Dimensions.Padding),
-        multiFilterStrategy = PixelsMultiFilterStrategy.NOT_EMPTY,
+        filterSegmentStrategy = FilterSegmentStrategy.NOT_EMPTY,
     )
 }
 
