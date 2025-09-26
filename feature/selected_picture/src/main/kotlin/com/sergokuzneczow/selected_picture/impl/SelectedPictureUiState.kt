@@ -10,7 +10,5 @@ internal sealed interface SelectedPictureUiState {
     data class Success(
         val pictureKey: String,
         val picturePath: String,
-        val tags: List<Tag>,
-        val colors: List<Color>,
     ) : SelectedPictureUiState
 }

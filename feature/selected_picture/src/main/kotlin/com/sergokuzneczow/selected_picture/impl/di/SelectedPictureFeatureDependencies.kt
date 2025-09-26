@@ -11,8 +11,6 @@ public interface SelectedPictureFeatureDependencies {
 
     public val getPictureWithRelationsCase: GetPictureWithRelationsCase
 
-    public val getFirstPageKey: GetFirstPageKey
-
     public interface Contract {
         public fun selectedPictureFeatureDependenciesProvider(): SelectedPictureFeatureDependencies
     }

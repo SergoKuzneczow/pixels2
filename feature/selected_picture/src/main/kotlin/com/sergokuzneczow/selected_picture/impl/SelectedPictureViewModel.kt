@@ -29,9 +29,6 @@ internal class SelectedPictureViewModel(
     @Inject
     lateinit var getPictureWithRelationsCase: GetPictureWithRelationsCase
 
-    @Inject
-    lateinit var getFirstPageKey: GetFirstPageKey
-
     private val selectedPictureFeatureComponent: SelectedPictureFeatureComponent = DaggerSelectedPictureFeatureComponent.builder()
         .setDep(context.dependenciesProvider.selectedPictureFeatureDependenciesProvider())
         .build()
@@ -44,15 +41,13 @@ internal class SelectedPictureViewModel(
         getPictureWithRelationsCase.execute(
             pictureKey = pictureKey,
             coroutineScope = viewModelScope,
-        ).onEach {
-            log(tag = "SelectedPictureViewModel") { "getPictureWithRelationsCase.execute().onEach().it=$it)" }
-            it.onSuccess { pictureWithRelations ->
+        ).onEach { result ->
+            log(tag = "SelectedPictureViewModel") { "getPictureWithRelationsCase.execute().onEach().it=$result)" }
+            result.onSuccess { pictureWithRelations ->
                 selectedPictureUiState.emit(
                     SelectedPictureUiState.Success(
                         pictureKey = pictureWithRelations.picture.key,
                         picturePath = pictureWithRelations.picture.path,
-                        tags = pictureWithRelations.tags,
-                        colors = pictureWithRelations.colors,
                     )
                 )
             }
@@ -60,13 +55,6 @@ internal class SelectedPictureViewModel(
     }
 
     internal fun getSelectedPictureUiState(): StateFlow<SelectedPictureUiState> = selectedPictureUiState.asStateFlow()
-
-    internal fun getPageKey(pageQuery: PageQuery, pageFilter: PageFilter, completed: (pageKey: Long) -> Unit) {
-        viewModelScope.launch {
-            val pageKey: Long? = getFirstPageKey.execute(pageQuery = pageQuery, pageFilter = pageFilter)
-            pageKey?.let { pageKey -> completed.invoke(pageKey) }
-        }
-    }
 
     internal class Factory(
         @NonUiContext private val context: Context,
