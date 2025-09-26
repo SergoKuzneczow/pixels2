@@ -11,6 +11,7 @@ import com.sergokuzneczow.core.ui.icons.Filter
 import com.sergokuzneczow.core.ui.icons.Information
 import com.sergokuzneczow.core.ui.icons.New
 import com.sergokuzneczow.core.ui.icons.Search
+import com.sergokuzneczow.core.ui.icons.Selector
 import com.sergokuzneczow.core.ui.icons.Top
 import com.sergokuzneczow.core.ui.icons.Views
 import com.sergokuzneczow.core.utilites.ThemePreviews
@@ -25,6 +26,7 @@ public object PixelsIcons {
     public val filter: ImageVector  = PixelsIcons.Filter
     public val search: ImageVector  = PixelsIcons.Search
     public val information: ImageVector  = PixelsIcons.Information
+    public val selector: ImageVector  = PixelsIcons.Selector
 }
 
 @ThemePreviews
@@ -79,4 +81,10 @@ private fun Search() {
 @Composable
 private fun Information() {
     Image(imageVector = PixelsIcons.information, contentDescription = null)
+}
+
+@ThemePreviews
+@Composable
+private fun Selector() {
+    Image(imageVector = PixelsIcons.selector, contentDescription = null)
 }

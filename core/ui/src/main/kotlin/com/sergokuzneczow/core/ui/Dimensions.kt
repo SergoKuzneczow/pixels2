@@ -18,8 +18,7 @@ public data object Dimensions {
     public val ContentPadding: Dp = 4.dp
     public val Elevation: Dp = 4.dp
     public val SmallElevation: Dp = 2.dp
-
-    public val Border: BorderStroke = BorderStroke(1.dp, Color(1, 1, 1, 10))
+    public val Border: BorderStroke = BorderStroke(1.dp, Color(1, 1, 1, 20))
 }
 
 @Composable
