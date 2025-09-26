@@ -1,6 +1,7 @@
 package com.sergokuzneczow.pixels2
 
 import android.app.Application
+import com.sergokuzneczow.bottom_sheet_page_filter.impl.di.BottomSheetPageFilterDependencies
 import com.sergokuzneczow.dialog_page_filter.impl.di.DialogPageFilterDependencies
 import com.sergokuzneczow.home.impl.di.HomeFeatureDependencies
 import com.sergokuzneczow.pixels2.di.DaggerPixelsComponent
@@ -15,6 +16,7 @@ public class PixelsApplication : Application(),
     SettingsFeatureDependencies.Contract,
     SuitablePicturesFeatureDependencies.Contract,
     DialogPageFilterDependencies.Contract,
+    BottomSheetPageFilterDependencies.Contract,
     SearchSuitablePicturesDependencies.Contract,
     SelectedPictureFeatureDependencies.Contract {
 
@@ -36,6 +38,8 @@ public class PixelsApplication : Application(),
     override fun suitablePicturesFeatureDependenciesProvider(): SuitablePicturesFeatureDependencies = pixelsComponent
 
     override fun dialogPageFilterDependenciesProvider(): DialogPageFilterDependencies = pixelsComponent
+
+    override fun bottomSheetPageFilterDependenciesProvider(): BottomSheetPageFilterDependencies = pixelsComponent
 
     override fun searchSuitablePicturesDependenciesProvider(): SearchSuitablePicturesDependencies = pixelsComponent
 

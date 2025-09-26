@@ -2,6 +2,7 @@ package com.sergokuzneczow.pixels2.navigation
 
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
+import com.sergokuzneczow.bottom_sheet_page_filter.api.bottomSheetPageFilterScreenDestination
 import com.sergokuzneczow.dialog_page_filter.api.dialogPageFilterScreenDestination
 import com.sergokuzneczow.main_menu.api.mainMenuScreenDestination
 import com.sergokuzneczow.selected_picture.api.selectedPictureDestination
@@ -9,9 +10,11 @@ import com.sergokuzneczow.splash.api.splashScreenDestination
 import com.sergokuzneczow.suitable_pictures.api.suitablePicturesScreenDestination
 
 internal fun NavGraphBuilder.pixelsGraph(
-    navigateToMainMenuDestination: (NavOptions?) -> Unit,
+    popBackStack: () -> Unit,
+    navigateToMainMenuDestination: (navOptions: NavOptions?) -> Unit,
     navigateToSuitablePicturesDestination: (pageKey: Long) -> Unit,
     navigateToDialogPageFilterDestination: (pageKey: Long) -> Unit,
+    navigateToBottomSheetPageFilterDestination: (pageKey: Long, navOptions: NavOptions?) -> Unit,
     navigateToSelectedPictureDestination: (pictureKey: String) -> Unit,
 ) {
     splashScreenDestination(
@@ -21,11 +24,19 @@ internal fun NavGraphBuilder.pixelsGraph(
         navigateToSuitablePicturesDestination = navigateToSuitablePicturesDestination,
     )
     suitablePicturesScreenDestination(
-        navigateToDialogPageFilterDestination = navigateToDialogPageFilterDestination,
+        //navigateToDialogPageFilterDestination = navigateToDialogPageFilterDestination,
+        navigateToDialogPageFilterDestination = navigateToBottomSheetPageFilterDestination,
         navigateToSelectedPictureDestination = navigateToSelectedPictureDestination,
     )
     dialogPageFilterScreenDestination(
         navigateToSuitablePicturesDestination = navigateToSuitablePicturesDestination,
+    )
+    dialogPageFilterScreenDestination(
+        navigateToSuitablePicturesDestination = navigateToSuitablePicturesDestination,
+    )
+    bottomSheetPageFilterScreenDestination(
+        navigateToSuitablePicturesDestination = navigateToSuitablePicturesDestination,
+        popBackStack = popBackStack,
     )
     selectedPictureDestination(
         navigateToSuitablePicturesDestination = navigateToSuitablePicturesDestination,

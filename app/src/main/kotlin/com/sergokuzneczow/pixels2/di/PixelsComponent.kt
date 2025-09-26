@@ -2,6 +2,7 @@ package com.sergokuzneczow.pixels2.di
 
 import android.content.Context
 import androidx.annotation.NonUiContext
+import com.sergokuzneczow.bottom_sheet_page_filter.impl.di.BottomSheetPageFilterDependencies
 import com.sergokuzneczow.dialog_page_filter.impl.di.DialogPageFilterDependencies
 import com.sergokuzneczow.domain.getPage.GetPage
 import com.sergokuzneczow.domain.get_first_page_key.GetFirstPageKey
@@ -32,6 +33,7 @@ internal interface PixelsComponent :
     SettingsFeatureDependencies,
     SuitablePicturesFeatureDependencies,
     DialogPageFilterDependencies,
+    BottomSheetPageFilterDependencies,
     SearchSuitablePicturesDependencies,
     SelectedPictureFeatureDependencies {
 

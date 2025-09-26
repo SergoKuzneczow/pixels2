@@ -56,6 +56,7 @@ dependencies {
     implementation(project(":feature:splash"))
     implementation(project(":feature:suitable_pictures"))
     implementation(project(":feature:dialog_page_filter"))
+    implementation(project(":feature:bottom_sheet_page_filter"))
     implementation(project(":feature:search_suitable_pictures"))
     implementation(project(":feature:selected_picture"))
     // Android compose
