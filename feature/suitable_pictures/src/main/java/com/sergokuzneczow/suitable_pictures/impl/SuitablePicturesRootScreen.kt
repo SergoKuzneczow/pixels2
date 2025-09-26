@@ -5,6 +5,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavOptions
 import com.sergokuzneczow.suitable_pictures.impl.ui.SuitablePicturesScreen
 
 @Composable
@@ -22,6 +23,6 @@ internal fun SuitablePicturesRootScreen(
         suitablePicturesUiState = suitablePicturesUiState,
         nextPage = vm::nextPage,
         navigateToDialogPageFilterDestination = navigateToDialogPageFilterDestination,
-        navigateToSelectedPictureDestination=navigateToSelectedPictureDestination,
+        navigateToSelectedPictureDestination = navigateToSelectedPictureDestination,
     )
 }
