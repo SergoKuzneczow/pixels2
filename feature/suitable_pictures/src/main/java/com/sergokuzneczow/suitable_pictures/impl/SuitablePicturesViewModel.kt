@@ -60,7 +60,7 @@ internal class SuitablePicturesViewModel(
                 pageQuery = page.query,
                 pageFilter = page.filter,
                 loading = {},
-                completed = { isLastPage, isEmpty -> },
+                completed = { isLastPage, isEmpty -> viewModelScope.launch { if (isEmpty) suitablePicturesUiState.emit(SuitablePicturesUiState.Empty) } },
                 error = {}
             ).onEach { pages ->
                 pages.pages.forEach { (key, value) ->
