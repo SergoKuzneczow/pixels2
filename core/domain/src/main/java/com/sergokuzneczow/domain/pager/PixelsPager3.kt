@@ -22,7 +22,7 @@ import java.util.TreeMap
 public class PixelsPager3<T>(
     private val coroutineScope: CoroutineScope,
     private val sourceDataBlock: suspend (pageNumber: Int, pageSize: Int) -> Flow<List<T>>,
-    private val syncDataBlock: suspend (pageNumber: Int, pageSize: Int) -> Unit,
+    private val syncDataBlock: suspend (pageNumber: Int, pageSize: Int) -> List<T>?,
     private val sourceGetFirstPageNumber: suspend () -> Int,
     private val sourceGetLastPageNumber: suspend () -> Int,
     private val pageSize: Int,
@@ -196,8 +196,8 @@ public class PixelsPager3<T>(
                     /*if (lastPage < nextPage)*/ clearOverflow()
                 }
                 delayIfReloadingPage(pageNumber)
-                syncDataBlock(pageNumber, pageSize)
-                //clearPlaceholders(pageNumber)
+                val newPageData: List<T>? = syncDataBlock(pageNumber, pageSize)
+                newPageData?.let { if (it.isEmpty()) clearPlaceholders(pageNumber) }
                 pageSyncCompletedCallback(pageNumber, firstPage, lastPage, pagesMap.values.flatten().filterNotNull().isEmpty())
 //            while (updating) {
 //                // фрагмент кода автообновления страницы
@@ -238,15 +238,15 @@ public class PixelsPager3<T>(
         pagesMapMutex.withLock { addPage(pageNumber, data) }
     }
 
-//    private suspend fun clearPlaceholders(pageNumber: Int) {
-//        log(tag = "Pager3", level = Level.INFO) { "clearPlaceholders(); enter point; pageNumber=$pageNumber" }
-//        pagesMapMutex.withLock {
-//            pagesMap[pageNumber]?.also { items: List<T?> ->
-//                val itemsWithoutNull: List<T> = items.filterNotNull()
-//                emitPage(pageNumber, itemsWithoutNull)
-//            }
-//        }
-//    }
+    private suspend fun clearPlaceholders(pageNumber: Int) {
+        log(tag = "Pager3", level = Level.INFO) { "clearPlaceholders(); enter point; pageNumber=$pageNumber" }
+        pagesMapMutex.withLock {
+            pagesMap[pageNumber]?.also { items: List<T?> ->
+                val itemsWithoutNull: List<T> = items.filterNotNull()
+                addPage(pageNumber, itemsWithoutNull)
+            }
+        }
+    }
 
     private suspend fun clearOverflow() {
         log(tag = "Pager3", level = Level.INFO) { "clearOverflow();" }
@@ -265,28 +265,6 @@ public class PixelsPager3<T>(
         log(tag = "Pager3", level = Level.INFO) { "deletePage();" }
         pagesMap.remove(pageNumber)
         emitPage()
-//        val temp: ArrayList<T?> = arrayListOf()
-//        temp.ensureCapacity(pagesMap.size * pageSize)
-//        pagesMap.values.forEach { temp.addAll(it) }
-//
-//        val meta = PixelsPager.Meta(
-//            firstLoadedPage = pagesMap.keys.first(),
-//            lastLoadedPage = pagesMap.keys.last(),
-//            firstPage = firstPage,
-//            lastPage = lastPage,
-//        )
-//        val answer: PixelsPager.Answer<T?> = PixelsPager.Answer(
-//            items = temp,
-//            meta = meta
-//        )
-//        dataFlow.emit(answer)
-//
-//        val pages: PixelsPager.Pages<T?> = PixelsPager.Pages(
-//            pages = pagesMap,
-//            meta = meta,
-//        )
-//        dataMapFlow.emit(pages)
-//        pagesMap.onEach { entry -> log(tag = "Pager3", level = Level.VERBOSE) { "emitPage(); page number ${entry.key} emitted new data: ${entry.value}" } }
     }
 
     private suspend fun emitPage() {

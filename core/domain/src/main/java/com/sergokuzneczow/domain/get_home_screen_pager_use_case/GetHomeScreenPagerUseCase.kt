@@ -66,7 +66,7 @@ public class GetHomeScreenPagerUseCase @Inject constructor(
         return pageRepositoryApi.getPicturesWithRelations(pageNumber, PAGE_QUERY, PAGE_FILTER)
     }
 
-    private suspend fun syncDataSource(pageNumber: Int, pageSize: Int) {
+    private suspend fun syncDataSource(pageNumber: Int, pageSize: Int): List<PictureWithRelations>? {
         log(tag = "GetHomeScreenPagerUseCase") { "syncDataSource(); enter point" }
         val timePageLoad: Long? = pageRepositoryApi.getPageLoadTime(pageNumber, PAGE_QUERY, PAGE_FILTER)
         val currentTime: Long = System.currentTimeMillis()
@@ -74,11 +74,12 @@ public class GetHomeScreenPagerUseCase @Inject constructor(
         log(tag = "HomeFragmentViewModel") { "syncSourcePageData(); timePageLoad=$timePageLoad, currentTime=$currentTime, shiftCurrentTime=$shiftCurrentTime" }
         if (timePageLoad == null) {
             log(tag = "HomeFragmentViewModel") { "syncSourcePageData(); updatePicturesWithRelations() when null" }
-            pageRepositoryApi.updatePicturesWithRelations(pageNumber, PAGE_QUERY, PAGE_FILTER, pageSize)
+            return pageRepositoryApi.updatePicturesWithRelations(pageNumber, PAGE_QUERY, PAGE_FILTER, pageSize)
         } else if (timePageLoad < shiftCurrentTime) {
             log(tag = "HomeFragmentViewModel") { "syncSourcePageData(); updatePicturesWithRelations() when timePageLoad more currentTime}" }
             pageRepositoryApi.deletePages(PAGE_QUERY, PAGE_FILTER)
-            pageRepositoryApi.updatePicturesWithRelations(pageNumber, PAGE_QUERY, PAGE_FILTER, pageSize)
+            return pageRepositoryApi.updatePicturesWithRelations(pageNumber, PAGE_QUERY, PAGE_FILTER, pageSize)
         }
+        return null
     }
 }

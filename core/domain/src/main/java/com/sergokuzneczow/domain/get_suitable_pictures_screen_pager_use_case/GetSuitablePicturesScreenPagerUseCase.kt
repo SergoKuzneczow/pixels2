@@ -80,8 +80,8 @@ public class GetSuitablePicturesScreenPagerUseCase @Inject constructor(
         pageNumber: Int,
         pageQuery: PageQuery,
         pageFilter: PageFilter,
-    ) {
+    ): List<Picture> {
         log(tag = "GetSuitablePicturesScreenPagerUseCase") { "syncDataSource(); enter point" }
-        pageRepositoryApi.updatePictures(pageNumber, pageQuery, pageFilter)
+        return pageRepositoryApi.updatePictures(pageNumber, pageQuery, pageFilter)
     }
 }

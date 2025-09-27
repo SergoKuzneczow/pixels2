@@ -58,7 +58,7 @@ public interface PixelsPager<T> {
     public class Builder<T>(
         private val coroutineScope: CoroutineScope,
         private val sourceData: suspend (pageNumber: Int, pageSize: Int) -> Flow<List<T>>,
-        private val syncData: suspend (pageNumber: Int, pageSize: Int) -> Unit,
+        private val syncData: suspend (pageNumber: Int, pageSize: Int) -> List<T>?,
     ) {
         public companion object {
             private const val PAGE_SIZE: Int = 24
