@@ -41,12 +41,13 @@ public class PageRepositoryImpl @Inject constructor(
         databaseApi.deletePages(pageQuery, pageFilter)
     }
 
-    override suspend fun updatePictures(pageNumber: Int, pageQuery: PageQuery, pageFilter: PageFilter) {
+    override suspend fun updatePictures(pageNumber: Int, pageQuery: PageQuery, pageFilter: PageFilter): List<Picture> {
         val remoteAnswer: List<Picture> = networkApi.getPicturesPage(pageNumber, pageQuery, pageFilter)
         databaseApi.clearAndInsertPictures(remoteAnswer, pageNumber, pageQuery, pageFilter)
+        return remoteAnswer
     }
 
-    override suspend fun updatePicturesWithRelations(pageNumber: Int, pageQuery: PageQuery, pageFilter: PageFilter) {
+    override suspend fun updatePicturesWithRelations(pageNumber: Int, pageQuery: PageQuery, pageFilter: PageFilter): List<PictureWithRelations> {
         val actualPictures: List<Picture> = networkApi.getPicturesPage(pageNumber, pageQuery, pageFilter)
         val actualKeys: List<String> = actualPictures.map { it.key }
         val actualPicturesWithRelations: MutableList<PictureWithRelations> = mutableListOf()
@@ -63,6 +64,7 @@ public class PageRepositoryImpl @Inject constructor(
             pageQuery = pageQuery,
             pageFilter = pageFilter,
         )
+        return actualPicturesWithRelations
     }
 
     override suspend fun updatePicturesWithRelations(
@@ -70,7 +72,7 @@ public class PageRepositoryImpl @Inject constructor(
         pageQuery: PageQuery,
         pageFilter: PageFilter,
         pageSize: Int
-    ) {
+    ): List<PictureWithRelations> {
         log(tag = "PageRepositoryImpl") { "updatePicturesWithRelations(); pageNumber=$pageNumber, pageQuery=$pageQuery, pageFilter=$pageFilter enter point" }
         val actualPictures: List<Picture> = networkApi.getPicturesPage(pageNumber, pageQuery, pageFilter)
         val actualKeys: List<String> = if (actualPictures.size > pageSize) actualPictures.subList(0, pageSize).map { it.key } else actualPictures.map { it.key }
@@ -89,6 +91,7 @@ public class PageRepositoryImpl @Inject constructor(
             pageQuery = pageQuery,
             pageFilter = pageFilter,
         )
+        return actualPicturesWithRelations
     }
 
     override suspend fun getLastActualPageNumber(pageQuery: PageQuery, pageFilter: PageFilter): Int = networkApi.getLastPageNumber(pageQuery, pageFilter)

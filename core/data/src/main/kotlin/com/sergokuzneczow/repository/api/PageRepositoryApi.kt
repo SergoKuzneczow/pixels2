@@ -46,20 +46,20 @@ public interface PageRepositoryApi {
         pageNumber: Int,
         pageQuery: PageQuery = PageQuery.DEFAULT,
         pageFilter: PageFilter,
-    )
+    ): List<Picture>
 
     public suspend fun updatePicturesWithRelations(
         pageNumber: Int,
         pageQuery: PageQuery = PageQuery.DEFAULT,
         pageFilter: PageFilter,
-    )
+    ): List<PictureWithRelations>
 
     public suspend fun updatePicturesWithRelations(
         pageNumber: Int,
         pageQuery: PageQuery = PageQuery.DEFAULT,
         pageFilter: PageFilter,
         pageSize: Int,
-    )
+    ): List<PictureWithRelations>
 
     public suspend fun getLastActualPageNumber(
         pageQuery: PageQuery = PageQuery.DEFAULT,
