@@ -65,4 +65,24 @@ public interface PageRepositoryApi {
         pageQuery: PageQuery = PageQuery.DEFAULT,
         pageFilter: PageFilter,
     ): Int
+
+    public suspend fun getActualPicturesWithRelations(
+        pageNumber: Int,
+        pageQuery: PageQuery = PageQuery.DEFAULT,
+        pageFilter: PageFilter,
+    ): List<PictureWithRelations>
+
+    public suspend fun getActualPicturesWithRelations(
+        pageNumber: Int,
+        pageQuery: PageQuery = PageQuery.DEFAULT,
+        pageFilter: PageFilter,
+        pageSize: Int,
+    ): List<PictureWithRelations>
+
+    public suspend fun clearAndInsertPicturesWithRelations(
+        pageData: List<PictureWithRelations>,
+        pageNumber: Int,
+        pageQuery: PageQuery,
+        pageFilter: PageFilter,
+    )
 }

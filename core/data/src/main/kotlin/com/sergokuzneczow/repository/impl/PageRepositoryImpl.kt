@@ -8,6 +8,7 @@ import com.sergokuzneczow.models.Picture
 import com.sergokuzneczow.models.PictureWithRelations
 import com.sergokuzneczow.network.api.PixelsNetworkDataSourceApi
 import com.sergokuzneczow.repository.api.PageRepositoryApi
+import com.sergokuzneczow.utilities.logger.Level
 import com.sergokuzneczow.utilities.logger.log
 import jakarta.inject.Inject
 import kotlinx.coroutines.delay
@@ -95,4 +96,62 @@ public class PageRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getLastActualPageNumber(pageQuery: PageQuery, pageFilter: PageFilter): Int = networkApi.getLastPageNumber(pageQuery, pageFilter)
+
+    override suspend fun getActualPicturesWithRelations(
+        pageNumber: Int,
+        pageQuery: PageQuery,
+        pageFilter: PageFilter
+    ): List<PictureWithRelations> {
+        val actualPictures: List<Picture> = networkApi.getPicturesPage(pageNumber, pageQuery, pageFilter)
+        val actualKeys: List<String> = actualPictures.map { it.key }
+        val actualPicturesWithRelations: MutableList<PictureWithRelations> = mutableListOf()
+        var position = 0
+        while (position < actualKeys.size) {
+            val actualPictureWithRelation: PictureWithRelations = networkApi.getPicture(actualKeys[position])
+            actualPicturesWithRelations.add(actualPictureWithRelation)
+            position++
+            delay(100)
+        }
+        return actualPicturesWithRelations
+    }
+
+    override suspend fun getActualPicturesWithRelations(
+        pageNumber: Int,
+        pageQuery: PageQuery,
+        pageFilter: PageFilter,
+        pageSize: Int,
+    ): List<PictureWithRelations> {
+        log(tag = "PageRepositoryImpl", level = Level.INFO) { "getActualPicturesWithRelations(); pageNumber=$pageNumber, pageQuery=$pageQuery, pageFilter=$pageFilter enter point" }
+        val actualPictures: List<Picture> = networkApi.getPicturesPage(pageNumber, pageQuery, pageFilter)
+        val actualKeys: List<String> = if (actualPictures.size > pageSize) actualPictures.subList(0, pageSize).map { it.key } else actualPictures.map { it.key }
+        val actualPicturesWithRelations: MutableList<PictureWithRelations> = mutableListOf()
+        var position = 0
+        while (position < actualKeys.size) {
+            //runCatching {
+            val actualPictureWithRelation: PictureWithRelations = networkApi.getPicture(actualKeys[position])
+            log(tag = "PageRepositoryImpl") { "getActualPicturesWithRelations(); pageNumber=$pageNumber, position=$position, actualPictureWithRelation=$actualPictureWithRelation" }
+            actualPicturesWithRelations.add(actualPictureWithRelation)
+            position++
+            delay(100)
+            //}.onFailure {
+            //    log(tag = "PageRepositoryImpl") { "getActualPicturesWithRelations(); pageNumber=$pageNumber, position=$position, throwable=$it" }
+            //   throw it
+            //}
+        }
+        return actualPicturesWithRelations
+    }
+
+    override suspend fun clearAndInsertPicturesWithRelations(
+        pageData: List<PictureWithRelations>,
+        pageNumber: Int,
+        pageQuery: PageQuery,
+        pageFilter: PageFilter
+    ) {
+        databaseApi.clearAndInsertPicturesWithRelations(
+            pictureWithRelations = pageData,
+            pageNumber = pageNumber,
+            pageQuery = pageQuery,
+            pageFilter = pageFilter,
+        )
+    }
 }

@@ -10,7 +10,7 @@ public interface PixelsPager<T> {
     public companion object {
         public const val UNREACHABLE_PAGE: Int = -1
         public const val FIRST_PAGE: Int = 1
-        public const val LAST_PAGE: Int = 999_999
+        public const val LAST_PAGE: Int = Int.MAX_VALUE
     }
 
     public fun dataFlow(): SharedFlow<Answer<T?>>
