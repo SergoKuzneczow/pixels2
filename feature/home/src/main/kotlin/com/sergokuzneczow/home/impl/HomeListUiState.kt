@@ -2,6 +2,7 @@ package com.sergokuzneczow.home.impl
 
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.sergokuzneczow.core.ui.PixelsIcons
+import com.sergokuzneczow.domain.pager4.IPixelsPager4
 import com.sergokuzneczow.models.PageFilter
 import com.sergokuzneczow.models.PageQuery
 import com.sergokuzneczow.models.PictureWithRelations
@@ -77,6 +78,10 @@ internal sealed interface HomeListUiState {
 
 internal fun TreeMap<Int, List<PictureWithRelations?>>.toSuggestedQueriesPages(): List<HomeListUiState.SuggestedQueriesPage> {
     return this.entries.map { HomeListUiState.SuggestedQueriesPage(it.value.toSuggestedQueriesNew()) }
+}
+
+internal fun IPixelsPager4.Answer<PictureWithRelations?>.toSuggestedQueriesPages(): List<HomeListUiState.SuggestedQueriesPage> {
+    return this.pages.entries.map { HomeListUiState.SuggestedQueriesPage(it.value.data.toSuggestedQueriesNew()) }
 }
 
 internal fun List<PictureWithRelations?>.toSuggestedQueriesNew(): List<HomeListUiState.SuggestedQuery?> {

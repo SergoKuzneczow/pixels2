@@ -3,6 +3,7 @@ package com.sergokuzneczow.home.impl.di
 import android.app.Application
 import android.content.Context
 import com.sergokuzneczow.domain.get_first_page_key.GetFirstPageKey
+import com.sergokuzneczow.domain.get_home_screen_pager_use_case.GetHomeScreenPager4UseCase
 import com.sergokuzneczow.domain.get_home_screen_pager_use_case.GetHomeScreenPagerUseCase
 import com.sergokuzneczow.repository.api.ImageLoaderApi
 
@@ -10,6 +11,8 @@ import com.sergokuzneczow.repository.api.ImageLoaderApi
 public interface HomeFeatureDependencies {
 
     public val getHomeScreenPagerUseCase: GetHomeScreenPagerUseCase
+
+    public val getHomeScreenPager4UseCase: GetHomeScreenPager4UseCase
 
     public val getFirstPageKey: GetFirstPageKey
 
