@@ -27,10 +27,6 @@ public interface IPixelsPager4<T> {
 
     //public fun reloadPages()
 
-    //public fun onOnlineMode()
-
-    //public fun onOfflineMode()
-
     // public fun canceled()
 
     public enum class StartStrategy {

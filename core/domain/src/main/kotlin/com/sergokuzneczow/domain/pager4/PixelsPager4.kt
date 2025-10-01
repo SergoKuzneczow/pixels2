@@ -72,8 +72,10 @@ public class PixelsPager4<T>(
 
     private var pagerStarted: Boolean = false
 
+    @Volatile
     private var waitingLoadedPage: Boolean = false
 
+    @Volatile
     private var needNextPage: Boolean = false
 
     /**
@@ -159,7 +161,6 @@ public class PixelsPager4<T>(
                     syncPageLabelsMutex.withLock {
                         if (syncPageLabels[pageNumber] == true) {
                             addPage(pageNumber, it, Answer.Page.PageState.UPDATED)
-                            // if (it.size!=pageSize && pageNumber!=lastPage) reloadPage() // повторная загрузка при изменении или несовпадении конфигурации
                         } else {
                             if (it.isNotEmpty()) addPage(pageNumber, it, Answer.Page.PageState.CACHED)
                             else if (placeholdersStrategy == PlaceholdersStrategy.WITH) addPlaceholders(pageNumber)
