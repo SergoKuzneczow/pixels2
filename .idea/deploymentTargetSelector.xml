@@ -8,9 +8,6 @@
       <SelectionState runConfigName="core.network">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="Light theme - BottomSheetPictureInfoScreenPreview">
-        <option name="selectionMode" value="DROPDOWN" />
-      </SelectionState>
     </selectionStates>
   </component>
 </project>
