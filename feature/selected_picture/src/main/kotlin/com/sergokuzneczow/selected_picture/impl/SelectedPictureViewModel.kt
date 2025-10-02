@@ -5,10 +5,7 @@ import androidx.annotation.NonUiContext
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import com.sergokuzneczow.domain.get_first_page_key.GetFirstPageKey
 import com.sergokuzneczow.domain.get_picture_with_relations_case.GetPictureWithRelationsCase
-import com.sergokuzneczow.models.PageFilter
-import com.sergokuzneczow.models.PageQuery
 import com.sergokuzneczow.selected_picture.impl.di.DaggerSelectedPictureFeatureComponent
 import com.sergokuzneczow.selected_picture.impl.di.SelectedPictureFeatureComponent
 import com.sergokuzneczow.selected_picture.impl.di.dependenciesProvider
@@ -19,7 +16,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.launch
 
 internal class SelectedPictureViewModel(
     @NonUiContext context: Context,
