@@ -1,11 +1,19 @@
 package com.sergokuzneczow.domain.pager4
 
 import app.cash.turbine.test
+import com.sergokuzneczow.domain.pager4.IPixelsPager4.Answer.Page.PageState.Cached
+import com.sergokuzneczow.domain.pager4.IPixelsPager4.Answer.Page.PageState.Error
+import com.sergokuzneczow.domain.pager4.IPixelsPager4.Answer.Page.PageState.Placeholder
+import com.sergokuzneczow.domain.pager4.IPixelsPager4.Answer.Page.PageState.Updated
+import com.sergokuzneczow.domain.pager4.IPixelsPager4.PlaceholdersStrategy.WITH
+import com.sergokuzneczow.domain.pager4.IPixelsPager4.RefreshStrategy.INSTANTLY
 import junit.framework.TestCase.assertEquals
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.plus
 import kotlinx.coroutines.test.TestResult
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
@@ -28,16 +36,16 @@ class PixelsPager4Test {
         val fakeDataSource: FakeDataSource<String> = FakeDataSource(cached, 0)
 
         val pager4: IPixelsPager4<String?> = IPixelsPager4.Builder(
-            coroutineScope = backgroundScope,
-            sourceDataBlock = { pageNumber, _ -> fakeDataSource.scores() },
+            coroutineScope = backgroundScope + SupervisorJob(),
+            sourceDataBlock = { pageNumber, _ -> fakeDataSource.getFlow() },
             getActualDataBlock = { pageNumber, pageSize ->
                 delay(1.seconds)
                 new
             },
             setActualDataBlock = { pageNumber, pageSize, new -> fakeDataSource.emit(new) }
         ).setStartStrategy(IPixelsPager4.StartStrategy.INSTANTLY)
-            .setPlaceholderStrategy(IPixelsPager4.PlaceholdersStrategy.WITH)
-            .setRefreshStrategy(IPixelsPager4.RefreshStrategy.INSTANTLY)
+            .setPlaceholderStrategy(WITH)
+            .setRefreshStrategy(INSTANTLY)
             .setStartPage(firstPage)
             .setRequestFirstPageNumber { firstPage }
             .setRequestLastPageNumber { firstPage }
@@ -47,10 +55,10 @@ class PixelsPager4Test {
         pager4.getPages().test {
             val first: IPixelsPager4.Answer.Page<String?>? = awaitItem().pages[firstPage]
             assertEquals(expectedStartData, first?.data)
-            assertEquals(IPixelsPager4.Answer.Page.PageState.PLACEHOLDER, first?.pageState)
+            assertEquals(Placeholder, first?.pageState)
             val second: IPixelsPager4.Answer.Page<String?>? = awaitItem().pages[firstPage]
             assertEquals(expectedNewData, second?.data)
-            assertEquals(IPixelsPager4.Answer.Page.PageState.UPDATED, second?.pageState)
+            assertEquals(Updated, second?.pageState)
         }
     }
 
@@ -68,16 +76,16 @@ class PixelsPager4Test {
         val fakeDataSource: FakeDataSource<String> = FakeDataSource(cached, 0)
 
         val pager4: IPixelsPager4<String?> = IPixelsPager4.Builder(
-            coroutineScope = backgroundScope,
-            sourceDataBlock = { pageNumber, _ -> fakeDataSource.scores() },
+            coroutineScope = backgroundScope + SupervisorJob(),
+            sourceDataBlock = { pageNumber, _ -> fakeDataSource.getFlow() },
             getActualDataBlock = { pageNumber, pageSize ->
                 delay(1_000)
                 updated
             },
             setActualDataBlock = { pageNumber, pageSize, new -> fakeDataSource.emit(new) }
         ).setStartStrategy(IPixelsPager4.StartStrategy.INSTANTLY)
-            .setPlaceholderStrategy(IPixelsPager4.PlaceholdersStrategy.WITH)
-            .setRefreshStrategy(IPixelsPager4.RefreshStrategy.INSTANTLY)
+            .setPlaceholderStrategy(WITH)
+            .setRefreshStrategy(INSTANTLY)
             .setStartPage(firstPage)
             .setRequestFirstPageNumber { firstPage }
             .setRequestLastPageNumber { firstPage }
@@ -87,10 +95,10 @@ class PixelsPager4Test {
         pager4.getPages().test {
             val first: IPixelsPager4.Answer.Page<String?>? = awaitItem().pages[firstPage]
             assertEquals(expectedCached, first?.data)
-            assertEquals(IPixelsPager4.Answer.Page.PageState.CACHED, first?.pageState)
+            assertEquals(Cached, first?.pageState)
             val second: IPixelsPager4.Answer.Page<String?>? = awaitItem().pages[firstPage]
             assertEquals(expectedUpdated, second?.data)
-            assertEquals(IPixelsPager4.Answer.Page.PageState.UPDATED, second?.pageState)
+            assertEquals(Updated, second?.pageState)
         }
     }
 
@@ -107,13 +115,13 @@ class PixelsPager4Test {
         val fakeDataSource: FakeDataSource<String> = FakeDataSource(cached, 1_000)
 
         val pager4: IPixelsPager4<String?> = IPixelsPager4.Builder(
-            coroutineScope = backgroundScope,
-            sourceDataBlock = { pageNumber, _ -> fakeDataSource.scores() },
+            coroutineScope = backgroundScope + SupervisorJob(),
+            sourceDataBlock = { pageNumber, _ -> fakeDataSource.getFlow() },
             getActualDataBlock = { pageNumber, pageSize -> new },
             setActualDataBlock = { pageNumber, pageSize, new -> fakeDataSource.emit(new) }
         ).setStartStrategy(IPixelsPager4.StartStrategy.INSTANTLY)
-            .setPlaceholderStrategy(IPixelsPager4.PlaceholdersStrategy.WITH)
-            .setRefreshStrategy(IPixelsPager4.RefreshStrategy.INSTANTLY)
+            .setPlaceholderStrategy(WITH)
+            .setRefreshStrategy(INSTANTLY)
             .setStartPage(firstPage)
             .setRequestFirstPageNumber { firstPage }
             .setRequestLastPageNumber { firstPage }
@@ -123,13 +131,172 @@ class PixelsPager4Test {
         pager4.getPages().test {
             val first: IPixelsPager4.Answer.Page<String?>? = awaitItem().pages[firstPage]
             assertEquals(expectedNew, first?.data)
-            assertEquals(IPixelsPager4.Answer.Page.PageState.UPDATED, first?.pageState)
+            assertEquals(Updated, first?.pageState)
+        }
+    }
+
+    /**
+     * Тест эмулирует поведение IPixelsPager4 в ситуации, когда обращение к удаленному ресурсу для синхронизации данных возвращает исключение.*/
+    @Test
+    fun `catch exception sync process`(): TestResult = runTest {
+        val firstPage = 1
+        val pageSize = 24
+        val exceptionMessage = "Exception"
+        val cached: List<String> = List(12) { "old $firstPage" }
+
+        val fakeDataSource: FakeDataSource<String> = FakeDataSource(cached)
+
+        val pager4: IPixelsPager4<String?> = IPixelsPager4.Builder(
+            coroutineScope = backgroundScope + SupervisorJob(),
+            sourceDataBlock = { pageNumber, _ -> fakeDataSource.getFlow() },
+            getActualDataBlock = { pageNumber, pageSize ->
+                delay(1.seconds)
+                throw IllegalStateException(exceptionMessage)
+            },
+            setActualDataBlock = { pageNumber, pageSize, new -> fakeDataSource.emit(new) }
+        ).setStartStrategy(IPixelsPager4.StartStrategy.INSTANTLY)
+            .setPlaceholderStrategy(WITH)
+            .setRefreshStrategy(INSTANTLY)
+            .setStartPage(firstPage)
+            .setRequestFirstPageNumber { firstPage }
+            .setRequestLastPageNumber { firstPage }
+            .setPageSize(pageSize)
+            .build()
+
+        pager4.getPages().test {
+            val i1: IPixelsPager4.Answer.Page<String?>? = awaitItem().pages[firstPage]
+            assertEquals(cached, i1?.data)
+            assertEquals(Cached, i1?.pageState)
+
+            val i2: IPixelsPager4.Answer.Page<String?>? = awaitItem().pages[firstPage]
+            assertEquals(cached, i2?.data)
+            assertEquals(Error(exceptionMessage), i2?.pageState)
+        }
+    }
+
+    /**
+     * Тест эмулирует поведение IPixelsPager4 в ситуации, когда */
+    @Test
+    fun `wait loading next page, when was called nextPage()`(): TestResult = runTest {
+        val firstPage = 1
+        val secondPage = 2
+        val thirdPage = 3
+        val fourthPage = 3
+        val lastPage = 5
+        val pageSize = 4
+
+        val fakeDataSources: HashMap<Int, FakeDataSource<String?>> = hashMapOf(
+            Pair(firstPage, FakeDataSource(emptyList())),
+            Pair(secondPage, FakeDataSource(emptyList())),
+            Pair(thirdPage, FakeDataSource(emptyList())),
+            Pair(fourthPage, FakeDataSource(emptyList())),
+            Pair(lastPage, FakeDataSource(emptyList())),
+        )
+
+        val placeholders: List<String?> = List(pageSize) { null }
+
+        val new: HashMap<Int, List<String>> = hashMapOf(
+            Pair(firstPage, List(pageSize) { "new 1" }),
+            Pair(secondPage, List(pageSize) { "new 2" }),
+            Pair(thirdPage, List(pageSize) { "new 3" }),
+            Pair(fourthPage, List(pageSize) { "new 4" }),
+            Pair(lastPage, List(pageSize) { "new 5" }),
+        )
+
+        val pager4: IPixelsPager4<String?> = IPixelsPager4.Builder(
+            coroutineScope = backgroundScope + SupervisorJob(),
+            sourceDataBlock = { pageNumber, _ ->
+                fakeDataSources[pageNumber]!!.getFlow()
+            },
+            getActualDataBlock = { pageNumber, pageSize ->
+                delay(100)
+                new[pageNumber]!!
+            },
+            setActualDataBlock = { pageNumber, pageSize, new ->
+                fakeDataSources[pageNumber]!!.emit(new)
+            }
+        ).setStartStrategy(IPixelsPager4.StartStrategy.INSTANTLY)
+            .setPlaceholderStrategy(WITH)
+            .setRefreshStrategy(INSTANTLY)
+            .setLoadStrategy(IPixelsPager4.LoadStrategy.SEQUENTIALLY)
+            .setStartPage(firstPage)
+            .setRequestFirstPageNumber { firstPage }
+            .setRequestLastPageNumber { lastPage }
+            .setPageSize(pageSize)
+            .build()
+
+        pager4.getPages().test(2.seconds) {
+            val i1: IPixelsPager4.Answer<String?> = awaitItem()
+            assertEquals(
+                IPixelsPager4.Answer.Page(placeholders, Placeholder),
+                i1.pages.values.toList().get(0)
+            )
+
+            val i2 = awaitItem()
+            assertEquals(
+                IPixelsPager4.Answer.Page(new[firstPage]!!, Updated),
+                i2.pages.values.toList().get(0)
+            )
+
+            pager4.nextPage()
+            pager4.nextPage() // make PixelsPager4.needNextPage=true
+            pager4.nextPage() // must ignore
+
+            val i3: IPixelsPager4.Answer<String?> = awaitItem()
+            assertEquals(
+                IPixelsPager4.Answer.Page(new[firstPage]!!, Updated),
+                i3.pages.values.toList().get(0)
+            )
+            assertEquals(
+                IPixelsPager4.Answer.Page(placeholders, Placeholder),
+                i3.pages.values.toList().get(1)
+            )
+
+            val i4: IPixelsPager4.Answer<String?> = awaitItem()
+            assertEquals(
+                IPixelsPager4.Answer.Page(new[firstPage]!!, Updated),
+                i4.pages.values.toList().get(0)
+            )
+            assertEquals(
+                IPixelsPager4.Answer.Page(new[secondPage]!!, Updated),
+                i4.pages.values.toList().get(1)
+            )
+
+            val i5: IPixelsPager4.Answer<String?> = awaitItem()
+            assertEquals(
+                IPixelsPager4.Answer.Page(new[firstPage]!!, Updated),
+                i5.pages.values.toList().get(0)
+            )
+            assertEquals(
+                IPixelsPager4.Answer.Page(new[secondPage]!!, Updated),
+                i5.pages.values.toList().get(1)
+            )
+            assertEquals(
+                IPixelsPager4.Answer.Page(placeholders, Placeholder),
+                i5.pages.values.toList().get(2)
+            )
+
+            val i6: IPixelsPager4.Answer<String?> = awaitItem()
+            assertEquals(
+                IPixelsPager4.Answer.Page(new[firstPage]!!, Updated),
+                i6.pages.values.toList().get(0)
+            )
+            assertEquals(
+                IPixelsPager4.Answer.Page(new[secondPage]!!, Updated),
+                i6.pages.values.toList().get(1)
+            )
+            assertEquals(
+                IPixelsPager4.Answer.Page(new[thirdPage]!!, Updated),
+                i6.pages.values.toList().get(2)
+            )
+
+            awaitItem() // Must down!!!
         }
     }
 }
 
-private class FakeDataSource<T>(startData: List<T>, private val startDuration: Long) {
+private class FakeDataSource<T>(startData: List<T>, private val startDuration: Long = 0) {
     private val flow: MutableStateFlow<List<T?>> = MutableStateFlow(startData)
     suspend fun emit(list: List<T?>) = flow.emit(list)
-    fun scores(): Flow<List<T?>> = flow.onStart { delay(startDuration) }
+    fun getFlow(): Flow<List<T?>> = flow.onStart { delay(startDuration) }
 }
