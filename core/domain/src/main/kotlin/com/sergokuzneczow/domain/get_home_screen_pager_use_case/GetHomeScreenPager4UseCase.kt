@@ -39,21 +39,14 @@ public class GetHomeScreenPager4UseCase @Inject constructor(
 
     public fun execute(
         coroutineScope: CoroutineScope,
-        loading: () -> Unit,
-        completed: (lastPage: Int, isEmpty: Boolean) -> Unit,
-        error: (throwable: Throwable) -> Unit,
     ): SharedFlow<IPixelsPager4.Answer<PictureWithRelations?>> {
         pixelsPager = IPixelsPager4.Builder(
             coroutineScope = coroutineScope,
             sourceDataBlock = { pageNumber, _ -> dataSource(pageNumber) },
             getActualDataBlock = { pageNumber, pageSize -> getActualData(pageNumber, pageSize) },
-            setActualDataBlock = { pageNumber, _, new -> cachingDataData(pageNumber, new) },
+            setActualDataBlock = { pageNumber, _, new -> cachingData(pageNumber, new) },
         )
-//            .setPageDownloadStartedCallback { loading.invoke() }
-//            .setPageSyncCompletedCallback { _, _, lastPage, isEmpty -> completed.invoke(lastPage, isEmpty) }
-//            .setSourceDataExceptionCallback { _, t -> error.invoke(t) }
-//            .setSyncDataExceptionCallback { _, t -> error.invoke(t) }
-            .setPageSize(8)
+            .setPageSize(6)
             .setStartStrategy(IPixelsPager4.StartStrategy.INSTANTLY)
             .setPlaceholderStrategy(IPixelsPager4.PlaceholdersStrategy.WITH)
             .setLoadStrategy(IPixelsPager4.LoadStrategy.SEQUENTIALLY)
@@ -66,6 +59,7 @@ public class GetHomeScreenPager4UseCase @Inject constructor(
     }
 
     private fun dataSource(pageNumber: Int): Flow<List<PictureWithRelations>> {
+        log(tag = "GetHomeScreenPager4UseCase", level = Level.INFO) { "dataSource(); pageNumber=$pageNumber" }
         return pageRepositoryApi.getPicturesWithRelations(pageNumber, PAGE_QUERY, PAGE_FILTER)
     }
 
@@ -74,16 +68,15 @@ public class GetHomeScreenPager4UseCase @Inject constructor(
         val timePageLoad: Long? = pageRepositoryApi.getPageLoadTime(pageNumber, PAGE_QUERY, PAGE_FILTER)
         val shiftCurrentTime: Long = System.currentTimeMillis().minus(SIX_HOURS)
         return if (timePageLoad == null) {
-            log(tag = "GetHomeScreenPager4UseCase") { "getActualData(); timePageLoad == null" }
             pageRepositoryApi.getActualPicturesWithRelations(pageNumber, PAGE_QUERY, PAGE_FILTER, pageSize)
         } else if (timePageLoad < shiftCurrentTime) {
-            log(tag = "GetHomeScreenPager4UseCase") { "getActualData(); timePageLoad < shiftCurrentTime" }
             if (pageNumber == 1) pageRepositoryApi.deletePages(PAGE_QUERY, PAGE_FILTER)
             pageRepositoryApi.getActualPicturesWithRelations(pageNumber, PAGE_QUERY, PAGE_FILTER, pageSize)
         } else null
     }
 
-    private suspend fun cachingDataData(pageNumber: Int, actual: List<PictureWithRelations>) {
+    private suspend fun cachingData(pageNumber: Int, actual: List<PictureWithRelations>) {
+        log(tag = "GetHomeScreenPager4UseCase", level = Level.INFO) { "cachingData(); pageNumber=$pageNumber" }
         pageRepositoryApi.clearAndInsertPicturesWithRelations(actual, pageNumber, PAGE_QUERY, PAGE_FILTER)
     }
 }
