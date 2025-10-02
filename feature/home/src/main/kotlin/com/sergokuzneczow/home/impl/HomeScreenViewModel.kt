@@ -7,7 +7,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.sergokuzneczow.domain.get_first_page_key.GetFirstPageKey
 import com.sergokuzneczow.domain.get_home_screen_pager_use_case.GetHomeScreenPager4UseCase
-import com.sergokuzneczow.domain.get_home_screen_pager_use_case.GetHomeScreenPagerUseCase
 import com.sergokuzneczow.domain.pager4.IPixelsPager4
 import com.sergokuzneczow.home.impl.di.DaggerHomeScreenComponent
 import com.sergokuzneczow.home.impl.di.HomeScreenComponent
@@ -32,9 +31,6 @@ internal class HomeScreenViewModel(
 ) : ViewModel() {
 
     @Inject
-    lateinit var getHomeScreenPagerUseCase: GetHomeScreenPagerUseCase
-
-    @Inject
     lateinit var getHomeScreenPager4UseCase: GetHomeScreenPager4UseCase
 
     @Inject
@@ -53,34 +49,14 @@ internal class HomeScreenViewModel(
     init {
         homeScreenComponent.inject(this)
 
-//        getHomeScreenPagerUseCase.execute(
-//            coroutineScope = viewModelScope + Dispatchers.IO,
-//            loading = { /*showProgressBar.invoke(true) */ },
-//            completed = { lastPage, isEmpty ->
-//                /*if (lastPage == 1 && isEmpty) viewModelScope.launch { suggestedQueriesUiState.emit(SuggestedQueriesUiState.Empty) }*/
-//                /*showProgressBar.invoke(false)*/
-//            },
-//            error = { throwable -> }
-//        )
-//            .onEach { pages: PixelsPager.Pages<PictureWithRelations?> ->
-////                pages.entries.forEach { page: MutableMap.MutableEntry<Int, List<PictureWithRelations?>> ->
-////                    log(tag = "HomeScreenViewModel") { "getHomeScreenPagerUseCase.executeMap(); map key=${page.key} value=${page.value}" }
-////                }
-//                homeListUiState.emit(HomeListUiState.Success(suggestedQueriesPages = pages.pages.toSuggestedQueriesPages()))
-//            }.launchIn(viewModelScope)
-
-        getHomeScreenPager4UseCase.execute(
-            coroutineScope = viewModelScope + Dispatchers.IO,
-            loading = { /*showProgressBar.invoke(true) */ },
-            completed = { lastPage, isEmpty -> },
-            error = { throwable -> }
-        ).onEach { answer: IPixelsPager4.Answer<PictureWithRelations?> ->
-            answer.pages.values.forEachIndexed { index, page ->
-                log(tag = "HomeScreenViewModel", level = Level.INFO) { "getHomeScreenPager4UseCase.execute().onEach(); index=$index, page.data=${page.data}" }
-                log(tag = "HomeScreenViewModel", level = Level.INFO) { "getHomeScreenPager4UseCase.execute().onEach(); index=$index, page.pageState=${page.pageState}" }
-            }
-            homeListUiState.emit(HomeListUiState.Success(suggestedQueriesPages = answer.toSuggestedQueriesPages()))
-        }.launchIn(viewModelScope)
+        getHomeScreenPager4UseCase.execute(coroutineScope = viewModelScope + Dispatchers.IO)
+            .onEach { answer: IPixelsPager4.Answer<PictureWithRelations?> ->
+                answer.pages.values.forEachIndexed { index, page ->
+                    log(tag = "HomeScreenViewModel", level = Level.DEBUG) { "getHomeScreenPager4UseCase.execute().onEach(); index=$index, page.data=${page.data}" }
+                    log(tag = "HomeScreenViewModel", level = Level.DEBUG) { "getHomeScreenPager4UseCase.execute().onEach(); index=$index, page.pageState=${page.pageState}" }
+                }
+                homeListUiState.emit(HomeListUiState.Success(suggestedQueriesPages = answer.toSuggestedQueriesPages()))
+            }.launchIn(viewModelScope)
     }
 
     fun getHomeListUiState(): StateFlow<HomeListUiState> = homeListUiState.asStateFlow()
