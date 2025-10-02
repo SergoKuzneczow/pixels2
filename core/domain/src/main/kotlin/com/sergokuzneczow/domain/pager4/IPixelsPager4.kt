@@ -13,21 +13,11 @@ public interface IPixelsPager4<T> {
         public const val LAST_PAGE: Int = Int.MAX_VALUE
     }
 
-    //public fun getItems(): SharedFlow<Answer<T?>>
-
     public fun getPages(): SharedFlow<Answer<T?>>
 
     public fun start()
 
     public fun nextPage()
-
-    //public fun startLoadOrReload(executeWhenStart: () -> Unit = {}, executeWhenReload: () -> Unit = {})
-
-    //public fun stopLoad()
-
-    //public fun reloadPages()
-
-    // public fun canceled()
 
     public enum class StartStrategy {
         INSTANTLY,
@@ -187,10 +177,11 @@ public interface IPixelsPager4<T> {
             val pageState: PageState
         ) {
 
-            public enum class PageState {
-                PLACEHOLDER,
-                CACHED,
-                UPDATED;
+            public sealed interface PageState {
+                public data object Placeholder : PageState
+                public data object Cached : PageState
+                public data object Updated : PageState
+                public data class Error(val message: String) : PageState
             }
         }
 
