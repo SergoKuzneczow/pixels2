@@ -16,6 +16,8 @@ import com.sergokuzneczow.models.Tag
 @Composable
 internal fun BottomSheetPictureInfoScreen(
     pictureInformationUiState: PictureInformationUiState,
+    savePicture: (String) -> Unit,
+    searchLikeThisPicture: (String) -> Unit,
     onTagChipClick: (Tag) -> Unit,
     onColorChipClick: (Color) -> Unit,
     popBackStack: () -> Unit,
@@ -28,10 +30,14 @@ internal fun BottomSheetPictureInfoScreen(
 
             is PictureInformationUiState.Success -> {
                 PictureInformationBottomSheet(
+                    picturePath = pictureInformationUiState.picturePath,
                     tags = pictureInformationUiState.tags,
                     colors = pictureInformationUiState.colors,
+                    saveButtonUiState = pictureInformationUiState.pictureSavingUiState,
                     onTagChipClick = { tag: Tag -> onTagChipClick.invoke(tag) },
                     onColorChipClick = { color: Color -> onColorChipClick.invoke(color) },
+                    onSavePictureClick = { savePicture.invoke(pictureInformationUiState.picturePath) },
+                    onLikeThisPictureButtonClick = { searchLikeThisPicture.invoke(pictureInformationUiState.pictureKey) },
                     whenDismissRequest = { popBackStack.invoke() }
                 )
             }
@@ -45,6 +51,8 @@ private fun BottomSheetPictureInfoScreenPreview() {
     PixelsTheme {
         BottomSheetPictureInfoScreen(
             pictureInformationUiState = PictureInformationUiState.Success(
+                pictureKey = "preview",
+                picturePath = "preview",
                 tags = listOf(
                     Tag(
                         id = 0,
@@ -61,11 +69,14 @@ private fun BottomSheetPictureInfoScreenPreview() {
                         key = "#660000",
                         name = "#660000"
                     )
-                )
+                ),
+                pictureSavingUiState = PictureInformationUiState.PictureSavingUiState.Prepared,
             ),
             onTagChipClick = {},
             onColorChipClick = {},
-            popBackStack = {}
+            savePicture = {},
+            searchLikeThisPicture = {},
+            popBackStack = {},
         )
     }
 }

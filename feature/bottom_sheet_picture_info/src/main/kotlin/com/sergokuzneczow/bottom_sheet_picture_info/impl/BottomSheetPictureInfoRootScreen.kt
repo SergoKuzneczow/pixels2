@@ -22,6 +22,13 @@ internal fun BottomSheetPictureInfoRootScreen(
 
     BottomSheetPictureInfoScreen(
         pictureInformationUiState = pictureInformationUiState,
+        savePicture = vm::savePicture,
+        searchLikeThisPicture = { pictureKey ->
+            vm.getPageKey(
+                pageQuery = PageQuery.Like(pictureKey = pictureKey, description = pictureKey),
+                pageFilter = PageFilter.DEFAULT,
+                completed = { pageKey -> navigateToSuitablePicturesDestination.invoke(pageKey) })
+        },
         onTagChipClick = { tag: Tag ->
             vm.getPageKey(
                 pageQuery = PageQuery.Tag(tagKey = tag.id, description = tag.name),

@@ -12,14 +12,19 @@ import com.sergokuzneczow.domain.get_first_page_key.GetFirstPageKey
 import com.sergokuzneczow.domain.get_picture_with_relations_case.GetPictureWithRelationsCase
 import com.sergokuzneczow.models.PageFilter
 import com.sergokuzneczow.models.PageQuery
+import com.sergokuzneczow.repository.api.ImageLoaderApi
+import com.sergokuzneczow.repository.api.StorageRepositoryApi
 import com.sergokuzneczow.utilities.logger.log
 import jakarta.inject.Inject
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import kotlin.time.Duration.Companion.seconds
 
 internal class BottomSheetPictureInfoViewModel(
     @NonUiContext context: Context,
@@ -31,6 +36,12 @@ internal class BottomSheetPictureInfoViewModel(
 
     @Inject
     lateinit var getFirstPageKey: GetFirstPageKey
+
+    @Inject
+    lateinit var imageLoaderApi: ImageLoaderApi
+
+    @Inject
+    lateinit var storageRepositoryApi: StorageRepositoryApi
 
     private val selectedPictureFeatureComponent: BottomSheetPictureInformationFeatureComponent = DaggerBottomSheetPictureInformationFeatureComponent.builder()
         .setDep(context.dependenciesProvider.bottomSheetPictureInformationFeatureDependenciesProvider())
@@ -49,8 +60,11 @@ internal class BottomSheetPictureInfoViewModel(
             it.onSuccess { pictureWithRelations ->
                 pictureInformationUiState.emit(
                     PictureInformationUiState.Success(
+                        pictureKey = pictureWithRelations.picture.key,
+                        picturePath = pictureWithRelations.picture.path,
                         tags = pictureWithRelations.tags,
                         colors = pictureWithRelations.colors,
+                        pictureSavingUiState = PictureInformationUiState.PictureSavingUiState.Prepared,
                     )
                 )
             }
@@ -63,6 +77,80 @@ internal class BottomSheetPictureInfoViewModel(
         viewModelScope.launch {
             val pageKey: Long? = getFirstPageKey.execute(pageQuery = pageQuery, pageFilter = pageFilter)
             pageKey?.let { pageKey -> completed.invoke(pageKey) }
+        }
+    }
+
+    internal fun savePicture(picturePath: String) {
+        viewModelScope.launch(Dispatchers.Default) {
+            imageLoaderApi.loadBitmap(
+                path = picturePath,
+                onStart = {
+                    viewModelScope.launch {
+                        val s = pictureInformationUiState.value
+                        when (s) {
+                            is PictureInformationUiState.Loading -> {}
+                            is PictureInformationUiState.Success -> {
+                                pictureInformationUiState.emit(s.copy(pictureSavingUiState = PictureInformationUiState.PictureSavingUiState.Loading))
+                            }
+                        }
+                    }
+                },
+                onSuccess = {
+                    storageRepositoryApi.savePictureBitmapToPictureDir(
+                        bitmap = it,
+                        onStart = { },
+                        onSuccess = {
+                            viewModelScope.launch {
+                                val s = pictureInformationUiState.value
+                                when (s) {
+                                    is PictureInformationUiState.Loading -> {}
+                                    is PictureInformationUiState.Success -> {
+                                        pictureInformationUiState.emit(s.copy(pictureSavingUiState = PictureInformationUiState.PictureSavingUiState.Prepared))
+                                    }
+                                }
+                            }
+                        },
+                        onFailure = {
+                            viewModelScope.launch {
+                                val s1 = pictureInformationUiState.value
+                                when (s1) {
+                                    is PictureInformationUiState.Loading -> {}
+                                    is PictureInformationUiState.Success -> {
+                                        pictureInformationUiState.emit(s1.copy(pictureSavingUiState = PictureInformationUiState.PictureSavingUiState.Error))
+                                    }
+                                }
+                                val s2 = pictureInformationUiState.value
+                                delay(1.seconds)
+                                when (s2) {
+                                    is PictureInformationUiState.Loading -> {}
+                                    is PictureInformationUiState.Success -> {
+                                        pictureInformationUiState.emit(s2.copy(pictureSavingUiState = PictureInformationUiState.PictureSavingUiState.Prepared))
+                                    }
+                                }
+                            }
+                        }
+                    )
+                },
+                onError = {
+                    viewModelScope.launch {
+                        val s1 = pictureInformationUiState.value
+                        when (s1) {
+                            is PictureInformationUiState.Loading -> {}
+                            is PictureInformationUiState.Success -> {
+                                pictureInformationUiState.emit(s1.copy(pictureSavingUiState = PictureInformationUiState.PictureSavingUiState.Error))
+                            }
+                        }
+                        val s2 = pictureInformationUiState.value
+                        delay(1.seconds)
+                        when (s2) {
+                            is PictureInformationUiState.Loading -> {}
+                            is PictureInformationUiState.Success -> {
+                                pictureInformationUiState.emit(s2.copy(pictureSavingUiState = PictureInformationUiState.PictureSavingUiState.Prepared))
+                            }
+                        }
+                    }
+                }
+            )
         }
     }
 
