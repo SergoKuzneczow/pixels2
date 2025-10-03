@@ -15,6 +15,7 @@ import com.sergokuzneczow.pixels2.MainActivityViewModel
 import com.sergokuzneczow.pixels2.PixelsApplication
 import com.sergokuzneczow.repository.api.ImageLoaderApi
 import com.sergokuzneczow.repository.api.PageRepositoryApi
+import com.sergokuzneczow.repository.api.StorageRepositoryApi
 import com.sergokuzneczow.search_suitable_pictures.impl.di.SearchSuitablePicturesDependencies
 import com.sergokuzneczow.selected_picture.impl.di.SelectedPictureFeatureDependencies
 import com.sergokuzneczow.settings.impl.di.SettingsFeatureDependencies
@@ -39,6 +40,7 @@ internal interface PixelsComponent :
     SelectedPictureFeatureDependencies,
     BottomSheetPictureInformationFeatureDependencies {
     override val imageLoaderApi: ImageLoaderApi
+    override val storageRepositoryApi: StorageRepositoryApi
     override val getSuitablePicturesScreenPagerUseCase: GetSuitablePicturesScreenPagerUseCase
     override val getHomeScreenPager4UseCase: GetHomeScreenPager4UseCase
     override val getPictureWithRelationsCase: GetPictureWithRelationsCase
