@@ -39,58 +39,13 @@ public class PageRepositoryImpl @Inject constructor(
         databaseApi.deletePages(pageQuery, pageFilter)
     }
 
-    override suspend fun updatePictures(pageNumber: Int, pageQuery: PageQuery, pageFilter: PageFilter): List<Picture> {
-        val remoteAnswer: List<Picture> = networkApi.getPicturesPage(pageNumber, pageQuery, pageFilter)
-        databaseApi.clearAndInsertPictures(remoteAnswer, pageNumber, pageQuery, pageFilter)
-        return remoteAnswer
+    override suspend fun getLastActualPageNumber(pageQuery: PageQuery, pageFilter: PageFilter): Int {
+        return networkApi.getLastPageNumber(pageQuery, pageFilter)
     }
 
-    override suspend fun updatePicturesWithRelations(pageNumber: Int, pageQuery: PageQuery, pageFilter: PageFilter): List<PictureWithRelations> {
-        val actualPictures: List<Picture> = networkApi.getPicturesPage(pageNumber, pageQuery, pageFilter)
-        val actualKeys: List<String> = actualPictures.map { it.key }
-        val actualPicturesWithRelations: MutableList<PictureWithRelations> = mutableListOf()
-        var position = 0
-        while (position < actualKeys.size) {
-            val actualPictureWithRelation: PictureWithRelations = networkApi.getPicture(actualKeys[position])
-            actualPicturesWithRelations.add(actualPictureWithRelation)
-            position++
-            delay(50)
-        }
-        databaseApi.clearAndInsertPicturesWithRelations(
-            pictureWithRelations = actualPicturesWithRelations,
-            pageNumber = pageNumber,
-            pageQuery = pageQuery,
-            pageFilter = pageFilter,
-        )
-        return actualPicturesWithRelations
+    override suspend fun getActualPictures(pageNumber: Int, pageQuery: PageQuery, pageFilter: PageFilter): List<Picture> {
+        return networkApi.getPicturesPage(pageNumber, pageQuery, pageFilter)
     }
-
-    override suspend fun updatePicturesWithRelations(
-        pageNumber: Int,
-        pageQuery: PageQuery,
-        pageFilter: PageFilter,
-        pageSize: Int
-    ): List<PictureWithRelations> {
-        val actualPictures: List<Picture> = networkApi.getPicturesPage(pageNumber, pageQuery, pageFilter)
-        val actualKeys: List<String> = if (actualPictures.size > pageSize) actualPictures.subList(0, pageSize).map { it.key } else actualPictures.map { it.key }
-        val actualPicturesWithRelations: MutableList<PictureWithRelations> = mutableListOf()
-        var position = 0
-        while (position < actualKeys.size) {
-            val actualPictureWithRelation: PictureWithRelations = networkApi.getPicture(actualKeys[position])
-            actualPicturesWithRelations.add(actualPictureWithRelation)
-            position++
-            delay(50)
-        }
-        databaseApi.clearAndInsertPicturesWithRelations(
-            pictureWithRelations = actualPicturesWithRelations,
-            pageNumber = pageNumber,
-            pageQuery = pageQuery,
-            pageFilter = pageFilter,
-        )
-        return actualPicturesWithRelations
-    }
-
-    override suspend fun getLastActualPageNumber(pageQuery: PageQuery, pageFilter: PageFilter): Int = networkApi.getLastPageNumber(pageQuery, pageFilter)
 
     override suspend fun getActualPicturesWithRelations(
         pageNumber: Int,
@@ -121,17 +76,21 @@ public class PageRepositoryImpl @Inject constructor(
         val actualPicturesWithRelations: MutableList<PictureWithRelations> = mutableListOf()
         var position = 0
         while (position < actualKeys.size) {
-            //runCatching {
             val actualPictureWithRelation: PictureWithRelations = networkApi.getPicture(actualKeys[position])
             actualPicturesWithRelations.add(actualPictureWithRelation)
             position++
             delay(100)
-            //}.onFailure {
-            //    log(tag = "PageRepositoryImpl") { "getActualPicturesWithRelations(); pageNumber=$pageNumber, position=$position, throwable=$it" }
-            //   throw it
-            //}
         }
         return actualPicturesWithRelations
+    }
+
+    override suspend fun clearAndInsertPictures(
+        pageData: List<Picture>,
+        pageNumber: Int,
+        pageQuery: PageQuery,
+        pageFilter: PageFilter
+    ) {
+        databaseApi.clearAndInsertPictures(pageData, pageNumber, pageQuery, pageFilter)
     }
 
     override suspend fun clearAndInsertPicturesWithRelations(
@@ -146,5 +105,38 @@ public class PageRepositoryImpl @Inject constructor(
             pageQuery = pageQuery,
             pageFilter = pageFilter,
         )
+    }
+
+    override suspend fun updatePictures(pageNumber: Int, pageQuery: PageQuery, pageFilter: PageFilter): List<Picture> {
+        val remoteAnswer: List<Picture> = getActualPictures(pageNumber, pageQuery, pageFilter)
+        clearAndInsertPictures(remoteAnswer, pageNumber, pageQuery, pageFilter)
+        return remoteAnswer
+    }
+
+    override suspend fun updatePicturesWithRelations(pageNumber: Int, pageQuery: PageQuery, pageFilter: PageFilter): List<PictureWithRelations> {
+        val actualPictures = getActualPicturesWithRelations(pageNumber, pageQuery, pageFilter)
+        clearAndInsertPicturesWithRelations(
+            pageData = actualPictures,
+            pageNumber = pageNumber,
+            pageQuery = pageQuery,
+            pageFilter = pageFilter,
+        )
+        return actualPictures
+    }
+
+    override suspend fun updatePicturesWithRelations(
+        pageNumber: Int,
+        pageQuery: PageQuery,
+        pageFilter: PageFilter,
+        pageSize: Int
+    ): List<PictureWithRelations> {
+        val actualPictures = getActualPicturesWithRelations(pageNumber, pageQuery, pageFilter)
+        clearAndInsertPicturesWithRelations(
+            pageData = actualPictures,
+            pageNumber = pageNumber,
+            pageQuery = pageQuery,
+            pageFilter = pageFilter,
+        )
+        return actualPictures
     }
 }

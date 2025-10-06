@@ -42,6 +42,44 @@ public interface PageRepositoryApi {
         pageFilter: PageFilter,
     )
 
+    public suspend fun getLastActualPageNumber(
+        pageQuery: PageQuery = PageQuery.DEFAULT,
+        pageFilter: PageFilter,
+    ): Int
+
+    public suspend fun getActualPictures(
+        pageNumber: Int,
+        pageQuery: PageQuery = PageQuery.DEFAULT,
+        pageFilter: PageFilter,
+    ): List<Picture>
+
+    public suspend fun getActualPicturesWithRelations(
+        pageNumber: Int,
+        pageQuery: PageQuery = PageQuery.DEFAULT,
+        pageFilter: PageFilter,
+    ): List<PictureWithRelations>
+
+    public suspend fun getActualPicturesWithRelations(
+        pageNumber: Int,
+        pageQuery: PageQuery = PageQuery.DEFAULT,
+        pageFilter: PageFilter,
+        pageSize: Int,
+    ): List<PictureWithRelations>
+
+    public suspend fun clearAndInsertPictures(
+        pageData: List<Picture>,
+        pageNumber: Int,
+        pageQuery: PageQuery,
+        pageFilter: PageFilter,
+    )
+
+    public suspend fun clearAndInsertPicturesWithRelations(
+        pageData: List<PictureWithRelations>,
+        pageNumber: Int,
+        pageQuery: PageQuery,
+        pageFilter: PageFilter,
+    )
+
     public suspend fun updatePictures(
         pageNumber: Int,
         pageQuery: PageQuery = PageQuery.DEFAULT,
@@ -60,29 +98,4 @@ public interface PageRepositoryApi {
         pageFilter: PageFilter,
         pageSize: Int,
     ): List<PictureWithRelations>
-
-    public suspend fun getLastActualPageNumber(
-        pageQuery: PageQuery = PageQuery.DEFAULT,
-        pageFilter: PageFilter,
-    ): Int
-
-    public suspend fun getActualPicturesWithRelations(
-        pageNumber: Int,
-        pageQuery: PageQuery = PageQuery.DEFAULT,
-        pageFilter: PageFilter,
-    ): List<PictureWithRelations>
-
-    public suspend fun getActualPicturesWithRelations(
-        pageNumber: Int,
-        pageQuery: PageQuery = PageQuery.DEFAULT,
-        pageFilter: PageFilter,
-        pageSize: Int,
-    ): List<PictureWithRelations>
-
-    public suspend fun clearAndInsertPicturesWithRelations(
-        pageData: List<PictureWithRelations>,
-        pageNumber: Int,
-        pageQuery: PageQuery,
-        pageFilter: PageFilter,
-    )
 }
