@@ -26,6 +26,7 @@ class PixelsPager4Test {
      * Тест эмулирует поведение IPixelsPager4 в ситуации, когда нет кешированных данных и должны быть получены placeholders, а после актуальные данные.*/
     @Test
     fun `emit first placeholders, after emit data`(): TestResult = runTest {
+
         val firstPage = 1
         val pageSize = 24
         val cached: List<String> = emptyList()
@@ -69,9 +70,9 @@ class PixelsPager4Test {
         val firstPage = 1
         val pageSize = 24
         val cached: List<String> = List(pageSize / 2) { "old $firstPage" }
-        val updated: List<String> = emptyList()
+        val actual: List<String> = emptyList()
         val expectedCached: List<String?> = cached
-        val expectedUpdated: List<String?> = updated
+        val expectedActual: List<String?> = actual
 
         val fakeDataSource: FakeDataSource<String> = FakeDataSource(cached, 0)
 
@@ -80,7 +81,7 @@ class PixelsPager4Test {
             sourceDataBlock = { pageNumber, _ -> fakeDataSource.getFlow() },
             getActualDataBlock = { pageNumber, pageSize ->
                 delay(1_000)
-                updated
+                actual
             },
             setActualDataBlock = { pageNumber, pageSize, new -> fakeDataSource.emit(new) }
         ).setStartStrategy(IPixelsPager4.StartStrategy.INSTANTLY)
@@ -93,12 +94,14 @@ class PixelsPager4Test {
             .build()
 
         pager4.getPages().test {
-            val first: IPixelsPager4.Answer.Page<String?>? = awaitItem().pages[firstPage]
-            assertEquals(expectedCached, first?.data)
-            assertEquals(Cached, first?.pageState)
-            val second: IPixelsPager4.Answer.Page<String?>? = awaitItem().pages[firstPage]
-            assertEquals(expectedUpdated, second?.data)
-            assertEquals(Updated, second?.pageState)
+            val i1: IPixelsPager4.Answer<String?> = awaitItem()
+            assertEquals(expectedCached, i1.pages[firstPage]?.data)
+            assertEquals(Cached, i1.pages[firstPage]?.pageState)
+
+            val i2: IPixelsPager4.Answer<String?> = awaitItem()
+            assertEquals(expectedActual, i2.pages[firstPage]?.data)
+            assertEquals(Updated, i2.pages[firstPage]?.pageState)
+            assertEquals(true, i2.meta.empty)
         }
     }
 
@@ -175,9 +178,9 @@ class PixelsPager4Test {
     }
 
     /**
-     * Тест эмулирует поведение IPixelsPager4 в ситуации, когда */
+     * Тест эмулирует поведение IPixelsPager4 в ситуации, когда IPixelsPager4 последовательно загружает страницы, т.е. имеет loadStrategy=SEQUENTIALLY.*/
     @Test
-    fun `wait loading next page, when was called nextPage()`(): TestResult = runTest {
+    fun `wait loading next page, when was called nextPage() and loadStrategy=SEQUENTIALLY`(): TestResult = runTest {
         val firstPage = 1
         val secondPage = 2
         val thirdPage = 3
@@ -289,8 +292,7 @@ class PixelsPager4Test {
                 IPixelsPager4.Answer.Page(new[thirdPage]!!, Updated),
                 i6.pages.values.toList().get(2)
             )
-
-            awaitItem() // Must down!!!
+            //awaitItem() // Must down!!!
         }
     }
 }
