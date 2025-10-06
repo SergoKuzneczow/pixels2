@@ -17,6 +17,9 @@ public interface PageDao : PagePictureDao {
     @Insert(onConflict = IGNORE)
     public fun insertOrIgnorePage(column: PageLocalModel)
 
+    @Insert(onConflict = IGNORE)
+    public fun insertOrReplacePage(column: PageLocalModel)
+
     @Query(
         "select * " +
                 "from ${PageLocalModel.PAGES_TABLE_NAME} " +
@@ -186,8 +189,9 @@ public interface PageDao : PagePictureDao {
     }
 
     @Transaction
-    public suspend fun insertOrReplacePagePictures(pageWithPictures: PageWithPictures) {
-        insertOrIgnorePage(pageWithPictures.page)
+    public suspend fun insertOrReplacePageWithPictures(pageWithPictures: PageWithPictures) {
+        //insertOrIgnorePage(pageWithPictures.page)
+        insertOrReplacePage(pageWithPictures.page)
         insertOrIgnorePictures(pageWithPictures.pictures)
 
         /**

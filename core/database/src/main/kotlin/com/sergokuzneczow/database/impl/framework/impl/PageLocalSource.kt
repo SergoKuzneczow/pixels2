@@ -167,7 +167,7 @@ internal class PageLocalSource private constructor(val pageDao: PageDao) {
             page = page,
             pictures = pictures
         )
-        pageDao.insertOrReplacePagePictures(pageWithPictures)
+        pageDao.insertOrReplacePageWithPictures(pageWithPictures)
     }
 
     internal suspend fun clearAndInsertPicturesWithRelations(
