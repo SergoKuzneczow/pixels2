@@ -4,6 +4,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -13,7 +14,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.material3.adaptive.WindowAdaptiveInfo
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
@@ -21,11 +21,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -36,63 +34,41 @@ import com.sergokuzneczow.core.system_components.PixelsCircularProgressIndicator
 import com.sergokuzneczow.core.ui.Dimensions
 import com.sergokuzneczow.core.ui.PixelsTheme
 import com.sergokuzneczow.core.utilites.ThemePreviews
-import com.sergokuzneczow.suitable_pictures.R.string.empty_collection
+import com.sergokuzneczow.suitable_pictures.impl.SuitablePicturesPage
 import com.sergokuzneczow.suitable_pictures.impl.SuitablePicturesUiState
-import com.sergokuzneczow.suitable_pictures.impl.SuitablePicturesUiState.SuitablePicture
-import com.sergokuzneczow.suitable_pictures.impl.SuitablePicturesUiState.SuitablePicturesPage
 
 private val ITEM_PADDINGS: Dp = 4.dp
 private val BOX_CONTENT_SIZE: Dp = 164.dp
 
 @Composable
 internal fun SuitablePicturesList(
-    suitablePicturesListUiState: SuitablePicturesUiState,
+    uiStateSuccess: SuitablePicturesUiState.Success,
     onItemClick: (pictureKey: String) -> Unit,
     nextPage: () -> Unit,
 ) {
-    when (suitablePicturesListUiState) {
-        is SuitablePicturesUiState.Loading -> {
-            Box(modifier = Modifier.fillMaxSize()) {
-                PixelsCircularProgressIndicator()
-            }
-        }
-
-        is SuitablePicturesUiState.Empty -> {
-            Box(modifier = Modifier.fillMaxSize()) {
-                Text(
-                    text = stringResource(empty_collection),
-                    style = MaterialTheme.typography.titleMedium,
-                    modifier = Modifier.align(Alignment.Center)
-                )
-            }
-        }
-
-        is SuitablePicturesUiState.Success -> {
-            LazyColumn(
-                contentPadding = PaddingValues(
-                    start = Dimensions.ContentPadding,
-                    end = Dimensions.ContentPadding,
-                    top = Dimensions.PixelsTopBarBoxHeight + Dimensions.ContentPadding,
-                    bottom = Dimensions.ContentPadding
-                ),
-                modifier = Modifier.fillMaxSize()
-            ) {
-                val pages: List<SuitablePicturesPage> = suitablePicturesListUiState.suitablePicturesPages
-                itemsIndexed(pages) { position: Int, page: SuitablePicturesPage ->
-                    SuggestedQueriesPage(
-                        pageItems = page.items,
-                        onItemClick = onItemClick,
-                    )
-                    if (pages.size - 2 < position) nextPage.invoke()
-                }
-            }
+    LazyColumn(
+        contentPadding = PaddingValues(
+            start = Dimensions.ContentPadding,
+            end = Dimensions.ContentPadding,
+            top = Dimensions.PixelsTopBarBoxHeight + Dimensions.ContentPadding,
+            bottom = Dimensions.ContentPadding
+        ),
+        modifier = Modifier.fillMaxSize()
+    ) {
+        val pages: List<SuitablePicturesPage> = uiStateSuccess.suitablePicturesPages
+        itemsIndexed(pages) { position: Int, page: SuitablePicturesPage ->
+            SuggestedQueriesPage(
+                pageItems = page.items,
+                onItemClick = onItemClick,
+            )
+            if (pages.size - 2 < position) nextPage.invoke()
         }
     }
 }
 
 @Composable
 private fun SuggestedQueriesPage(
-    pageItems: List<SuitablePicture?>,
+    pageItems: List<SuitablePicturesPage.SuitablePicture?>,
     onItemClick: (pictureKey: String) -> Unit,
     windowAdaptiveInfo: WindowAdaptiveInfo = currentWindowAdaptiveInfo(),
 ) {
@@ -150,7 +126,7 @@ private fun SuggestedQueriesPage(
 }
 
 @Composable
-private fun PictureItem(previewPath: String) {
+private fun BoxScope.PictureItem(previewPath: String) {
     val painter: AsyncImagePainter = rememberAsyncImagePainter(previewPath)
     val state: AsyncImagePainter.State by painter.state.collectAsStateWithLifecycle()
     var success: Boolean by rememberSaveable { mutableStateOf(false) }
@@ -174,7 +150,7 @@ private fun PictureItem(previewPath: String) {
     }
 }
 
-private fun List<SuitablePicture?>.toRows(windowWidthSizeClass: WindowWidthSizeClass): List<List<SuitablePictureListItem>> {
+private fun List<SuitablePicturesPage.SuitablePicture?>.toRows(windowWidthSizeClass: WindowWidthSizeClass): List<List<SuitablePictureListItem>> {
     var res: List<SuitablePictureListItem> = this.map { SuitablePictureListItem.Picture(picture = it) }
     val rowSizeWithoutPlaceholders: Int? = res.tryCalculateRowSizeWithoutPlaceholders(windowWidthSizeClass = windowWidthSizeClass)
     if (rowSizeWithoutPlaceholders != null) {
@@ -242,7 +218,7 @@ private fun List<SuitablePictureListItem>.tryCalculateRowSizeWithoutPlaceholders
 }
 
 private sealed interface SuitablePictureListItem {
-    data class Picture(val picture: SuitablePicture?) : SuitablePictureListItem
+    data class Picture(val picture: SuitablePicturesPage.SuitablePicture?) : SuitablePictureListItem
     data object Placeholder : SuitablePictureListItem
 }
 
@@ -251,7 +227,7 @@ private sealed interface SuitablePictureListItem {
 private fun SuitablePicturesListPreview() {
     val page = SuitablePicturesPage(
         items = listOf(
-            SuitablePicture(pictureKey = "key", previewPath = "path"),
+            SuitablePicturesPage.SuitablePicture(pictureKey = "key", previewPath = "path"),
         )
     )
     val suitablePicturesListUiState = SuitablePicturesUiState.Success(
@@ -259,7 +235,7 @@ private fun SuitablePicturesListPreview() {
     )
     PixelsTheme {
         SuitablePicturesList(
-            suitablePicturesListUiState = suitablePicturesListUiState,
+            uiStateSuccess = suitablePicturesListUiState,
             onItemClick = {},
             nextPage = {}
         )
