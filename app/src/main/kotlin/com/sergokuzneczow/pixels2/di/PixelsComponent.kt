@@ -9,6 +9,7 @@ import com.sergokuzneczow.domain.getPage.GetPage
 import com.sergokuzneczow.domain.get_first_page_key.GetFirstPageKey
 import com.sergokuzneczow.domain.get_home_screen_pager_use_case.GetHomeScreenPager4UseCase
 import com.sergokuzneczow.domain.get_picture_with_relations_case.GetPictureWithRelationsCase
+import com.sergokuzneczow.domain.get_suitable_pictures_screen_pager_use_case.GetSuitablePicturesScreenPager4UseCase
 import com.sergokuzneczow.domain.get_suitable_pictures_screen_pager_use_case.GetSuitablePicturesScreenPagerUseCase
 import com.sergokuzneczow.home.impl.di.HomeFeatureDependencies
 import com.sergokuzneczow.pixels2.MainActivityViewModel
@@ -41,7 +42,7 @@ internal interface PixelsComponent :
     BottomSheetPictureInformationFeatureDependencies {
     override val imageLoaderApi: ImageLoaderApi
     override val storageRepositoryApi: StorageRepositoryApi
-    override val getSuitablePicturesScreenPagerUseCase: GetSuitablePicturesScreenPagerUseCase
+    override val getSuitablePicturesScreenPager4UseCase: GetSuitablePicturesScreenPager4UseCase
     override val getHomeScreenPager4UseCase: GetHomeScreenPager4UseCase
     override val getPictureWithRelationsCase: GetPictureWithRelationsCase
     override val getFirstPageKey: GetFirstPageKey
