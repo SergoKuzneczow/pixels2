@@ -233,8 +233,10 @@ public class PixelsPager4<T>(
     private suspend fun addPage(pageNumber: Int, data: List<T?>, pageState: Answer.Page.PageState) {
         if (firstPage <= pageNumber && pageNumber <= lastPage) {
             pagesMapMutex.withLock {
-                pagesMap[pageNumber] = Answer.Page(data, pageState)
-                emitChangedPage()
+                if (pagesMap[pageNumber] != Answer.Page(data, pageState)) {
+                    pagesMap[pageNumber] = Answer.Page(data, pageState)
+                    emitChangedPage()
+                }
             }
         } else deletePage(pageNumber)
     }
