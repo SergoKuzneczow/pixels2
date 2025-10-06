@@ -6,7 +6,6 @@ import com.sergokuzneczow.domain.pager4.IPixelsPager4.LoadStrategy
 import com.sergokuzneczow.domain.pager4.IPixelsPager4.PlaceholdersStrategy
 import com.sergokuzneczow.domain.pager4.IPixelsPager4.RefreshStrategy
 import com.sergokuzneczow.domain.pager4.IPixelsPager4.StartStrategy
-import com.sergokuzneczow.utilities.logger.log
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -66,17 +65,22 @@ public class PixelsPager4<T>(
 
     private val syncPageLabelsMutex: Mutex = Mutex()
 
-    //private val reloadPageLabels: HashMap<Int, Boolean> = hashMapOf()
-
     private val sourceDataCoroutines: HashMap<Int, Job> = hashMapOf()
 
     private val syncDataCoroutines: HashMap<Int, Job> = hashMapOf()
 
     private var pagerStarted: Boolean = false
 
+    /**
+     * Свойство-маркер указывает, что в данный момент pager ожидает кешированные или актуальные данные для последней запрошенной страницы ([pagesMap] с индексом [nextPage]).
+     * Данное свойство используется только если [loadStrategy] соответствует [LoadStrategy.SEQUENTIALLY].*/
     @Volatile
-    private var waitingLoadedPage: Boolean = false
+    private var waitingLoadingPage: Boolean = false
 
+    /**
+     * Свойство-маркер указывает, что в тот момент, когда pareg ожидал кешированные или актуальные данные для последней запрошенной страницы ([pagesMap] с индексом [nextPage])
+     * был получен запрос на загрузку страницы с индексом [nextPage]+1.
+     * Данное свойство используется только если [loadStrategy] соответствует [LoadStrategy.SEQUENTIALLY].*/
     @Volatile
     private var needNextPage: Boolean = false
 
@@ -115,61 +119,64 @@ public class PixelsPager4<T>(
     }
 
     override fun nextPage() {
-        when (loadStrategy) {
-            LoadStrategy.SEQUENTIALLY -> {
-                /**
-                 * Свойство waitingLoadedPage==false тогда, когда pager не имеет ни одну страницу в состоянии PageState.PLACEHOLDER
-                 * (т.е. не пытается получить кешированные или актуальные данные для запрошенной ранее страницы).*/
-                if (waitingLoadedPage.not()) {
-                    //log(tag = "PixelsPager4") { "nextPage(); LoadStrategy.SEQUENTIALLY; waitingLoadedPage.not()" }
-                    waitingLoadedPage = true
-                    coroutineScope.launch(Dispatchers.IO) {
-                        var previousPageLoading = true
-                        while (previousPageLoading) {
-                            pagesMapMutex.withLock {
-                                previousPageLoading = pagesMap.get(nextPage - 1)?.pageState != Answer.Page.PageState.Cached
-                                        && pagesMap.get(nextPage - 1)?.pageState != Answer.Page.PageState.Updated
-                            }
-                            delay(500)
-                        }
-                        downloadPage(nextPage)
-                        nextPage = nextPage + 1
-                        waitingLoadedPage = false
-                        if (needNextPage) {
-                            needNextPage = false
-                            nextPage()
-                        }
-                    }
-                } else needNextPage = true
-            }
-
-            LoadStrategy.PARALLEL -> {
-                downloadPage(nextPage)
-                nextPage = nextPage + 1
+        if (nextPage <= lastPage) {
+            when (loadStrategy) {
+                LoadStrategy.SEQUENTIALLY -> whenLoadStrategyIsSequentially()
+                LoadStrategy.PARALLEL -> whenLoadStrategyIsParallel()
             }
         }
+    }
+
+    private fun whenLoadStrategyIsSequentially() {
+        if (!waitingLoadingPage) {
+//            log(tag = "PixelsPager4") { "nextPage(); LoadStrategy.SEQUENTIALLY; waitingLoadedPage.not()" }
+            waitingLoadingPage = true
+            coroutineScope.launch(Dispatchers.IO) {
+                var previousPageLoading = true
+                while (previousPageLoading) {
+                    pagesMapMutex.withLock {
+                        // Проверяет, были ли получены кешированные или актуальные данные для предыдущей страницы.
+                        previousPageLoading = pagesMap.get(nextPage - 1)?.pageState != Answer.Page.PageState.Cached
+                                && pagesMap.get(nextPage - 1)?.pageState != Answer.Page.PageState.Updated
+                    }
+                    delay(500)
+                }
+                downloadPage(nextPage)
+                nextPage = nextPage + 1
+                waitingLoadingPage = false
+                if (needNextPage) {
+                    needNextPage = false
+                    nextPage()
+                }
+            }
+        } else if (nextPage + 1 <= lastPage) needNextPage = true
+    }
+
+    private fun whenLoadStrategyIsParallel() {
+        downloadPage(nextPage)
+        nextPage = nextPage + 1
     }
 
     private fun downloadPage(pageNumber: Int) {
-        if (firstPage <= pageNumber && pageNumber <= lastPage) {
-            createSourceDataCoroutine(pageNumber)
-            createSyncDataCoroutine(pageNumber)
-        }
+        createSourceDataCoroutine(pageNumber)
+        createSyncDataCoroutine(pageNumber)
     }
 
     private fun createSourceDataCoroutine(pageNumber: Int) {
+//        log(tag = "PixelsPager4", level = Level.INFO) { "createSourceDataCoroutine(); pageNumber=$pageNumber" }
         sourceDataCoroutines[pageNumber] = coroutineScope.launch(sourceDataExceptionHandler(pageNumber) + Dispatchers.IO) {
             sourceDataBlock(pageNumber, pageSize)
                 .onStart { syncPageLabelsMutex.withLock { syncPageLabels[pageNumber] == false } }
                 .stateIn(this)
                 .onEach {
+//                    log(tag = "PixelsPager4") { "createSourceDataCoroutine(); sourceDataCoroutines.onEach().it=$it" }
                     syncPageLabelsMutex.withLock {
                         if (syncPageLabels[pageNumber] == true) {
                             addPage(pageNumber, it, Answer.Page.PageState.Updated)
                         } else {
                             if (it.isNotEmpty()) addPage(pageNumber, it, Answer.Page.PageState.Cached)
                             else if (placeholdersStrategy == PlaceholdersStrategy.WITH) addPage(pageNumber, List(pageSize) { null }, Answer.Page.PageState.Placeholder)
-                            else if (placeholdersStrategy == PlaceholdersStrategy.WITHOUT) addPage(pageNumber, emptyList(), Answer.Page.PageState.Cached)
+                            else if (placeholdersStrategy == PlaceholdersStrategy.WITHOUT) addPage(pageNumber, emptyList(), Answer.Page.PageState.Empty)
                         }
                     }
                 }.collect()
@@ -177,29 +184,36 @@ public class PixelsPager4<T>(
     }
 
     private fun createSyncDataCoroutine(pageNumber: Int) {
+//        log(tag = "PixelsPager4", level = Level.INFO) { "createSyncDataCoroutine(); pageNumber=$pageNumber" }
         syncDataCoroutines[pageNumber] = coroutineScope.launch(syncDataExceptionHandler(pageNumber) + Dispatchers.IO) {
             if (refreshStrategy == RefreshStrategy.INSTANTLY) {
-                //delayIfReloadingPage(pageNumber)
                 runCatching { firstPage = getFirstPageNumberBlock.invoke() }
                 runCatching { lastPage = getLastPageNumberBlock.invoke() }
-                when {
-                    firstPage <= pageNumber && pageNumber <= lastPage -> {
-                        val new: List<T>? = getActualDataBlock.invoke(pageNumber, pageSize)
-                        new?.let {
-                            syncPageLabelsMutex.withLock {
-                                setActualDataBlock.invoke(pageNumber, pageSize, it)
-                                syncPageLabels[pageNumber] = true
-                            }
+
+                if (firstPage <= pageNumber && pageNumber <= lastPage) {
+                    val new: List<T>? = getActualDataBlock.invoke(pageNumber, pageSize)
+
+                    new?.let {
+                        // Гарантирует, что при получении пустой первой страницы, подписчики получат обновленное состояние pagesMap,
+                        // даже если sourceDataBlock() не получит из верхнего потока сведения об изменении данных на пустое значение
+                        // Такое может произойти, если источник sourceDataBlock() уже хранит пустое значение. Тогда новое пустое значение
+                        // не будет отправлено из верхнего потока при вызове setActualDataBlock().
+                        if (it.isEmpty() && (firstPage == lastPage || pageNumber == startPage)) {
+                            addPage(pageNumber, emptyList(), Answer.Page.PageState.Updated)
+                        }
+
+                        syncPageLabelsMutex.withLock {
+                            setActualDataBlock.invoke(pageNumber, pageSize, it)
+                            syncPageLabels[pageNumber] = true
                         }
                     }
-
-                    else -> deletePage(pageNumber)
-                }
+                } else deletePage(pageNumber)
             }
         }
     }
 
     private fun sourceDataExceptionHandler(pageNumber: Int): CoroutineExceptionHandler = CoroutineExceptionHandler { c, t ->
+//        log(tag = "PixelsPager4", level = Level.INFO) { "sourceDataExceptionHandler(); pageNumber=$pageNumber; t=$t" }
         coroutineScope.launch {
             pagesMap[pageNumber]?.let { addPage(pageNumber, it.data, Answer.Page.PageState.Error(t.message.toString())) }
             //delay(5.seconds)
@@ -208,7 +222,7 @@ public class PixelsPager4<T>(
     }
 
     private fun syncDataExceptionHandler(pageNumber: Int): CoroutineExceptionHandler = CoroutineExceptionHandler { c, t ->
-        log(tag = "PixelsPager4") { "syncDataExceptionHandler(); pageNumber=$pageNumber" }
+//        log(tag = "PixelsPager4", level = Level.INFO) { "syncDataExceptionHandler(); pageNumber=$pageNumber; t=$t" }
         coroutineScope.launch {
             pagesMap[pageNumber]?.let { addPage(pageNumber, it.data, Answer.Page.PageState.Error(t.message.toString())) }
             delay(5.seconds)
@@ -217,17 +231,21 @@ public class PixelsPager4<T>(
     }
 
     private suspend fun addPage(pageNumber: Int, data: List<T?>, pageState: Answer.Page.PageState) {
-        pagesMapMutex.withLock {
-            pagesMap[pageNumber] = Answer.Page(data, pageState)
-            emitChangedPage()
-        }
+        if (firstPage <= pageNumber && pageNumber <= lastPage) {
+            pagesMapMutex.withLock {
+                pagesMap[pageNumber] = Answer.Page(data, pageState)
+                emitChangedPage()
+            }
+        } else deletePage(pageNumber)
     }
 
     private suspend fun deletePage(pageNumber: Int) {
         sourceDataCoroutines[pageNumber]?.cancel()
         syncDataCoroutines[pageNumber]?.cancel()
-        pagesMap.remove(pageNumber)
-        emitChangedPage()
+        pagesMapMutex.withLock {
+            pagesMap.remove(pageNumber)
+            emitChangedPage()
+        }
     }
 
     private suspend fun emitChangedPage() {
@@ -236,15 +254,11 @@ public class PixelsPager4<T>(
             lastLoadedPage = pagesMap.keys.last(),
             firstPage = firstPage,
             lastPage = lastPage,
-            empty = false,
+            empty = firstPage == lastPage && pagesMap[firstPage]?.data?.isEmpty() ?: false && pagesMap[firstPage]?.pageState == Answer.Page.PageState.Updated,
+            nextEnd = nextPage > lastPage,
+            prevEnd = prevPage < firstPage,
         )
         answer.emit(Answer(pages = pagesMap, meta = meta))
-    }
-
-    /**
-     * Метод [delayIfReloadingPage] вызывает метод [delay], если это не первая попытка загрузки данных из удаленного источника. */
-    private suspend fun delayIfReloadingPage(pageNumber: Int) {
-        //  if (reloadPageLabels.getOrDefault(pageNumber, false)) delay(updateDuration) else reloadPageLabels[pageNumber] = true
     }
 
     private fun reLoadPage(pageNumber: Int) {

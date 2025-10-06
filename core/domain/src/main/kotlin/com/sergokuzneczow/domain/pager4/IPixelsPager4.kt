@@ -180,6 +180,7 @@ public interface IPixelsPager4<T> {
             public sealed interface PageState {
                 public data object Placeholder : PageState
                 public data object Cached : PageState
+                public data object Empty : PageState
                 public data object Updated : PageState
                 public data class Error(val message: String) : PageState
             }
@@ -191,6 +192,8 @@ public interface IPixelsPager4<T> {
             val firstPage: Int,
             val lastPage: Int,
             val empty: Boolean,
+            val nextEnd: Boolean,
+            val prevEnd: Boolean,
         )
     }
 }
