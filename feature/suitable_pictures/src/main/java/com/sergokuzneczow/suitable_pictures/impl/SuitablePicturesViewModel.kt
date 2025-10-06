@@ -6,13 +6,14 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.sergokuzneczow.domain.getPage.GetPage
-import com.sergokuzneczow.domain.get_suitable_pictures_screen_pager_use_case.GetSuitablePicturesScreenPagerUseCase
+import com.sergokuzneczow.domain.get_suitable_pictures_screen_pager_use_case.GetSuitablePicturesScreenPager4UseCase
 import com.sergokuzneczow.models.Page
 import com.sergokuzneczow.models.PageFilter
 import com.sergokuzneczow.models.PageQuery
 import com.sergokuzneczow.suitable_pictures.impl.di.DaggerSuitablePicturesFeatureComponent
 import com.sergokuzneczow.suitable_pictures.impl.di.SuitablePicturesFeatureComponent
 import com.sergokuzneczow.suitable_pictures.impl.di.dependenciesProvider
+import com.sergokuzneczow.utilities.logger.Level
 import com.sergokuzneczow.utilities.logger.log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -30,7 +31,7 @@ internal class SuitablePicturesViewModel(
 ) : ViewModel() {
 
     @Inject
-    lateinit var getSuitablePicturesScreenPagerUseCase: GetSuitablePicturesScreenPagerUseCase
+    lateinit var getSuitablePicturesScreenPager4UseCase: GetSuitablePicturesScreenPager4UseCase
 
     @Inject
     lateinit var getPage: GetPage
@@ -46,29 +47,35 @@ internal class SuitablePicturesViewModel(
     private val titleUiState: MutableStateFlow<TitleUiState> = MutableStateFlow(TitleUiState.Loading())
 
     init {
-        log(tag = "SuitablePicturesViewModel") { "init()" }
         suitablePicturesFeatureComponent.inject(this)
 
         viewModelScope.launch(Dispatchers.IO) {
             val page: Page = getPage.execute(pageKey)
-            log(tag = "SuitablePicturesViewModel") { "pageRepository.getPage(pageKey); page=$page" }
 
             titleUiState.emit(page.createScreenTitle())
 
-            getSuitablePicturesScreenPagerUseCase.execute(
+            getSuitablePicturesScreenPager4UseCase.execute(
                 coroutineScope = viewModelScope + Dispatchers.IO,
                 pageQuery = page.query,
                 pageFilter = page.filter,
-                loading = {},
-                completed = { isLastPage, isEmpty -> viewModelScope.launch { if (isEmpty) suitablePicturesUiState.emit(SuitablePicturesUiState.Empty) } },
-                error = {}
             ).onEach { pages ->
-                pages.pages.forEach { (key, value) ->
-                    log(tag = "SuitablePicturesViewModel") { "getSuitablePicturesScreenPagerUseCase.execute().onEach().it=(key=$key, value=$value)" }
+                val suitablePicturesPages: List<SuitablePicturesPage> = pages.pages.toSuitablePicturesPages()
+                when {
+                    pages.meta.empty -> suitablePicturesUiState.emit(SuitablePicturesUiState.Empty)
+                    suitablePicturesPages.firstOrNull(predicate = { it.items.isNotEmpty() }) != null ->
+                        suitablePicturesUiState.emit(SuitablePicturesUiState.Success(suitablePicturesPages))
                 }
-                suitablePicturesUiState.emit(SuitablePicturesUiState.Success(pages.pages.toSuitablePicturesPages()))
+
             }.launchIn(this)
         }
+    }
+
+    fun getTitleUiState(): StateFlow<TitleUiState> = titleUiState.asStateFlow()
+    fun getSuitablePicturesUiState(): StateFlow<SuitablePicturesUiState> = suitablePicturesUiState.asStateFlow()
+
+    fun nextPage() {
+        log(tag = "SuitablePicturesViewModel", level = Level.INFO) { "nextPage()" }
+        getSuitablePicturesScreenPager4UseCase.nextPage()
     }
 
     private fun Page.createScreenTitle(): TitleUiState {
@@ -119,13 +126,6 @@ internal class SuitablePicturesViewModel(
                 TitleUiState.Success(title = "#${if (itemsAsString.length > 35) itemsAsString.substring(0, 35) else itemsAsString}")
             }
         }
-    }
-
-    fun getTitleUiState(): StateFlow<TitleUiState> = titleUiState.asStateFlow()
-    fun getSuitablePicturesUiState(): StateFlow<SuitablePicturesUiState> = suitablePicturesUiState.asStateFlow()
-
-    fun nextPage() {
-        getSuitablePicturesScreenPagerUseCase.nextPage()
     }
 
     internal class Factory(
