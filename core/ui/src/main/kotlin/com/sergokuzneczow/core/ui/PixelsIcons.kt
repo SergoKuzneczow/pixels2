@@ -2,6 +2,7 @@ package com.sergokuzneczow.core.ui
 
 import androidx.compose.foundation.Image
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.Home
 import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.runtime.Composable
@@ -18,21 +19,28 @@ import com.sergokuzneczow.core.utilites.ThemePreviews
 
 public object PixelsIcons {
     public val home: ImageVector = Icons.Rounded.Home
-    public val settings: ImageVector  = Icons.Rounded.Settings
-    public val new: ImageVector  = PixelsIcons.New
-    public val topList: ImageVector  = PixelsIcons.Top
-    public val views: ImageVector  = PixelsIcons.Views
-    public val favorites: ImageVector  = PixelsIcons.Favorites
-    public val filter: ImageVector  = PixelsIcons.Filter
-    public val search: ImageVector  = PixelsIcons.Search
-    public val information: ImageVector  = PixelsIcons.Information
-    public val selector: ImageVector  = PixelsIcons.Selector
+    public val arrowBack: ImageVector = Icons.AutoMirrored.Rounded.ArrowBack
+    public val settings: ImageVector = Icons.Rounded.Settings
+    public val new: ImageVector = PixelsIcons.New
+    public val topList: ImageVector = PixelsIcons.Top
+    public val views: ImageVector = PixelsIcons.Views
+    public val favorites: ImageVector = PixelsIcons.Favorites
+    public val filter: ImageVector = PixelsIcons.Filter
+    public val search: ImageVector = PixelsIcons.Search
+    public val information: ImageVector = PixelsIcons.Information
+    public val selector: ImageVector = PixelsIcons.Selector
 }
 
 @ThemePreviews
 @Composable
 private fun Home() {
     Image(imageVector = PixelsIcons.home, contentDescription = null)
+}
+
+@ThemePreviews
+@Composable
+private fun ArrowBack() {
+    Image(imageVector = PixelsIcons.arrowBack, contentDescription = null)
 }
 
 @ThemePreviews
