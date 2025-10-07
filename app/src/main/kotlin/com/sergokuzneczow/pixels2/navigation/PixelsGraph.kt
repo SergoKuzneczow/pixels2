@@ -15,7 +15,6 @@ internal fun NavGraphBuilder.pixelsGraph(
     popBackStack: () -> Unit,
     navigateToMainMenuDestination: (navOptions: NavOptions?) -> Unit,
     navigateToSuitablePicturesDestination: (pageKey: Long) -> Unit,
-    navigateToDialogPageFilterDestination: (pageKey: Long) -> Unit,
     navigateToBottomSheetPageFilterDestination: (pageKey: Long, navOptions: NavOptions?) -> Unit,
     navigateToSelectedPictureDestination: (pictureKey: String) -> Unit,
     navigateToBottomSheetPictureInfoDestination: (pictureKey: String, navOptions: NavOptions?) -> Unit,
@@ -29,22 +28,17 @@ internal fun NavGraphBuilder.pixelsGraph(
     )
     suitablePicturesScreenDestination(
         onShowSnackbar = onShowSnackbar,
-        //navigateToDialogPageFilterDestination = navigateToDialogPageFilterDestination,
         navigateToDialogPageFilterDestination = navigateToBottomSheetPageFilterDestination,
         navigateToSelectedPictureDestination = navigateToSelectedPictureDestination,
     )
     dialogPageFilterScreenDestination(
         navigateToSuitablePicturesDestination = navigateToSuitablePicturesDestination,
     )
-    //dialogPageFilterScreenDestination(
-    //    navigateToSuitablePicturesDestination = navigateToSuitablePicturesDestination,
-    //)
     bottomSheetPageFilterScreenDestination(
         navigateToSuitablePicturesDestination = navigateToSuitablePicturesDestination,
         popBackStack = popBackStack,
     )
     selectedPictureDestination(
-        //navigateToSuitablePicturesDestination = navigateToSuitablePicturesDestination,
         navigateToBottomSheetPictureInfoDestination = navigateToBottomSheetPictureInfoDestination
     )
     bottomSheetPictureInfoDestination(

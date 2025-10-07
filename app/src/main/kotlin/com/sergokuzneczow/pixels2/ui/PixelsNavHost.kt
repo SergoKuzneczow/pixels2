@@ -29,7 +29,6 @@ internal fun PixelsNavHost(
             popBackStack = { applicationState.navController.popBackStack() }, //!!!!!! дополнить проверку на безопасный (не пустой) popUpBackStack()
             navigateToMainMenuDestination = { navOptions: NavOptions? -> applicationState.navController.navigateToMainMenuDestination(navOptions) },
             navigateToSuitablePicturesDestination = { pageKey: Long -> applicationState.navController.navigateToSuitablePicturesRoute(pageKey) },
-            navigateToDialogPageFilterDestination = { pageKey: Long -> applicationState.navController.navigateToDialogPageFilterDestination(pageKey) },
             navigateToSelectedPictureDestination = { pictureKey: String -> applicationState.navController.navigateToSelectedPictureDestination(pictureKey) },
             navigateToBottomSheetPageFilterDestination = { pageKey: Long, navOptions: NavOptions? ->
                 applicationState.navController.navigateToBottomSheetPageFilterDestination(pageKey, navOptions)
