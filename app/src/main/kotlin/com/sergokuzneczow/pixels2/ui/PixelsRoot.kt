@@ -2,6 +2,7 @@ package com.sergokuzneczow.pixels2.ui
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarDuration.Indefinite
 import androidx.compose.material3.SnackbarHost
@@ -11,8 +12,10 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.sergokuzneczow.core.system_components.PixelsScaffold
+import com.sergokuzneczow.core.ui.Dimensions
 import com.sergokuzneczow.pixels2.PixelsState
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -23,7 +26,12 @@ internal fun PixelsRoot(applicationState: PixelsState) {
 
     PixelsScaffold(
         modifier = Modifier.fillMaxSize(),
-        snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
+        snackbarHost = {
+            SnackbarHost(
+                hostState = snackbarHostState,
+                modifier = Modifier.padding(horizontal = Dimensions.LargePadding, vertical = 80.dp)
+            )
+        },
         content = {
             PixelsNavHost(
                 applicationState = applicationState,
@@ -34,7 +42,9 @@ internal fun PixelsRoot(applicationState: PixelsState) {
                         duration = SnackbarDuration.Short,
                     )
                 },
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(it)
             )
         }
     )
