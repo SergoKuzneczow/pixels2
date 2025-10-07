@@ -26,47 +26,48 @@ internal sealed interface HomeListUiState {
             suggestedQueriesPages = suggestedQueriesPages
         )
     }
+}
 
-    data class StandardQuery(
-        val description: String,
-        val vectorIcon: ImageVector,
-        val pageQuery: PageQuery,
-        val pageFilter: PageFilter,
-    ) {
+internal data class StandardQuery(
+    val description: String,
+    val vectorIcon: ImageVector,
+    val pageQuery: PageQuery,
+    val pageFilter: PageFilter,
+) {
 
-        internal companion object {
-            internal val standardQueries: List<StandardQuery> = listOf(
-                StandardQuery(
-                    description = "New",
-                    vectorIcon = PixelsIcons.new,
-                    pageQuery = PageQuery.DEFAULT,
-                    pageFilter = PageFilter.DEFAULT.copy(pictureSorting = PageFilter.PictureSorting.DATE_ADDED)
-                ),
-                StandardQuery(
-                    description = "Bests",
-                    vectorIcon = PixelsIcons.topList,
-                    pageQuery = PageQuery.DEFAULT,
-                    pageFilter = PageFilter.DEFAULT.copy(pictureSorting = PageFilter.PictureSorting.TOP_LIST)
-                ),
-                StandardQuery(
-                    description = "Loved",
-                    vectorIcon = PixelsIcons.favorites,
-                    pageQuery = PageQuery.DEFAULT,
-                    pageFilter = PageFilter.DEFAULT.copy(pictureSorting = PageFilter.PictureSorting.FAVORITES)
-                ),
-                StandardQuery(
-                    description = "Views",
-                    vectorIcon = PixelsIcons.views,
-                    pageQuery = PageQuery.DEFAULT,
-                    pageFilter = PageFilter.DEFAULT.copy(pictureSorting = PageFilter.PictureSorting.VIEWS)
-                ),
-            )
-        }
+    internal companion object {
+        internal val standardQueries: List<StandardQuery> = listOf(
+            StandardQuery(
+                description = "New",
+                vectorIcon = PixelsIcons.new,
+                pageQuery = PageQuery.DEFAULT,
+                pageFilter = PageFilter.DEFAULT.copy(pictureSorting = PageFilter.PictureSorting.DATE_ADDED)
+            ),
+            StandardQuery(
+                description = "Bests",
+                vectorIcon = PixelsIcons.topList,
+                pageQuery = PageQuery.DEFAULT,
+                pageFilter = PageFilter.DEFAULT.copy(pictureSorting = PageFilter.PictureSorting.TOP_LIST)
+            ),
+            StandardQuery(
+                description = "Loved",
+                vectorIcon = PixelsIcons.favorites,
+                pageQuery = PageQuery.DEFAULT,
+                pageFilter = PageFilter.DEFAULT.copy(pictureSorting = PageFilter.PictureSorting.FAVORITES)
+            ),
+            StandardQuery(
+                description = "Views",
+                vectorIcon = PixelsIcons.views,
+                pageQuery = PageQuery.DEFAULT,
+                pageFilter = PageFilter.DEFAULT.copy(pictureSorting = PageFilter.PictureSorting.VIEWS)
+            ),
+        )
     }
+}
 
-    data class SuggestedQueriesPage(
-        val items: List<SuggestedQuery?>,
-    )
+internal data class SuggestedQueriesPage(
+    val items: List<SuggestedQuery?>,
+) {
 
     data class SuggestedQuery(
         val description: String,
@@ -76,15 +77,15 @@ internal sealed interface HomeListUiState {
     )
 }
 
-internal fun TreeMap<Int, List<PictureWithRelations?>>.toSuggestedQueriesPages(): List<HomeListUiState.SuggestedQueriesPage> {
-    return this.entries.map { HomeListUiState.SuggestedQueriesPage(it.value.toSuggestedQueriesNew()) }
+internal fun TreeMap<Int, List<PictureWithRelations?>>.toSuggestedQueriesPages(): List<SuggestedQueriesPage> {
+    return this.entries.map { SuggestedQueriesPage(it.value.toSuggestedQueriesNew()) }
 }
 
-internal fun IPixelsPager4.Answer<PictureWithRelations?>.toSuggestedQueriesPages(): List<HomeListUiState.SuggestedQueriesPage> {
-    return this.pages.entries.map { HomeListUiState.SuggestedQueriesPage(it.value.data.toSuggestedQueriesNew()) }
+internal fun IPixelsPager4.Answer<PictureWithRelations?>.toSuggestedQueriesPages(): List<SuggestedQueriesPage> {
+    return this.pages.entries.map { SuggestedQueriesPage(it.value.data.toSuggestedQueriesNew()) }
 }
 
-internal fun List<PictureWithRelations?>.toSuggestedQueriesNew(): List<HomeListUiState.SuggestedQuery?> {
+internal fun List<PictureWithRelations?>.toSuggestedQueriesNew(): List<SuggestedQueriesPage.SuggestedQuery?> {
     var typePosition = 0
     return this.mapIndexed { index, picture ->
         when (typePosition) {
@@ -93,7 +94,7 @@ internal fun List<PictureWithRelations?>.toSuggestedQueriesNew(): List<HomeListU
                 val colorName: String? =
                     picture?.let { if (it.colors.isNotEmpty()) it.colors[0].name else null }
                 if (colorName != null) {
-                    HomeListUiState.SuggestedQuery(
+                    SuggestedQueriesPage.SuggestedQuery(
                         description = "Color $colorName",
                         previewPath = picture.picture.original,
                         pageQuery = PageQuery.Empty(),
@@ -109,7 +110,7 @@ internal fun List<PictureWithRelations?>.toSuggestedQueriesNew(): List<HomeListU
                 val tag: Tag? =
                     picture?.let { if (it.tags.isNotEmpty() && it.tags.size > 5) it.tags[4] else if (it.tags.isNotEmpty()) it.tags[0] else null }
                 if (tag != null) {
-                    HomeListUiState.SuggestedQuery(
+                    SuggestedQueriesPage.SuggestedQuery(
                         description = "#${tag.name}",
                         previewPath = picture.picture.original,
                         pageQuery = PageQuery.Tag(
@@ -126,7 +127,7 @@ internal fun List<PictureWithRelations?>.toSuggestedQueriesNew(): List<HomeListU
                 val queryKeyWord: String? =
                     picture?.let { if (it.tags.isNotEmpty() && it.tags.size > 5) it.tags[4].name else if (it.tags.isNotEmpty()) it.tags[0].name else null }
                 if (queryKeyWord != null) {
-                    HomeListUiState.SuggestedQuery(
+                    SuggestedQueriesPage.SuggestedQuery(
                         description = queryKeyWord.replaceFirstChar { it.uppercase() },
                         previewPath = picture.picture.original,
                         pageQuery = PageQuery.KeyWord(word = queryKeyWord),

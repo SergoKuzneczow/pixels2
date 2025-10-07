@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.sergokuzneczow.domain.getPage.GetPage
 import com.sergokuzneczow.domain.get_suitable_pictures_screen_pager_use_case.GetSuitablePicturesScreenPager4UseCase
+import com.sergokuzneczow.domain.pager4.IPixelsPager4
 import com.sergokuzneczow.models.Page
 import com.sergokuzneczow.models.PageFilter
 import com.sergokuzneczow.models.PageQuery
@@ -46,6 +47,8 @@ internal class SuitablePicturesViewModel(
 
     private val titleUiState: MutableStateFlow<TitleUiState> = MutableStateFlow(TitleUiState.Loading())
 
+    private val exceptionsFlow: MutableStateFlow<String?> = MutableStateFlow(null)
+
     init {
         suitablePicturesFeatureComponent.inject(this)
 
@@ -60,6 +63,11 @@ internal class SuitablePicturesViewModel(
                 pageFilter = page.filter,
             ).onEach { pages ->
                 val suitablePicturesPages: List<SuitablePicturesPage> = pages.pages.toSuitablePicturesPages()
+
+                if (pages.pages.values.lastOrNull()?.pageState is IPixelsPager4.Answer.Page.PageState.Error) {
+                    exceptionsFlow.emit((pages.pages.values.lastOrNull()?.pageState as IPixelsPager4.Answer.Page.PageState.Error).message)
+                } else exceptionsFlow.emit(null)
+
                 when {
                     pages.meta.empty -> suitablePicturesUiState.emit(SuitablePicturesUiState.Empty)
                     suitablePicturesPages.firstOrNull(predicate = { it.items.isNotEmpty() }) != null ->
@@ -72,6 +80,8 @@ internal class SuitablePicturesViewModel(
 
     fun getTitleUiState(): StateFlow<TitleUiState> = titleUiState.asStateFlow()
     fun getSuitablePicturesUiState(): StateFlow<SuitablePicturesUiState> = suitablePicturesUiState.asStateFlow()
+
+    fun getExceptionsFlow(): MutableStateFlow<String?> = exceptionsFlow
 
     fun nextPage() {
         log(tag = "SuitablePicturesViewModel", level = Level.INFO) { "nextPage()" }

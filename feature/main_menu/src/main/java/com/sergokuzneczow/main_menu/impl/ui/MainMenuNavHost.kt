@@ -10,6 +10,7 @@ import com.sergokuzneczow.suitable_pictures.api.navigateToSuitablePicturesRoute
 
 @Composable
 internal fun MainMenuNavHost(
+    onShowSnackbar: suspend (message: String, actionOrNull: String?) -> Unit,
     rootScreenState: MainMenuRootScreenState,
     titleTextState: MutableState<String>,
     progressBarIsVisible: MutableState<Boolean>,
@@ -22,6 +23,7 @@ internal fun MainMenuNavHost(
         modifier = modifier,
     ) {
         this.mainMenuGraph(
+            onShowSnackbar = onShowSnackbar,
             navigateToSuitablePicturesDestination = navigateToSuitablePicturesDestination,
             titleTextState = titleTextState,
             progressBarIsVisible = progressBarIsVisible

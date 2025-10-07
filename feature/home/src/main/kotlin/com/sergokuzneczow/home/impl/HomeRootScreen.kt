@@ -1,25 +1,30 @@
 package com.sergokuzneczow.home.impl
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.sergokuzneczow.home.R
 import com.sergokuzneczow.home.impl.ui.HomeScreen
 
 @Composable
 internal fun HomeScreenRoot(
+    onShowSnackbar: suspend (message: String, actionOrNull: String?) -> Unit,
     titleTextState: MutableState<String>,
     progressBarIsVisible: MutableState<Boolean>,
     navigateToSuitablePicturesDestination: (pageKey: Long) -> Unit,
 ) {
-    titleTextState.value = stringResource(com.sergokuzneczow.home.R.string.feature_home_title)
     val vm: HomeScreenViewModel = viewModel(factory = HomeScreenViewModel.Factory(LocalContext.current))
+    titleTextState.value = stringResource(R.string.feature_home_title)
     progressBarIsVisible.value = vm.getProgressBarUiState().collectAsStateWithLifecycle().value
+    val homeListUiState: HomeListUiState by vm.getHomeListUiState().collectAsStateWithLifecycle()
+    val exceptionsUiState: String? by vm.getExceptionsFlow().collectAsStateWithLifecycle()
     HomeScreen(
-        homeListUiState = vm.getHomeListUiState().collectAsStateWithLifecycle().value,
+        homeListUiState = homeListUiState,
         itemClick = { pageQuery, pageFilter ->
             vm.getPageKey(
                 pageQuery = pageQuery, pageFilter = pageFilter,
@@ -27,4 +32,7 @@ internal fun HomeScreenRoot(
         },
         nextPage = vm::nextPage,
     )
+    LaunchedEffect(exceptionsUiState) {
+        exceptionsUiState?.let { onShowSnackbar.invoke(it, null) }
+    }
 }

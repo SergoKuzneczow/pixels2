@@ -1,23 +1,50 @@
 package com.sergokuzneczow.pixels2.ui
 
 import android.annotation.SuppressLint
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarDuration.Indefinite
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.sergokuzneczow.core.system_components.PixelsScaffold
 import com.sergokuzneczow.pixels2.PixelsState
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 internal fun PixelsRoot(applicationState: PixelsState) {
-    val networkState: Boolean by applicationState.isOffline.collectAsStateWithLifecycle()
-    Box(modifier = Modifier.fillMaxSize()) {
-        PixelsNavHost(
-            applicationState = applicationState,
-            modifier = Modifier.fillMaxSize()
-        )
-        NotNetwork(visible = networkState)
+    val networkStateIsOffline: Boolean by applicationState.isOffline.collectAsStateWithLifecycle()
+    val snackbarHostState: SnackbarHostState = remember { SnackbarHostState() }
+
+    PixelsScaffold(
+        modifier = Modifier.fillMaxSize(),
+        snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
+        content = {
+            PixelsNavHost(
+                applicationState = applicationState,
+                onShowSnackbar = { message, action ->
+                    snackbarHostState.showSnackbar(
+                        message = message,
+                        actionLabel = action,
+                        duration = SnackbarDuration.Short,
+                    )
+                },
+                modifier = Modifier.fillMaxSize()
+            )
+        }
+    )
+
+    LaunchedEffect(networkStateIsOffline) {
+        if (networkStateIsOffline) {
+            snackbarHostState.showSnackbar(
+                message = "Not connected",
+                duration = Indefinite,
+            )
+        }
     }
 }

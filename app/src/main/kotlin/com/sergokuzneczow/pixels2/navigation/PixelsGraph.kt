@@ -11,6 +11,7 @@ import com.sergokuzneczow.splash.api.splashScreenDestination
 import com.sergokuzneczow.suitable_pictures.api.suitablePicturesScreenDestination
 
 internal fun NavGraphBuilder.pixelsGraph(
+    onShowSnackbar: suspend (message: String, actionOrNull: String?) -> Unit,
     popBackStack: () -> Unit,
     navigateToMainMenuDestination: (navOptions: NavOptions?) -> Unit,
     navigateToSuitablePicturesDestination: (pageKey: Long) -> Unit,
@@ -23,9 +24,11 @@ internal fun NavGraphBuilder.pixelsGraph(
         navigateToMainMenu = navigateToMainMenuDestination
     )
     mainMenuScreenDestination(
+        onShowSnackbar = onShowSnackbar,
         navigateToSuitablePicturesDestination = navigateToSuitablePicturesDestination,
     )
     suitablePicturesScreenDestination(
+        onShowSnackbar = onShowSnackbar,
         //navigateToDialogPageFilterDestination = navigateToDialogPageFilterDestination,
         navigateToDialogPageFilterDestination = navigateToBottomSheetPageFilterDestination,
         navigateToSelectedPictureDestination = navigateToSelectedPictureDestination,
@@ -45,6 +48,7 @@ internal fun NavGraphBuilder.pixelsGraph(
         navigateToBottomSheetPictureInfoDestination = navigateToBottomSheetPictureInfoDestination
     )
     bottomSheetPictureInfoDestination(
+        onShowSnackbar = onShowSnackbar,
         navigateToSuitablePicturesDestination = navigateToSuitablePicturesDestination,
         popBackStack = popBackStack,
     )

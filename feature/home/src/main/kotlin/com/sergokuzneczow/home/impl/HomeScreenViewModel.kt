@@ -14,8 +14,6 @@ import com.sergokuzneczow.home.impl.di.dependenciesProvider
 import com.sergokuzneczow.models.PageFilter
 import com.sergokuzneczow.models.PageQuery
 import com.sergokuzneczow.models.PictureWithRelations
-import com.sergokuzneczow.utilities.logger.Level
-import com.sergokuzneczow.utilities.logger.log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -46,15 +44,17 @@ internal class HomeScreenViewModel(
 
     private val progressBarUiState: MutableStateFlow<Boolean> = MutableStateFlow(false)
 
+    private val exceptionsFlow: MutableStateFlow<String?> = MutableStateFlow(null)
+
     init {
         homeScreenComponent.inject(this)
 
         getHomeScreenPager4UseCase.execute(coroutineScope = viewModelScope + Dispatchers.IO)
             .onEach { answer: IPixelsPager4.Answer<PictureWithRelations?> ->
-                answer.pages.values.forEachIndexed { index, page ->
-                    log(tag = "HomeScreenViewModel", level = Level.DEBUG) { "getHomeScreenPager4UseCase.execute().onEach(); index=$index, page.data=${page.data}" }
-                    log(tag = "HomeScreenViewModel", level = Level.DEBUG) { "getHomeScreenPager4UseCase.execute().onEach(); index=$index, page.pageState=${page.pageState}" }
-                }
+                if (answer.pages.values.last().pageState is IPixelsPager4.Answer.Page.PageState.Error) {
+                    exceptionsFlow.emit((answer.pages.values.last().pageState as IPixelsPager4.Answer.Page.PageState.Error).message)
+                } else exceptionsFlow.emit(null)
+
                 homeListUiState.emit(HomeListUiState.Success(suggestedQueriesPages = answer.toSuggestedQueriesPages()))
             }.launchIn(viewModelScope)
     }
@@ -62,6 +62,8 @@ internal class HomeScreenViewModel(
     fun getHomeListUiState(): StateFlow<HomeListUiState> = homeListUiState.asStateFlow()
 
     fun getProgressBarUiState(): StateFlow<Boolean> = progressBarUiState.asStateFlow()
+
+    fun getExceptionsFlow(): StateFlow<String?> = exceptionsFlow.asStateFlow()
 
     fun nextPage() {
         getHomeScreenPager4UseCase.nextPage()

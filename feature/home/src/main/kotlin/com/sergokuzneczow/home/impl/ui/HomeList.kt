@@ -46,8 +46,9 @@ import com.sergokuzneczow.core.ui.Dimensions
 import com.sergokuzneczow.core.ui.PixelsTheme
 import com.sergokuzneczow.core.utilites.ThemePreviews
 import com.sergokuzneczow.home.impl.HomeListUiState
-import com.sergokuzneczow.home.impl.HomeListUiState.SuggestedQueriesPage
-import com.sergokuzneczow.home.impl.HomeListUiState.SuggestedQuery
+import com.sergokuzneczow.home.impl.StandardQuery
+import com.sergokuzneczow.home.impl.SuggestedQueriesPage
+import com.sergokuzneczow.home.impl.SuggestedQueriesPage.SuggestedQuery
 import com.sergokuzneczow.models.PageFilter
 import com.sergokuzneczow.models.PageQuery
 
@@ -92,17 +93,16 @@ internal fun HomeList(
                         suggestedQueriesPage = page,
                         itemClick = itemClick,
                     )
-                    if (homeListUiState.suggestedQueriesPages.size - 3 < position) nextPage.invoke()
+                    if (homeListUiState.suggestedQueriesPages.size - 4 < position) nextPage.invoke()
                 }
             }
         }
-
     }
 }
 
 @Composable
 private fun StandardQueries(
-    standardQueries: List<HomeListUiState.StandardQuery>,
+    standardQueries: List<StandardQuery>,
     itemClick: (PageQuery, PageFilter) -> Unit,
 ) {
     Row(

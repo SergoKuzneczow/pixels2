@@ -17,6 +17,7 @@ public fun NavHostController.navigateToSuitablePicturesRoute(pageKey: Long, navO
 }
 
 public fun NavGraphBuilder.suitablePicturesScreenDestination(
+    onShowSnackbar: suspend (message: String, actionOrNull: String?) -> Unit,
     navigateToDialogPageFilterDestination: (pageKey: Long, navOptions: NavOptions?) -> Unit,
     navigateToSelectedPictureDestination: (pictureKey: String) -> Unit,
 ) {
@@ -24,6 +25,7 @@ public fun NavGraphBuilder.suitablePicturesScreenDestination(
         val data: SuitablePicturesRoute = backStackEntry.toRoute()
         SuitablePicturesRootScreen(
             pageKey = data.pageKey,
+            onShowSnackbar = onShowSnackbar,
             navigateToDialogPageFilterDestination = { pageKey ->
                 val navOptions: NavOptions = navOptions {
                     popUpTo<SuitablePicturesRoute> {

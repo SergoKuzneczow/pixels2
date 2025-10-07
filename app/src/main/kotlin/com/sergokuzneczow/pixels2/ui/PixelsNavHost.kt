@@ -16,6 +16,7 @@ import com.sergokuzneczow.suitable_pictures.api.navigateToSuitablePicturesRoute
 @Composable
 internal fun PixelsNavHost(
     applicationState: PixelsState,
+    onShowSnackbar: suspend (message: String, actionOrNull: String?) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     NavHost(
@@ -24,6 +25,7 @@ internal fun PixelsNavHost(
         modifier = modifier,
     ) {
         this.pixelsGraph(
+            onShowSnackbar = onShowSnackbar,
             popBackStack = { applicationState.navController.popBackStack() }, //!!!!!! дополнить проверку на безопасный (не пустой) popUpBackStack()
             navigateToMainMenuDestination = { navOptions: NavOptions? -> applicationState.navController.navigateToMainMenuDestination(navOptions) },
             navigateToSuitablePicturesDestination = { pageKey: Long -> applicationState.navController.navigateToSuitablePicturesRoute(pageKey) },

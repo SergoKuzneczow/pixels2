@@ -29,6 +29,7 @@ import kotlin.reflect.KClass
 
 @Composable
 internal fun MainMenuScreen(
+    onShowSnackbar: suspend (message: String, actionOrNull: String?) -> Unit,
     navigateToSuitablePicturesDestination: (Long) -> Unit,
     rootScreenState: MainMenuRootScreenState = rememberMainMenuRootScreenState(),
     windowAdaptiveInfo: WindowAdaptiveInfo = currentWindowAdaptiveInfo(),
@@ -99,6 +100,7 @@ internal fun MainMenuScreen(
         windowAdaptiveInfo = windowAdaptiveInfo,
         content = {
             MainMenuNavHost(
+                onShowSnackbar = onShowSnackbar,
                 rootScreenState = rootScreenState,
                 titleTextState = titleTextState,
                 progressBarIsVisible = progressBarIsVisible,

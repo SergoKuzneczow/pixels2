@@ -14,7 +14,7 @@ import com.sergokuzneczow.models.Tag
 @Composable
 internal fun BottomSheetPictureInfoRootScreen(
     pictureKey: String,
-    onShowSnackbar: suspend (String, String?) -> Boolean,
+    onShowSnackbar: suspend (message: String, actionOrNull: String?) -> Unit,
     navigateToSuitablePicturesDestination: (pageKey: Long) -> Unit,
     popBackStack: () -> Unit
 ) {

@@ -7,11 +7,13 @@ import com.sergokuzneczow.search_suitable_pictures.api.searchSuitablePicturesDes
 import com.sergokuzneczow.settings.api.settingsScreenBaseDestination
 
 internal fun NavGraphBuilder.mainMenuGraph(
+    onShowSnackbar: suspend (message: String, actionOrNull: String?) -> Unit,
     titleTextState: MutableState<String>,
     progressBarIsVisible: MutableState<Boolean>,
     navigateToSuitablePicturesDestination: (pageKey: Long) -> Unit,
 ) {
     navigationHomeBaseDestination(
+        onShowSnackbar = onShowSnackbar,
         navigateToSuitablePicturesDestination = navigateToSuitablePicturesDestination,
         titleTextState = titleTextState,
         progressBarIsVisible = progressBarIsVisible,

@@ -16,7 +16,7 @@ public fun NavHostController.navigateToBottomSheetPictureInfoDestination(picture
 }
 
 public fun NavGraphBuilder.bottomSheetPictureInfoDestination(
-    onShowSnackbar: suspend (String, String?) -> Boolean,
+    onShowSnackbar: suspend (message: String, actionOrNull: String?) -> Unit,
     navigateToSuitablePicturesDestination: (pageKey: Long) -> Unit,
     popBackStack: () -> Unit,
 ) {
