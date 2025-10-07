@@ -14,6 +14,7 @@ internal fun SuitablePicturesRootScreen(
     onShowSnackbar: suspend (message: String, actionOrNull: String?) -> Unit,
     navigateToDialogPageFilterDestination: (pageKey: Long) -> Unit,
     navigateToSelectedPictureDestination: (pictureKey: String) -> Unit,
+    backMainMenu: () -> Unit,
 ) {
     val vm: SuitablePicturesViewModel = viewModel(factory = SuitablePicturesViewModel.Factory(pageKey, LocalContext.current))
     val titleUiState: TitleUiState by vm.getTitleUiState().collectAsStateWithLifecycle()
@@ -27,6 +28,7 @@ internal fun SuitablePicturesRootScreen(
         nextPage = vm::nextPage,
         navigateToDialogPageFilterDestination = navigateToDialogPageFilterDestination,
         navigateToSelectedPictureDestination = navigateToSelectedPictureDestination,
+        backMainMenu = backMainMenu,
     )
 
     LaunchedEffect(exceptionsFlow) {

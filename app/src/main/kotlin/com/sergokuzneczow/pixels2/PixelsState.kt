@@ -4,9 +4,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.navigation.NavController
+import androidx.navigation.NavController.OnDestinationChangedListener
+import androidx.navigation.NavDestination
+import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import androidx.savedstate.SavedState
+import com.sergokuzneczow.main_menu.api.MainMenuRoute
 import com.sergokuzneczow.splash.api.SplashScreenRoute
+import com.sergokuzneczow.utilities.logger.log
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
@@ -40,6 +47,21 @@ internal class PixelsState(
     coroutineScope: CoroutineScope,
     networkMonitor: Flow<Boolean>,
 ) {
+
+    init {
+        navController.addOnDestinationChangedListener(object : OnDestinationChangedListener {
+            override fun onDestinationChanged(controller: NavController, destination: NavDestination, arguments: SavedState?) {
+                if (destination.hasRoute(MainMenuRoute::class)) {
+                    log(tag = "PixelsState") { "addOnDestinationChangedListener(); destination=MainMenuRoute" }
+                    mainMenuDestination = destination
+                }
+            }
+        })
+    }
+
+    var mainMenuDestination: NavDestination? = null
+        private set
+
     val startDestination: KClass<*> = SplashScreenRoute::class
 
     val isOffline: StateFlow<Boolean> = networkMonitor.map(Boolean::not)

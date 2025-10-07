@@ -20,6 +20,7 @@ public fun NavGraphBuilder.suitablePicturesScreenDestination(
     onShowSnackbar: suspend (message: String, actionOrNull: String?) -> Unit,
     navigateToDialogPageFilterDestination: (pageKey: Long, navOptions: NavOptions?) -> Unit,
     navigateToSelectedPictureDestination: (pictureKey: String) -> Unit,
+    backMainMenu: () -> Unit,
 ) {
     composable<SuitablePicturesRoute> { backStackEntry ->
         val data: SuitablePicturesRoute = backStackEntry.toRoute()
@@ -38,6 +39,7 @@ public fun NavGraphBuilder.suitablePicturesScreenDestination(
                 navigateToDialogPageFilterDestination.invoke(pageKey, navOptions)
             },
             navigateToSelectedPictureDestination = navigateToSelectedPictureDestination,
+            backMainMenu = backMainMenu,
         )
     }
 }

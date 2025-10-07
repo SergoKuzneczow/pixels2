@@ -6,7 +6,6 @@ import androidx.navigation.NavOptions
 import androidx.navigation.compose.NavHost
 import com.sergokuzneczow.bottom_sheet_page_filter.api.navigateToBottomSheetPageFilterDestination
 import com.sergokuzneczow.bottom_sheet_picture_info.api.navigateToBottomSheetPictureInfoDestination
-import com.sergokuzneczow.dialog_page_filter.api.navigateToDialogPageFilterDestination
 import com.sergokuzneczow.main_menu.api.navigateToMainMenuDestination
 import com.sergokuzneczow.pixels2.PixelsState
 import com.sergokuzneczow.pixels2.navigation.pixelsGraph
@@ -26,7 +25,8 @@ internal fun PixelsNavHost(
     ) {
         this.pixelsGraph(
             onShowSnackbar = onShowSnackbar,
-            popBackStack = { applicationState.navController.popBackStack() }, //!!!!!! дополнить проверку на безопасный (не пустой) popUpBackStack()
+            popBackStack = { applicationState.navController.popBackStack() },
+            backMainMenu = { applicationState.mainMenuDestination?.let { applicationState.navController.popBackStack(route = it.route!!, inclusive = false, saveState = true) } },
             navigateToMainMenuDestination = { navOptions: NavOptions? -> applicationState.navController.navigateToMainMenuDestination(navOptions) },
             navigateToSuitablePicturesDestination = { pageKey: Long -> applicationState.navController.navigateToSuitablePicturesRoute(pageKey) },
             navigateToSelectedPictureDestination = { pictureKey: String -> applicationState.navController.navigateToSelectedPictureDestination(pictureKey) },

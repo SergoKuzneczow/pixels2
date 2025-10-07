@@ -15,6 +15,7 @@ import com.sergokuzneczow.core.ui.PixelsIcons
 import com.sergokuzneczow.suitable_pictures.R.string.empty_collection
 import com.sergokuzneczow.suitable_pictures.impl.SuitablePicturesUiState
 import com.sergokuzneczow.suitable_pictures.impl.TitleUiState
+import com.sergokuzneczow.utilities.logger.log
 
 @Composable
 internal fun SuitablePicturesScreen(
@@ -24,6 +25,7 @@ internal fun SuitablePicturesScreen(
     nextPage: () -> Unit,
     navigateToDialogPageFilterDestination: (pageKey: Long) -> Unit,
     navigateToSelectedPictureDestination: (pictureKey: String) -> Unit,
+    backMainMenu: () -> Unit,
 ) {
     Box(modifier = Modifier.fillMaxSize()) {
         when (suitablePicturesUiState) {
@@ -58,7 +60,9 @@ internal fun SuitablePicturesScreen(
         PixelsTopBar(
             title = titleUiState.title,
             visibleProgressBar = false,
-            modifier = Modifier
+            onHomeIconClick = {
+                log { "onCLick" }
+                backMainMenu.invoke() }
         )
     }
 }

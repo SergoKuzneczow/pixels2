@@ -13,6 +13,7 @@ import com.sergokuzneczow.suitable_pictures.api.suitablePicturesScreenDestinatio
 internal fun NavGraphBuilder.pixelsGraph(
     onShowSnackbar: suspend (message: String, actionOrNull: String?) -> Unit,
     popBackStack: () -> Unit,
+    backMainMenu: () -> Unit,
     navigateToMainMenuDestination: (navOptions: NavOptions?) -> Unit,
     navigateToSuitablePicturesDestination: (pageKey: Long) -> Unit,
     navigateToBottomSheetPageFilterDestination: (pageKey: Long, navOptions: NavOptions?) -> Unit,
@@ -30,6 +31,7 @@ internal fun NavGraphBuilder.pixelsGraph(
         onShowSnackbar = onShowSnackbar,
         navigateToDialogPageFilterDestination = navigateToBottomSheetPageFilterDestination,
         navigateToSelectedPictureDestination = navigateToSelectedPictureDestination,
+        backMainMenu = backMainMenu,
     )
     dialogPageFilterScreenDestination(
         navigateToSuitablePicturesDestination = navigateToSuitablePicturesDestination,
