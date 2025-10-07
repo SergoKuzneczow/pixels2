@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults.iconButtonColors
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -76,19 +77,24 @@ public fun PixelsTopBar(
                 PixelsCircularProgressIndicator()
             }
 
-            Row(modifier = Modifier.align(Alignment.CenterStart)) {
+            Row(
+                modifier = Modifier
+                    .align(Alignment.CenterStart)
+                    .padding(start = Dimensions.Padding)
+            ) {
                 onBackIconClick?.let {
                     IconButton(
                         onClick = { it.invoke() },
                         modifier = Modifier
-                            .padding(start = Dimensions.Padding)
-                            .size(32.dp),
-                        enabled = true,
+                            .padding(Dimensions.SmallPadding)
+                            .size(40.dp),
+                        colors = iconButtonColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
                         content = {
                             Icon(
                                 imageVector = PixelsIcons.arrowBack,
-                                contentDescription = null,
                                 tint = MaterialTheme.colorScheme.onSurface,
+                                contentDescription = null,
+                                modifier = Modifier.size(24.dp)
                             )
                         }
                     )
@@ -96,13 +102,16 @@ public fun PixelsTopBar(
                 onHomeIconClick?.let {
                     IconButton(
                         onClick = { it.invoke() },
-                        modifier = Modifier.size(32.dp),
-                        enabled = true,
+                        modifier = Modifier
+                            .padding(Dimensions.SmallPadding)
+                            .size(40.dp),
+                        colors = iconButtonColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
                         content = {
                             Icon(
                                 imageVector = PixelsIcons.home,
-                                contentDescription = null,
                                 tint = MaterialTheme.colorScheme.onSurface,
+                                contentDescription = null,
+                                modifier = Modifier.size(24.dp)
                             )
                         }
                     )
