@@ -5,10 +5,13 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -20,6 +23,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.sergokuzneczow.core.ui.Dimensions
+import com.sergokuzneczow.core.ui.PixelsIcons
 import com.sergokuzneczow.core.ui.PixelsTheme
 import com.sergokuzneczow.core.ui.pixelsShadow
 import com.sergokuzneczow.core.utilites.ThemeUiPreviews
@@ -32,8 +36,9 @@ public fun PixelsTopBar(
     title: String,
     visibleProgressBar: Boolean,
     modifier: Modifier = Modifier,
+    onHomeIconClick: (() -> Unit)? = null,
+    onBackIconClick: (() -> Unit)? = null,
 ) {
-
     Box(
         modifier = Modifier
             .height(Dimensions.PixelsTopBarBoxHeight)
@@ -43,7 +48,6 @@ public fun PixelsTopBar(
             modifier = modifier
                 .padding(horizontal = Dimensions.LargePadding, vertical = Dimensions.LargePadding)
                 .pixelsShadow()
-//                .padding(2.dp)
                 .fillMaxWidth()
                 .height(TOP_BAR_HEIGHT)
                 .clip(Dimensions.PixelsShape)
@@ -71,6 +75,39 @@ public fun PixelsTopBar(
             ) {
                 PixelsCircularProgressIndicator()
             }
+
+            Row(modifier = Modifier.align(Alignment.CenterStart)) {
+                onBackIconClick?.let {
+                    IconButton(
+                        onClick = { it.invoke() },
+                        modifier = Modifier
+                            .padding(start = Dimensions.Padding)
+                            .size(32.dp),
+                        enabled = true,
+                        content = {
+                            Icon(
+                                imageVector = PixelsIcons.arrowBack,
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.onSurface,
+                            )
+                        }
+                    )
+                }
+                onHomeIconClick?.let {
+                    IconButton(
+                        onClick = { it.invoke() },
+                        modifier = Modifier.size(32.dp),
+                        enabled = true,
+                        content = {
+                            Icon(
+                                imageVector = PixelsIcons.home,
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.onSurface,
+                            )
+                        }
+                    )
+                }
+            }
         }
     }
 }
@@ -82,6 +119,8 @@ private fun PixelsTopBarPreview() {
         PixelsTopBar(
             title = "Default title",
             visibleProgressBar = true,
+            onHomeIconClick = {},
+            onBackIconClick = {},
         )
     }
 }
