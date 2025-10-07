@@ -17,7 +17,7 @@ import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.navOptions
-import com.sergokuzneczow.core.system_components.PixelsScaffold
+import com.sergokuzneczow.core.system_components.PixelsNavigationSuiteScaffold
 import com.sergokuzneczow.core.system_components.PixelsTopBar
 import com.sergokuzneczow.main_menu.impl.MainMenuRootScreenState
 import com.sergokuzneczow.main_menu.impl.MainMenuTopDestination
@@ -37,7 +37,7 @@ internal fun MainMenuScreen(
     val progressBarIsVisible: MutableState<Boolean> = remember { mutableStateOf(true) }
     val currentDestination = rootScreenState.currentDestination
 
-    PixelsScaffold(
+    PixelsNavigationSuiteScaffold(
         modifier = Modifier.fillMaxSize(),
         navigationSuiteItems = {
             MainMenuTopDestination.entries.forEach { destination ->

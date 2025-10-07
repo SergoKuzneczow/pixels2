@@ -114,7 +114,7 @@ private fun PixelsNavigationRail(
 }
 
 @Composable
-public fun PixelsScaffold(
+public fun PixelsNavigationSuiteScaffold(
     navigationSuiteItems: PixelsNavigationSuiteScope.() -> Unit,
     modifier: Modifier = Modifier,
     windowAdaptiveInfo: WindowAdaptiveInfo = currentWindowAdaptiveInfo(),
