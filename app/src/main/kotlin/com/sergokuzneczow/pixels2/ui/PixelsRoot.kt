@@ -13,9 +13,7 @@ import com.sergokuzneczow.pixels2.PixelsState
 @Composable
 internal fun PixelsRoot(applicationState: PixelsState) {
     val networkState: Boolean by applicationState.isOffline.collectAsStateWithLifecycle()
-    Box(
-        modifier = Modifier.fillMaxSize()
-    ) {
+    Box(modifier = Modifier.fillMaxSize()) {
         PixelsNavHost(
             applicationState = applicationState,
             modifier = Modifier.fillMaxSize()
