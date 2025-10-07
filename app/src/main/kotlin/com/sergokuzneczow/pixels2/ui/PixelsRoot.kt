@@ -42,9 +42,7 @@ internal fun PixelsRoot(applicationState: PixelsState) {
                         duration = SnackbarDuration.Short,
                     )
                 },
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(it)
+                modifier = Modifier.fillMaxSize()
             )
         }
     )
