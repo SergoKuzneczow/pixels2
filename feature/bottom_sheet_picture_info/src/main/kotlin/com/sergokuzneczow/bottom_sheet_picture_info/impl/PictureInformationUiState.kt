@@ -19,6 +19,7 @@ internal sealed interface PictureInformationUiState {
         data object Prepared : PictureSavingUiState
         data object Loading : PictureSavingUiState
         data object Saving : PictureSavingUiState
-        data object Error : PictureSavingUiState
+        data class Error(val throwable: Throwable) : PictureSavingUiState
+        data object Success : PictureSavingUiState
     }
 }

@@ -86,13 +86,9 @@ internal class BottomSheetPictureInfoViewModel(
                 path = picturePath,
                 onStart = {
                     viewModelScope.launch {
-                        val s = pictureInformationUiState.value
-                        when (s) {
-                            is PictureInformationUiState.Loading -> {}
-                            is PictureInformationUiState.Success -> {
-                                pictureInformationUiState.emit(s.copy(pictureSavingUiState = PictureInformationUiState.PictureSavingUiState.Loading))
-                            }
-                        }
+                        val s2 = pictureInformationUiState.value
+                        if (s2 is PictureInformationUiState.Success)
+                            pictureInformationUiState.emit(s2.copy(pictureSavingUiState = PictureInformationUiState.PictureSavingUiState.Loading))
                     }
                 },
                 onSuccess = {
@@ -101,53 +97,37 @@ internal class BottomSheetPictureInfoViewModel(
                         onStart = { },
                         onSuccess = {
                             viewModelScope.launch {
-                                val s = pictureInformationUiState.value
-                                when (s) {
-                                    is PictureInformationUiState.Loading -> {}
-                                    is PictureInformationUiState.Success -> {
-                                        pictureInformationUiState.emit(s.copy(pictureSavingUiState = PictureInformationUiState.PictureSavingUiState.Prepared))
-                                    }
-                                }
+                                val s1 = pictureInformationUiState.value
+                                if (s1 is PictureInformationUiState.Success)
+                                    pictureInformationUiState.emit(s1.copy(pictureSavingUiState = PictureInformationUiState.PictureSavingUiState.Success))
+                                delay(1.seconds)
+                                val s2 = pictureInformationUiState.value
+                                if (s2 is PictureInformationUiState.Success)
+                                    pictureInformationUiState.emit(s2.copy(pictureSavingUiState = PictureInformationUiState.PictureSavingUiState.Prepared))
                             }
                         },
-                        onFailure = {
+                        onFailure = { throwable ->
                             viewModelScope.launch {
                                 val s1 = pictureInformationUiState.value
-                                when (s1) {
-                                    is PictureInformationUiState.Loading -> {}
-                                    is PictureInformationUiState.Success -> {
-                                        pictureInformationUiState.emit(s1.copy(pictureSavingUiState = PictureInformationUiState.PictureSavingUiState.Error))
-                                    }
-                                }
-                                val s2 = pictureInformationUiState.value
+                                if (s1 is PictureInformationUiState.Success)
+                                    pictureInformationUiState.emit(s1.copy(pictureSavingUiState = PictureInformationUiState.PictureSavingUiState.Error(throwable)))
                                 delay(1.seconds)
-                                when (s2) {
-                                    is PictureInformationUiState.Loading -> {}
-                                    is PictureInformationUiState.Success -> {
-                                        pictureInformationUiState.emit(s2.copy(pictureSavingUiState = PictureInformationUiState.PictureSavingUiState.Prepared))
-                                    }
-                                }
+                                val s2 = pictureInformationUiState.value
+                                if (s2 is PictureInformationUiState.Success)
+                                    pictureInformationUiState.emit(s2.copy(pictureSavingUiState = PictureInformationUiState.PictureSavingUiState.Prepared))
                             }
                         }
                     )
                 },
-                onError = {
+                onError = { throwable ->
                     viewModelScope.launch {
                         val s1 = pictureInformationUiState.value
-                        when (s1) {
-                            is PictureInformationUiState.Loading -> {}
-                            is PictureInformationUiState.Success -> {
-                                pictureInformationUiState.emit(s1.copy(pictureSavingUiState = PictureInformationUiState.PictureSavingUiState.Error))
-                            }
-                        }
-                        val s2 = pictureInformationUiState.value
+                        if (s1 is PictureInformationUiState.Success)
+                            pictureInformationUiState.emit(s1.copy(pictureSavingUiState = PictureInformationUiState.PictureSavingUiState.Error(throwable)))
                         delay(1.seconds)
-                        when (s2) {
-                            is PictureInformationUiState.Loading -> {}
-                            is PictureInformationUiState.Success -> {
-                                pictureInformationUiState.emit(s2.copy(pictureSavingUiState = PictureInformationUiState.PictureSavingUiState.Prepared))
-                            }
-                        }
+                        val s2 = pictureInformationUiState.value
+                        if (s2 is PictureInformationUiState.Success)
+                            pictureInformationUiState.emit(s2.copy(pictureSavingUiState = PictureInformationUiState.PictureSavingUiState.Prepared))
                     }
                 }
             )

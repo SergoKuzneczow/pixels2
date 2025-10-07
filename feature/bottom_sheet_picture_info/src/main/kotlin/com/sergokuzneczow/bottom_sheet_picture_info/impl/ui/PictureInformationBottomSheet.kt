@@ -183,9 +183,10 @@ private fun RowScope.SavePictureButton(
     var downloading: Boolean by rememberSaveable { mutableStateOf(false) }
     downloading = when (saveButtonState) {
         PictureInformationUiState.PictureSavingUiState.Prepared -> false
-        PictureInformationUiState.PictureSavingUiState.Error -> false
+        is PictureInformationUiState.PictureSavingUiState.Error -> false
         PictureInformationUiState.PictureSavingUiState.Loading -> true
         PictureInformationUiState.PictureSavingUiState.Saving -> true
+        PictureInformationUiState.PictureSavingUiState.Success -> false
     }
     PixelsSurfaceButton(
         text = "Save",

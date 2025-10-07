@@ -16,6 +16,7 @@ public fun NavHostController.navigateToBottomSheetPictureInfoDestination(picture
 }
 
 public fun NavGraphBuilder.bottomSheetPictureInfoDestination(
+    onShowSnackbar: suspend (String, String?) -> Boolean,
     navigateToSuitablePicturesDestination: (pageKey: Long) -> Unit,
     popBackStack: () -> Unit,
 ) {
@@ -23,6 +24,7 @@ public fun NavGraphBuilder.bottomSheetPictureInfoDestination(
         val data: BottomSheetPictureInfoRoute = backStackEntry.toRoute()
         BottomSheetPictureInfoRootScreen(
             pictureKey = data.pictureKey,
+            onShowSnackbar = onShowSnackbar,
             navigateToSuitablePicturesDestination = navigateToSuitablePicturesDestination,
             popBackStack = popBackStack,
         )
