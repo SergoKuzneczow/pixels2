@@ -1,98 +1,146 @@
 package com.sergokuzneczow.core.ui
 
 import androidx.compose.foundation.Image
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.rounded.ArrowBack
-import androidx.compose.material.icons.outlined.Home
-import androidx.compose.material.icons.rounded.Settings
+import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.unit.dp
+import com.sergokuzneczow.core.ui.icons.ArrowLeft
 import com.sergokuzneczow.core.ui.icons.Favorites
 import com.sergokuzneczow.core.ui.icons.Filter
+import com.sergokuzneczow.core.ui.icons.Home
 import com.sergokuzneczow.core.ui.icons.Information
 import com.sergokuzneczow.core.ui.icons.New
 import com.sergokuzneczow.core.ui.icons.Search
 import com.sergokuzneczow.core.ui.icons.Selector
+import com.sergokuzneczow.core.ui.icons.Settings
 import com.sergokuzneczow.core.ui.icons.Top
 import com.sergokuzneczow.core.ui.icons.Views
 import com.sergokuzneczow.core.utilites.ThemePreviews
 
 public object PixelsIcons {
-    public val home: ImageVector = Icons.Outlined.Home
-    public val arrowBack: ImageVector = Icons.AutoMirrored.Rounded.ArrowBack
-    public val settings: ImageVector = Icons.Rounded.Settings
     public val new: ImageVector = PixelsIcons.New
     public val topList: ImageVector = PixelsIcons.Top
     public val views: ImageVector = PixelsIcons.Views
     public val favorites: ImageVector = PixelsIcons.Favorites
+    public val home: ImageVector = PixelsIcons.Home
+    public val arrowBack: ImageVector = PixelsIcons.ArrowLeft
+    public val settings: ImageVector = PixelsIcons.Settings
     public val filter: ImageVector = PixelsIcons.Filter
     public val search: ImageVector = PixelsIcons.Search
     public val information: ImageVector = PixelsIcons.Information
     public val selector: ImageVector = PixelsIcons.Selector
 }
 
-@ThemePreviews
-@Composable
-private fun Home() {
-    Image(imageVector = PixelsIcons.home, contentDescription = null)
-}
-
-@ThemePreviews
-@Composable
-private fun ArrowBack() {
-    Image(imageVector = PixelsIcons.arrowBack, contentDescription = null)
-}
-
-@ThemePreviews
-@Composable
-private fun Settings() {
-    Image(imageVector = PixelsIcons.settings, contentDescription = null)
-}
 
 @ThemePreviews
 @Composable
 private fun Favorites() {
-    Image(imageVector = PixelsIcons.favorites, contentDescription = null)
+    Image(
+        imageVector = PixelsIcons.favorites,
+        contentDescription = null,
+        modifier = Modifier.size(64.dp)
+    )
 }
 
 @ThemePreviews
 @Composable
 private fun TopList() {
-    Image(imageVector = PixelsIcons.topList, contentDescription = null)
+    Image(
+        imageVector = PixelsIcons.topList,
+        contentDescription = null,
+        modifier = Modifier.size(64.dp)
+    )
 }
 
 @ThemePreviews
 @Composable
 private fun DateAdded() {
-    Image(imageVector = PixelsIcons.new, contentDescription = null)
+    Image(
+        imageVector = PixelsIcons.new,
+        contentDescription = null,
+        modifier = Modifier.size(64.dp)
+    )
 }
 
 @ThemePreviews
 @Composable
 private fun Views() {
-    Image(imageVector = PixelsIcons.views, contentDescription = null)
+    Image(
+        imageVector = PixelsIcons.views,
+        contentDescription = null,
+        modifier = Modifier.size(64.dp)
+    )
 }
 
 @ThemePreviews
 @Composable
+private fun Home() {
+    Image(
+        imageVector = PixelsIcons.home,
+        contentDescription = null,
+        modifier = Modifier.size(64.dp)
+    )
+}
+
+@ThemePreviews
+@Composable
+private fun ArrowBack() {
+    Image(
+        imageVector = PixelsIcons.arrowBack,
+        contentDescription = null,
+        modifier = Modifier.size(64.dp)
+    )
+}
+
+@ThemePreviews
+@Composable
+private fun Settings() {
+    Image(
+        imageVector = PixelsIcons.settings,
+        contentDescription = null,
+        modifier = Modifier.size(64.dp)
+    )
+}
+
+
+@ThemePreviews
+@Composable
 private fun Filter() {
-    Image(imageVector = PixelsIcons.filter, contentDescription = null)
+    Image(
+        imageVector = PixelsIcons.filter,
+        contentDescription = null,
+        modifier = Modifier.size(64.dp)
+    )
 }
 
 @ThemePreviews
 @Composable
 private fun Search() {
-    Image(imageVector = PixelsIcons.search, contentDescription = null)
+    Image(
+        imageVector = PixelsIcons.search,
+        contentDescription = null,
+        modifier = Modifier.size(64.dp)
+    )
 }
 
 @ThemePreviews
 @Composable
 private fun Information() {
-    Image(imageVector = PixelsIcons.information, contentDescription = null)
+    Image(
+        imageVector = PixelsIcons.information,
+        contentDescription = null,
+        modifier = Modifier.size(64.dp)
+    )
 }
 
 @ThemePreviews
 @Composable
 private fun Selector() {
-    Image(imageVector = PixelsIcons.selector, contentDescription = null)
+    Image(
+        imageVector = PixelsIcons.selector,
+        contentDescription = null,
+        modifier = Modifier.size(64.dp)
+    )
 }
