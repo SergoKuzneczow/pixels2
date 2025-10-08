@@ -10,11 +10,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.navigation.NavDestination
+import androidx.navigation.NavGraph
+import androidx.navigation.NavGraph.Companion.childHierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.sergokuzneczow.core.ui.PixelsIcons
-import com.sergokuzneczow.home.api.HomeRoute
+import com.sergokuzneczow.home.R
+import com.sergokuzneczow.home.api.HomeScreenRoute
 import com.sergokuzneczow.search_suitable_pictures.api.SearchSuitablePicturesRoute
 import com.sergokuzneczow.settings.api.SettingsScreenRoute
 import kotlinx.coroutines.CoroutineScope
@@ -68,8 +71,8 @@ internal enum class MainMenuTopDestination(
 ) {
     HOME(
         icon = PixelsIcons.home,
-        titleTextId = com.sergokuzneczow.home.R.string.feature_home_title,
-        route = HomeRoute::class,
+        titleTextId = R.string.feature_home_title,
+        route = HomeScreenRoute::class,
     ),
     SEARCH(
         icon = PixelsIcons.search,

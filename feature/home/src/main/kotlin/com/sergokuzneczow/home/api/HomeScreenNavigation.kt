@@ -9,10 +9,10 @@ import com.sergokuzneczow.home.impl.HomeScreenRoot
 import kotlinx.serialization.Serializable
 
 @Serializable
-public data object HomeRoute
+public data object HomeScreenRoute
 
 public fun NavController.navigateToHomeDestination(navOptions: NavOptions) {
-    this.navigate(route = HomeRoute, navOptions = navOptions)
+    this.navigate(route = HomeScreenRoute, navOptions = navOptions)
 }
 
 public fun NavGraphBuilder.composableHomeDestination(
@@ -21,7 +21,7 @@ public fun NavGraphBuilder.composableHomeDestination(
     progressBarIsVisible: MutableState<Boolean>,
     navigateToSuitablePicturesDestination: (pageKey: Long) -> Unit,
 ) {
-    composable<HomeRoute> {
+    composable<HomeScreenRoute> {
         HomeScreenRoot(
             onShowSnackbar = onShowSnackbar,
             progressBarIsVisible = progressBarIsVisible,
