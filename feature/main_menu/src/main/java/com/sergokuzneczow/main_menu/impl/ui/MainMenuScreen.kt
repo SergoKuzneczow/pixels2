@@ -12,7 +12,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavDestination.Companion.hierarchy
@@ -27,7 +26,6 @@ import com.sergokuzneczow.main_menu.impl.MainMenuTopDestination
 import com.sergokuzneczow.main_menu.impl.rememberMainMenuRootScreenState
 import com.sergokuzneczow.search_suitable_pictures.api.navigateToSearchSuitablePicturesDestination
 import com.sergokuzneczow.settings.api.navigateToSettingsScreenDestination
-import com.sergokuzneczow.suitable_pictures.api.SuitablePicturesRoute
 import kotlin.reflect.KClass
 
 @Composable
