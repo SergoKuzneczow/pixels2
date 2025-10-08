@@ -2,9 +2,9 @@ package com.sergokuzneczow.main_menu.impl.navigation
 
 import androidx.compose.runtime.MutableState
 import androidx.navigation.NavGraphBuilder
-import com.sergokuzneczow.home.api.navigationHomeBaseDestination
-import com.sergokuzneczow.search_suitable_pictures.api.searchSuitablePicturesDestination
-import com.sergokuzneczow.settings.api.settingsScreenBaseDestination
+import com.sergokuzneczow.home.api.composableHomeDestination
+import com.sergokuzneczow.search_suitable_pictures.api.composableSearchSuitablePicturesDestination
+import com.sergokuzneczow.settings.api.composableSettingsScreenDestination
 
 internal fun NavGraphBuilder.mainMenuGraph(
     onShowSnackbar: suspend (message: String, actionOrNull: String?) -> Unit,
@@ -12,17 +12,17 @@ internal fun NavGraphBuilder.mainMenuGraph(
     progressBarIsVisible: MutableState<Boolean>,
     navigateToSuitablePicturesDestination: (pageKey: Long) -> Unit,
 ) {
-    navigationHomeBaseDestination(
+    composableHomeDestination(
         onShowSnackbar = onShowSnackbar,
         navigateToSuitablePicturesDestination = navigateToSuitablePicturesDestination,
         titleTextState = titleTextState,
         progressBarIsVisible = progressBarIsVisible,
     )
-    settingsScreenBaseDestination(
+    composableSettingsScreenDestination(
         titleTextState = titleTextState,
         progressBarIsVisible = progressBarIsVisible,
     )
-    searchSuitablePicturesDestination(
+    composableSearchSuitablePicturesDestination(
         titleTextState = titleTextState,
         progressBarIsVisible = progressBarIsVisible,
         navigateToSuitablePicturesDestination = navigateToSuitablePicturesDestination,
