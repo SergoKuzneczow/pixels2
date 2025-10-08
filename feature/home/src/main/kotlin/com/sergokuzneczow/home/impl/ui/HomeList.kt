@@ -38,7 +38,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.window.core.layout.WindowWidthSizeClass
+import androidx.window.core.layout.WindowSizeClass.Companion.WIDTH_DP_EXPANDED_LOWER_BOUND
+import androidx.window.core.layout.WindowSizeClass.Companion.WIDTH_DP_MEDIUM_LOWER_BOUND
 import coil3.compose.AsyncImagePainter
 import coil3.compose.rememberAsyncImagePainter
 import com.sergokuzneczow.core.system_components.PixelsCircularProgressIndicator
@@ -213,16 +214,8 @@ private fun calculateRowSize(
     totalSize: Int,
     windowAdaptiveInfo: WindowAdaptiveInfo = currentWindowAdaptiveInfo(),
 ): Int {
-    return when (windowAdaptiveInfo.windowSizeClass.windowWidthSizeClass) {
-        WindowWidthSizeClass.COMPACT -> {
-            when {
-                totalSize % 3 == 0 -> 3
-                totalSize % 2 == 0 -> 2
-                else -> 1
-            }
-        }
-
-        WindowWidthSizeClass.MEDIUM -> {
+    return when {
+        windowAdaptiveInfo.windowSizeClass.isWidthAtLeastBreakpoint(WIDTH_DP_EXPANDED_LOWER_BOUND) -> {
             when {
                 totalSize % 5 == 0 -> 5
                 totalSize % 4 == 0 -> 4
@@ -232,9 +225,8 @@ private fun calculateRowSize(
             }
         }
 
-        WindowWidthSizeClass.EXPANDED -> {
+        windowAdaptiveInfo.windowSizeClass.isWidthAtLeastBreakpoint(WIDTH_DP_MEDIUM_LOWER_BOUND) -> {
             when {
-                totalSize % 5 == 0 -> 5
                 totalSize % 4 == 0 -> 4
                 totalSize % 3 == 0 -> 3
                 totalSize % 2 == 0 -> 2
@@ -242,7 +234,13 @@ private fun calculateRowSize(
             }
         }
 
-        else -> 1
+        else -> {
+            when {
+                totalSize % 3 == 0 -> 3
+                totalSize % 2 == 0 -> 2
+                else -> 1
+            }
+        }
     }
 }
 
