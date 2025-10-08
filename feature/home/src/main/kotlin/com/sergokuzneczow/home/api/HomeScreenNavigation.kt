@@ -5,36 +5,28 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
-import androidx.navigation.navigation
 import com.sergokuzneczow.home.impl.HomeScreenRoot
 import kotlinx.serialization.Serializable
 
 @Serializable
 public data object HomeRoute
 
-@Serializable
-public data object HomeBaseRoute
-
 public fun NavController.navigateToHomeDestination(navOptions: NavOptions) {
     this.navigate(route = HomeRoute, navOptions = navOptions)
 }
 
-public fun NavGraphBuilder.navigationHomeBaseDestination(
+public fun NavGraphBuilder.composableHomeDestination(
     onShowSnackbar: suspend (message: String, actionOrNull: String?) -> Unit,
     titleTextState: MutableState<String>,
     progressBarIsVisible: MutableState<Boolean>,
     navigateToSuitablePicturesDestination: (pageKey: Long) -> Unit,
 ) {
-    navigation<HomeBaseRoute>(
-        startDestination = HomeRoute,
-    ) {
-        composable<HomeRoute> {
-            HomeScreenRoot(
-                onShowSnackbar = onShowSnackbar,
-                progressBarIsVisible = progressBarIsVisible,
-                titleTextState = titleTextState,
-                navigateToSuitablePicturesDestination = navigateToSuitablePicturesDestination
-            )
-        }
+    composable<HomeRoute> {
+        HomeScreenRoot(
+            onShowSnackbar = onShowSnackbar,
+            progressBarIsVisible = progressBarIsVisible,
+            titleTextState = titleTextState,
+            navigateToSuitablePicturesDestination = navigateToSuitablePicturesDestination
+        )
     }
 }

@@ -10,17 +10,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.navigation.NavDestination
-import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.sergokuzneczow.core.ui.PixelsIcons
-import com.sergokuzneczow.home.api.HomeBaseRoute
 import com.sergokuzneczow.home.api.HomeRoute
 import com.sergokuzneczow.search_suitable_pictures.api.SearchSuitablePicturesRoute
-import com.sergokuzneczow.settings.api.SettingsScreenBaseRoute
 import com.sergokuzneczow.settings.api.SettingsScreenRoute
-import com.sergokuzneczow.utilities.logger.log
 import kotlinx.coroutines.CoroutineScope
 import kotlin.reflect.KClass
 
@@ -48,8 +44,6 @@ internal class MainMenuRootScreenState(
 
     private val previousDestination: MutableState<NavDestination?> = mutableStateOf(null)
 
-    val lastHomeBlockDestination: MutableState<NavDestination?> = mutableStateOf(null)
-
     val startDestination: KClass<*> = MainMenuTopDestination.HOME.baseRoute
 
     val topLevelDestinations: List<MainMenuTopDestination> = MainMenuTopDestination.entries
@@ -64,15 +58,6 @@ internal class MainMenuRootScreenState(
         }
 
     fun findStartDestination(): NavDestination = navController.graph.findStartDestination()
-
-//    @Composable
-//    fun setLastHomeBlockDestination() {
-//        lastHomeBlockDestination.value = currentDestination
-//    }
-
-    fun getLastHomeBlockDestinationOrStartDestination(): Int {
-        return lastHomeBlockDestination.value?.id ?: findStartDestination().id
-    }
 }
 
 internal enum class MainMenuTopDestination(
@@ -85,7 +70,6 @@ internal enum class MainMenuTopDestination(
         icon = PixelsIcons.home,
         titleTextId = com.sergokuzneczow.home.R.string.feature_home_title,
         route = HomeRoute::class,
-        baseRoute = HomeBaseRoute::class,
     ),
     SEARCH(
         icon = PixelsIcons.search,
@@ -96,6 +80,5 @@ internal enum class MainMenuTopDestination(
         icon = PixelsIcons.settings,
         titleTextId = com.sergokuzneczow.settings.R.string.feature_settings_title,
         route = SettingsScreenRoute::class,
-        baseRoute = SettingsScreenBaseRoute::class,
     ),
 }

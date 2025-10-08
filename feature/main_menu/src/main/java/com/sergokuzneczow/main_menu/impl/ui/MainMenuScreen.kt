@@ -16,9 +16,12 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavDestination.Companion.hierarchy
+import androidx.navigation.NavOptions
 import androidx.navigation.navOptions
 import com.sergokuzneczow.core.system_components.PixelsNavigationSuiteScaffold
 import com.sergokuzneczow.core.system_components.PixelsTopBar
+import com.sergokuzneczow.core.ui.Dimensions
+import com.sergokuzneczow.home.api.navigateToHomeDestination
 import com.sergokuzneczow.main_menu.impl.MainMenuRootScreenState
 import com.sergokuzneczow.main_menu.impl.MainMenuTopDestination
 import com.sergokuzneczow.main_menu.impl.rememberMainMenuRootScreenState
@@ -36,7 +39,7 @@ internal fun MainMenuScreen(
 ) {
     val titleTextState: MutableState<String> = remember { mutableStateOf("Default") }
     val progressBarIsVisible: MutableState<Boolean> = remember { mutableStateOf(true) }
-    val currentDestination = rootScreenState.currentDestination
+    val currentDestination: NavDestination? = rootScreenState.currentDestination
 
     PixelsNavigationSuiteScaffold(
         modifier = Modifier.fillMaxSize(),
@@ -45,36 +48,17 @@ internal fun MainMenuScreen(
                 item(
                     selected = currentDestination.isRouteInHierarchy(destination.route),
                     onClick = {
-                        when {
-                            currentDestination.isRouteInHierarchy(SuitablePicturesRoute::class) -> {
-                                rootScreenState.lastHomeBlockDestination.value = currentDestination
-                            }
-                        }
-
-                        val navOptions = navOptions {
-                            popUpTo(rootScreenState.getLastHomeBlockDestinationOrStartDestination()) {
+                        val navOptions: NavOptions = navOptions {
+                            popUpTo(rootScreenState.startDestination) {
                                 saveState = true
                                 inclusive = false
                             }
                             launchSingleTop = true
                             restoreState = true
                         }
-
                         when (destination) {
-                            MainMenuTopDestination.HOME -> {
-                                // Если текущий destination относится в вкладке Home, то при повторном нажатии на вкладку Home, откроется корнейвой destination для вкладки Home (HomeDestination)
-                                // Если текущий destination не отнисится к вкладке Home, то при нажатии на вкладку Home будет востановлена иерархия destinations, относящихся к вкладке Home
-                                if (currentDestination.isRouteInHierarchy(destination.baseRoute) || currentDestination.isRouteInHierarchy(destination.route)) {
-                                    rootScreenState.navController.popBackStack(rootScreenState.findStartDestination().id, inclusive = false)
-                                    rootScreenState.lastHomeBlockDestination.value = null
-                                } else {
-                                    rootScreenState.navController.popBackStack(rootScreenState.getLastHomeBlockDestinationOrStartDestination(), inclusive = false)
-                                    rootScreenState.lastHomeBlockDestination.value = null
-                                }
-                            }
-
+                            MainMenuTopDestination.HOME -> rootScreenState.navController.navigateToHomeDestination(navOptions)
                             MainMenuTopDestination.SETTINGS -> rootScreenState.navController.navigateToSettingsScreenDestination(navOptions)
-
                             MainMenuTopDestination.SEARCH -> rootScreenState.navController.navigateToSearchSuitablePicturesDestination(navOptions)
                         }
                     },
@@ -82,18 +66,17 @@ internal fun MainMenuScreen(
                         Icon(
                             imageVector = destination.icon,
                             contentDescription = null,
-                            modifier = Modifier.size(24.dp)
+                            modifier = Modifier.size(Dimensions.IconSize)
                         )
                     },
                     selectedIcon = {
                         Icon(
                             imageVector = destination.icon,
                             contentDescription = null,
-                            modifier = Modifier.size(24.dp)
+                            modifier = Modifier.size(Dimensions.IconSize)
                         )
                     },
                     label = { Text(stringResource(destination.titleTextId)) },
-                    modifier = Modifier
                 )
             }
         },

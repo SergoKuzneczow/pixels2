@@ -15,7 +15,7 @@ public fun NavHostController.navigateToSearchSuitablePicturesDestination(navOpti
     this.navigate(route = SearchSuitablePicturesRoute, navOptions = navOptions)
 }
 
-public fun NavGraphBuilder.searchSuitablePicturesDestination(
+public fun NavGraphBuilder.composableSearchSuitablePicturesDestination(
     titleTextState: MutableState<String>,
     progressBarIsVisible: MutableState<Boolean>,
     navigateToSuitablePicturesDestination: (pageKey: Long) -> Unit,
