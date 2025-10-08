@@ -20,6 +20,7 @@ public data object Dimensions {
     public val Elevation: Dp = 4.dp
     public val SmallElevation: Dp = 2.dp
     public val Border: BorderStroke = BorderStroke(1.dp, Color(1, 1, 1, 20))
+    public val IconSize: Dp = 24.dp
 }
 
 @Composable
