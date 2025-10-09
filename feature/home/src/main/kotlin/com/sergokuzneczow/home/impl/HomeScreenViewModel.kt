@@ -42,8 +42,6 @@ internal class HomeScreenViewModel(
 
     private val homeListUiState: MutableStateFlow<HomeListUiState> = MutableStateFlow(HomeListUiState.Loading())
 
-    private val progressBarUiState: MutableStateFlow<Boolean> = MutableStateFlow(false)
-
     private val exceptionsFlow: MutableStateFlow<String?> = MutableStateFlow(null)
 
     init {
@@ -60,8 +58,6 @@ internal class HomeScreenViewModel(
     }
 
     fun getHomeListUiState(): StateFlow<HomeListUiState> = homeListUiState.asStateFlow()
-
-    fun getProgressBarUiState(): StateFlow<Boolean> = progressBarUiState.asStateFlow()
 
     fun getExceptionsFlow(): StateFlow<String?> = exceptionsFlow.asStateFlow()
 
