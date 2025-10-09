@@ -20,7 +20,6 @@ internal fun HomeScreenRoot(
 ) {
     val vm: HomeScreenViewModel = viewModel(factory = HomeScreenViewModel.Factory(LocalContext.current))
     titleTextState.value = stringResource(R.string.feature_home_title)
-    progressBarIsVisible.value = vm.getProgressBarUiState().collectAsStateWithLifecycle().value
     val homeListUiState: HomeListUiState by vm.getHomeListUiState().collectAsStateWithLifecycle()
     val exceptionsUiState: String? by vm.getExceptionsFlow().collectAsStateWithLifecycle()
     HomeScreen(
