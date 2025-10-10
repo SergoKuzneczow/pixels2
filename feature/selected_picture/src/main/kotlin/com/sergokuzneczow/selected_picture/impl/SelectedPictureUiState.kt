@@ -1,8 +1,5 @@
 package com.sergokuzneczow.selected_picture.impl
 
-import com.sergokuzneczow.models.Color
-import com.sergokuzneczow.models.Tag
-
 internal sealed interface SelectedPictureUiState {
 
     data object Loading : SelectedPictureUiState
@@ -10,5 +7,7 @@ internal sealed interface SelectedPictureUiState {
     data class Success(
         val pictureKey: String,
         val picturePath: String,
+        val curtainVisible: Boolean,
+        val infoFabVisible: Boolean,
     ) : SelectedPictureUiState
 }

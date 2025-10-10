@@ -5,17 +5,20 @@ import androidx.annotation.NonUiContext
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.sergokuzneczow.domain.get_picture_with_relations_case.GetPictureWithRelations2Case
 import com.sergokuzneczow.domain.get_picture_with_relations_case.GetPictureWithRelationsCase
 import com.sergokuzneczow.selected_picture.impl.di.DaggerSelectedPictureFeatureComponent
 import com.sergokuzneczow.selected_picture.impl.di.SelectedPictureFeatureComponent
 import com.sergokuzneczow.selected_picture.impl.di.dependenciesProvider
 import com.sergokuzneczow.utilities.logger.log
 import jakarta.inject.Inject
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.plus
 
 internal class SelectedPictureViewModel(
     @NonUiContext context: Context,
@@ -24,6 +27,9 @@ internal class SelectedPictureViewModel(
 
     @Inject
     lateinit var getPictureWithRelationsCase: GetPictureWithRelationsCase
+
+    @Inject
+    lateinit var getPictureWithRelations2Case: GetPictureWithRelations2Case
 
     private val selectedPictureFeatureComponent: SelectedPictureFeatureComponent = DaggerSelectedPictureFeatureComponent.builder()
         .setDep(context.dependenciesProvider.selectedPictureFeatureDependenciesProvider())
@@ -34,20 +40,30 @@ internal class SelectedPictureViewModel(
     init {
         selectedPictureFeatureComponent.inject(this)
 
-        getPictureWithRelationsCase.execute(
-            pictureKey = pictureKey,
-            coroutineScope = viewModelScope,
-        ).onEach { result ->
-            log(tag = "SelectedPictureViewModel") { "getPictureWithRelationsCase.execute().onEach().it=$result)" }
-            result.onSuccess { pictureWithRelations ->
-                selectedPictureUiState.emit(
-                    SelectedPictureUiState.Success(
-                        pictureKey = pictureWithRelations.picture.key,
-                        picturePath = pictureWithRelations.picture.path,
-                    )
-                )
+//        getPictureWithRelationsCase.execute(
+//            pictureKey = pictureKey,
+//            coroutineScope = viewModelScope,
+//        ).onEach { result ->
+//            //log(tag = "SelectedPictureViewModel") { "getPictureWithRelationsCase.execute().onEach().it=$result)" }
+//            result.onSuccess { pictureWithRelations ->
+//                selectedPictureUiState.emit(
+//                    SelectedPictureUiState.Success(
+//                        pictureKey = pictureWithRelations.picture.key,
+//                        picturePath = pictureWithRelations.picture.path,
+//                        curtainVisible = false,
+//                        infoFabVisible = true,
+//                    )
+//                )
+//            }
+//        }.launchIn(viewModelScope)
+
+        getPictureWithRelations2Case.execute(viewModelScope, pictureKey)
+            .onEach {
+                log(tag = "SelectedPictureViewModel") { "getPictureWithRelations2Case.execute().onEach()" }
+                log(tag = "SelectedPictureViewModel") { "getPictureWithRelations2Case.execute().onEach().it=${it.getOrNull()?.data})" }
+                log(tag = "SelectedPictureViewModel") { "getPictureWithRelations2Case.execute().onEach().it=${it.getOrNull()?.state})" }
             }
-        }.launchIn(viewModelScope)
+            .launchIn(viewModelScope + Dispatchers.IO)
     }
 
     internal fun getSelectedPictureUiState(): StateFlow<SelectedPictureUiState> = selectedPictureUiState.asStateFlow()
