@@ -8,9 +8,9 @@ import com.sergokuzneczow.dialog_page_filter.impl.di.DialogPageFilterDependencie
 import com.sergokuzneczow.domain.getPage.GetPage
 import com.sergokuzneczow.domain.get_first_page_key.GetFirstPageKey
 import com.sergokuzneczow.domain.get_home_screen_pager_use_case.GetHomeScreenPager4UseCase
+import com.sergokuzneczow.domain.get_picture_with_relations_case.GetPictureWithRelations2Case
 import com.sergokuzneczow.domain.get_picture_with_relations_case.GetPictureWithRelationsCase
 import com.sergokuzneczow.domain.get_suitable_pictures_screen_pager_use_case.GetSuitablePicturesScreenPager4UseCase
-import com.sergokuzneczow.domain.get_suitable_pictures_screen_pager_use_case.GetSuitablePicturesScreenPagerUseCase
 import com.sergokuzneczow.home.impl.di.HomeFeatureDependencies
 import com.sergokuzneczow.pixels2.MainActivityViewModel
 import com.sergokuzneczow.pixels2.PixelsApplication
@@ -48,6 +48,7 @@ internal interface PixelsComponent :
     override val getFirstPageKey: GetFirstPageKey
     override val getPage: GetPage
     override val pageRepositoryApi: PageRepositoryApi
+    override val getPictureWithRelations2Case: GetPictureWithRelations2Case
 
     fun inject(destination: MainActivityViewModel)
 
