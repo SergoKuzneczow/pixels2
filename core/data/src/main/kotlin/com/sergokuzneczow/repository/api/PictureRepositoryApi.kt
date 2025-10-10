@@ -10,7 +10,11 @@ public interface PictureRepositoryApi {
 
     public fun getPictureWithRelation(pictureKey: String): Flow<PictureWithRelations?>
 
+    public suspend fun getCachedPictureWithRelation(pictureKey: String): PictureWithRelations?
+
     public suspend fun getActualPictureWithRelation(pictureKey: String): PictureWithRelations
+
+    public suspend fun cachingPictureWithRelation(pictureWithRelations: PictureWithRelations)
 
     public suspend fun updatePicture(pictureKey: String)
 

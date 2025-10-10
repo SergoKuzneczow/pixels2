@@ -17,9 +17,15 @@ public class PictureRepositoryImpl @Inject constructor(
     override fun getPicture(pictureKey: String): Flow<List<Picture>> = databaseApi.getPictureByKey(pictureKey)
 
     override fun getPictureWithRelation(pictureKey: String): Flow<PictureWithRelations?> =
-        databaseApi.getPictureWithRelationByKey(pictureKey).map { it.firstOrNull() }
+        databaseApi.getPictureWithRelationByKeyAsFlow(pictureKey).map { it.firstOrNull() }
+
+    override suspend fun getCachedPictureWithRelation(pictureKey: String): PictureWithRelations? = databaseApi.getPictureWithRelationByKey(pictureKey)
 
     override suspend fun getActualPictureWithRelation(pictureKey: String): PictureWithRelations = networkApi.getPicture(pictureKey)
+
+    override suspend fun cachingPictureWithRelation(pictureWithRelations: PictureWithRelations) {
+        databaseApi.setPicture(pictureWithRelations)
+    }
 
     override suspend fun updatePicture(pictureKey: String) {
         val actualPicture: PictureWithRelations = networkApi.getPicture(pictureKey)
