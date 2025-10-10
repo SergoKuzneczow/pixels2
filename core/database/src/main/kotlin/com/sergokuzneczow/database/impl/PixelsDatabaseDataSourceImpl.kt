@@ -136,8 +136,12 @@ public class PixelsDatabaseDataSourceImpl private constructor(
             .map { list -> list.map { item -> item.toPicture() } }
     }
 
-    override fun getPictureWithRelationByKey(pictureKey: String): Flow<List<PictureWithRelations>> {
-        return pictureLocalSource.getPictureWithRelationByKey(pictureKey)
+    override fun getPictureWithRelationByKey(pictureKey: String): PictureWithRelations? {
+        return pictureLocalSource.getPictureWithRelationByKey(pictureKey)?.toPictureWithRelations()
+    }
+
+    override fun getPictureWithRelationByKeyAsFlow(pictureKey: String): Flow<List<PictureWithRelations>> {
+        return pictureLocalSource.getPictureWithRelationByKeyAsFlow(pictureKey)
             .map { list -> list.map { item -> item.toPictureWithRelations() } }
     }
 

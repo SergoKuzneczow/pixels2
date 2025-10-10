@@ -55,7 +55,9 @@ public interface PixelsDatabaseDataSourceApi {
 
     public fun getPictureByKey(pictureKey: String): Flow<List<Picture>>
 
-    public fun getPictureWithRelationByKey(pictureKey: String): Flow<List<PictureWithRelations>>
+    public fun getPictureWithRelationByKey(pictureKey: String): PictureWithRelations?
+
+    public fun getPictureWithRelationByKeyAsFlow(pictureKey: String): Flow<List<PictureWithRelations>>
 
     public suspend fun setPicture(picture: Picture)
 

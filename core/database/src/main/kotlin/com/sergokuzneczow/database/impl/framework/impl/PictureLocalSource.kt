@@ -11,7 +11,9 @@ internal class PictureLocalSource private constructor(private val pictureDao: Pi
 
     internal fun getPictureByKey(pictureKey: String): Flow<List<PictureLocalModel>> = pictureDao.getPictureByKeyAsFlow(pictureKey)
 
-    internal fun getPictureWithRelationByKey(pictureKey: String): Flow<List<PictureLocalModel.PictureWithRelations>> = pictureDao.getPictureWithRelationsByKeyAsFlow(pictureKey)
+    internal fun getPictureWithRelationByKeyAsFlow(pictureKey: String): Flow<List<PictureLocalModel.PictureWithRelations>> = pictureDao.getPictureWithRelationsByKeyAsFlow(pictureKey)
+
+    internal fun getPictureWithRelationByKey(pictureKey: String): PictureLocalModel.PictureWithRelations? = pictureDao.getPictureWithRelationsByKey(pictureKey)
 
     internal suspend fun setPicture(picture: PictureLocalModel) {
         pictureDao.insertOrIgnorePicture(picture)

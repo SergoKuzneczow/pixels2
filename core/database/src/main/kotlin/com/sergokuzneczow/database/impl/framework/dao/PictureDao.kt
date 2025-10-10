@@ -58,6 +58,14 @@ public interface PictureDao : PictureTagDao, PictureColorDao {
                 "from ${PictureLocalModel.PICTURES_TABLE_NAME} " +
                 "where ${PictureLocalModel.PICTURE_KEY_COLUMN_NAME}=:key"
     )
+    public fun getPictureWithRelationsByKey(key: String): PictureLocalModel.PictureWithRelations?
+
+    @Transaction
+    @Query(
+        "select * " +
+                "from ${PictureLocalModel.PICTURES_TABLE_NAME} " +
+                "where ${PictureLocalModel.PICTURE_KEY_COLUMN_NAME}=:key"
+    )
     public fun getPictureWithRelationsByKeyAsFlow(key: String): Flow<List<PictureLocalModel.PictureWithRelations>>
 
     @Transaction
