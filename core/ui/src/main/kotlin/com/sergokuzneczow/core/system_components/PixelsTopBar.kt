@@ -35,8 +35,8 @@ private val TOP_BAR_HEIGHT: Dp = 56.dp
 @Composable
 public fun PixelsTopBar(
     title: String,
-    visibleProgressBar: Boolean,
     modifier: Modifier = Modifier,
+    visibleProgressBar: Boolean = false,
     onHomeIconClick: (() -> Unit)? = null,
     onBackIconClick: (() -> Unit)? = null,
 ) {
