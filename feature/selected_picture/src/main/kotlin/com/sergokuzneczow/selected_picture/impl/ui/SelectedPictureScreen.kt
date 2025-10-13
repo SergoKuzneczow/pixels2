@@ -13,26 +13,27 @@ import com.sergokuzneczow.selected_picture.impl.SelectedPictureUiState
 
 @Composable
 internal fun SelectedPictureScreen(
-    selectedPictureUiState: SelectedPictureUiState,
+    uiState: SelectedPictureUiState,
+    changeCurtainVisible: () -> Unit,
     navigateToBottomSheetPictureInfoDestination: (String) -> Unit,
 ) {
-    var curtainVisible: Boolean by rememberSaveable { mutableStateOf(false) }
+//    var curtainVisible: Boolean by rememberSaveable { mutableStateOf(false) }
 
     Box(modifier = Modifier.fillMaxSize()) {
-        when (selectedPictureUiState) {
+        when (uiState) {
             is SelectedPictureUiState.Loading -> {
                 PixelsCircularProgressIndicator()
             }
 
             is SelectedPictureUiState.Success -> {
-                Curtain(curtainVisible = curtainVisible)
+                Curtain(curtainVisible = uiState.curtainVisible)
                 SelectedPicture(
-                    picturePath = selectedPictureUiState.picturePath,
-                    onPictureClick = { curtainVisible = !curtainVisible },
+                    picturePath = uiState.picturePath,
+                    onPictureClick = { changeCurtainVisible.invoke() },
                 )
                 PictureInformationFloatingActionButton(
-                    fabVisible = !curtainVisible,
-                    onFabClick = { navigateToBottomSheetPictureInfoDestination.invoke(selectedPictureUiState.pictureKey) },
+                    fabVisible = uiState.infoFabVisible,
+                    onFabClick = { navigateToBottomSheetPictureInfoDestination.invoke(uiState.pictureKey) },
                 )
             }
         }

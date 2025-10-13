@@ -12,7 +12,7 @@ internal interface SelectedPictureFeatureComponent {
 
     @Component.Builder
     interface Builder {
-        fun setDep(d: SelectedPictureFeatureDependencies): Builder
+        fun setDependencties(d: SelectedPictureFeatureDependencies): Builder
         fun build(): SelectedPictureFeatureComponent
     }
 }
