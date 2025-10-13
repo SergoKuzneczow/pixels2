@@ -8,7 +8,6 @@ import com.sergokuzneczow.settings.R
 @Composable
 internal fun SettingsScreenRoot(
     titleTextState: MutableState<String>,
-    progressBarIsVisible: MutableState<Boolean>,
 ) {
     titleTextState.value = stringResource(R.string.feature_settings_title)
     SettingsScreen()
