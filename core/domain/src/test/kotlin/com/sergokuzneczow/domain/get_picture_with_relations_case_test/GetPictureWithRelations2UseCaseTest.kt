@@ -1,7 +1,7 @@
 package com.sergokuzneczow.domain.get_picture_with_relations_case_test
 
 import app.cash.turbine.test
-import com.sergokuzneczow.domain.get_picture_with_relations_case.GetPictureWithRelations2Case
+import com.sergokuzneczow.domain.get_picture_with_relations_case.GetPictureWithRelations2UseCase
 import com.sergokuzneczow.models.Picture
 import com.sergokuzneczow.models.PictureWithRelations
 import junit.framework.TestCase.assertEquals
@@ -22,11 +22,11 @@ import org.mockito.kotlin.mock
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @RunWith(MockitoJUnitRunner::class)
-class GetPictureWithRelations2CaseTest {
+class GetPictureWithRelations2UseCaseTest {
 
     private val fakePictureRepositoryApi = FakePictureRepositoryApi()
 
-    private val getPictureWithRelations2Case = GetPictureWithRelations2Case(fakePictureRepositoryApi)
+    private val getPictureWithRelations2UseCase = GetPictureWithRelations2UseCase(fakePictureRepositoryApi)
 
     @Before
     fun beforeTest() {
@@ -48,7 +48,7 @@ class GetPictureWithRelations2CaseTest {
             actualData = actual,
         )
 
-        getPictureWithRelations2Case.execute(backgroundScope, "anyKey").test {
+        getPictureWithRelations2UseCase.execute(backgroundScope, "anyKey").test {
             assertEquals("cached", awaitItem().getOrNull()?.data?.picture?.key)
             assertEquals("actual", awaitItem().getOrNull()?.data?.picture?.key)
         }
@@ -63,7 +63,7 @@ class GetPictureWithRelations2CaseTest {
             actualData = actual,
         )
 
-        getPictureWithRelations2Case.execute(backgroundScope, "anyKey").test {
+        getPictureWithRelations2UseCase.execute(backgroundScope, "anyKey").test {
             assertEquals("actual", awaitItem().getOrNull()?.data?.picture?.key)
         }
     }
@@ -78,7 +78,7 @@ class GetPictureWithRelations2CaseTest {
             actualRequestThrowCounter = 1,
         )
 
-        getPictureWithRelations2Case.execute(backgroundScope, "anyKey").test {
+        getPictureWithRelations2UseCase.execute(backgroundScope, "anyKey").test {
             assertEquals(FakePictureRepositoryApi.ACTUAL_EXCEPTION_MESSAGE, awaitItem().exceptionOrNull()?.message)
             assertEquals("actual", awaitItem().getOrNull()?.data?.picture?.key)
         }
@@ -95,7 +95,7 @@ class GetPictureWithRelations2CaseTest {
             actualRequestThrowCounter = 1,
         )
 
-        getPictureWithRelations2Case.execute(backgroundScope, "anyKey").test {
+        getPictureWithRelations2UseCase.execute(backgroundScope, "anyKey").test {
             assertEquals("cached", awaitItem().getOrNull()?.data?.picture?.key)
             assertEquals(FakePictureRepositoryApi.ACTUAL_EXCEPTION_MESSAGE, awaitItem().exceptionOrNull()?.message)
             assertEquals("actual", awaitItem().getOrNull()?.data?.picture?.key)
