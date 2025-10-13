@@ -9,22 +9,18 @@ import com.sergokuzneczow.settings.api.composableSettingsScreenDestination
 internal fun NavGraphBuilder.mainMenuGraph(
     onShowSnackbar: suspend (message: String, actionOrNull: String?) -> Unit,
     titleTextState: MutableState<String>,
-    progressBarIsVisible: MutableState<Boolean>,
     navigateToSuitablePicturesDestination: (pageKey: Long) -> Unit,
 ) {
     composableHomeDestination(
         onShowSnackbar = onShowSnackbar,
         navigateToSuitablePicturesDestination = navigateToSuitablePicturesDestination,
         titleTextState = titleTextState,
-        progressBarIsVisible = progressBarIsVisible,
     )
     composableSettingsScreenDestination(
         titleTextState = titleTextState,
-        progressBarIsVisible = progressBarIsVisible,
     )
     composableSearchSuitablePicturesDestination(
         titleTextState = titleTextState,
-        progressBarIsVisible = progressBarIsVisible,
         navigateToSuitablePicturesDestination = navigateToSuitablePicturesDestination,
     )
 }

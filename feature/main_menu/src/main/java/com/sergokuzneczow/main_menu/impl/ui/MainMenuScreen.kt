@@ -36,7 +36,6 @@ internal fun MainMenuScreen(
     windowAdaptiveInfo: WindowAdaptiveInfo = currentWindowAdaptiveInfo(),
 ) {
     val titleTextState: MutableState<String> = remember { mutableStateOf("Default") }
-    val progressBarIsVisible: MutableState<Boolean> = remember { mutableStateOf(true) }
     val currentDestination: NavDestination? = rootScreenState.currentDestination
 
     PixelsNavigationSuiteScaffold(
@@ -84,14 +83,10 @@ internal fun MainMenuScreen(
                 onShowSnackbar = onShowSnackbar,
                 rootScreenState = rootScreenState,
                 titleTextState = titleTextState,
-                progressBarIsVisible = progressBarIsVisible,
                 navigateToSuitablePicturesDestination = navigateToSuitablePicturesDestination,
                 modifier = Modifier.fillMaxSize()
             )
-            PixelsTopBar(
-                title = titleTextState.value,
-                visibleProgressBar = progressBarIsVisible.value,
-            )
+            PixelsTopBar(title = titleTextState.value)
         }
     )
 }

@@ -21,7 +21,6 @@ internal fun MainMenuNavHost(
     onShowSnackbar: suspend (message: String, actionOrNull: String?) -> Unit,
     rootScreenState: MainMenuRootScreenState,
     titleTextState: MutableState<String>,
-    progressBarIsVisible: MutableState<Boolean>,
     navigateToSuitablePicturesDestination: (Long) -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -54,7 +53,6 @@ internal fun MainMenuNavHost(
             onShowSnackbar = onShowSnackbar,
             navigateToSuitablePicturesDestination = navigateToSuitablePicturesDestination,
             titleTextState = titleTextState,
-            progressBarIsVisible = progressBarIsVisible
         )
     }
 }
