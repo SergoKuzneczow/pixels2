@@ -39,18 +39,9 @@ class GetPictureWithRelations2CaseTest {
     }
 
     @Test
-    fun `First, the cached data will be retrieved, then the actual data`(): TestResult = runTest {
-        val cached = PictureWithRelations(
-            picture = mock<Picture>().apply { `when`(this.key).thenReturn("cached") },
-            tags = emptyList(),
-            colors = emptyList(),
-        )
-
-        val actual = PictureWithRelations(
-            picture = mock<Picture>().apply { `when`(this.key).thenReturn("actual") },
-            tags = emptyList(),
-            colors = emptyList(),
-        )
+    fun `is there is cached data, it should be processed before the actual data`(): TestResult = runTest {
+        val cached: PictureWithRelations = createPictureWithRelations("cached")
+        val actual: PictureWithRelations = createPictureWithRelations("actual")
 
         fakePictureRepositoryApi.setFakePictureRepositoryApiState(
             cachedData = cached,
@@ -64,18 +55,39 @@ class GetPictureWithRelations2CaseTest {
     }
 
     @Test
-    fun `First, the cached data will be retrieved, then the exception, then the actual data`(): TestResult = runTest {
-        val cached = PictureWithRelations(
-            picture = mock<Picture>().apply { `when`(this.key).thenReturn("cached") },
-            tags = emptyList(),
-            colors = emptyList(),
+    fun `cached data should be skipped, if there isn't`(): TestResult = runTest {
+        val actual: PictureWithRelations = createPictureWithRelations("actual")
+
+        fakePictureRepositoryApi.setFakePictureRepositoryApiState(
+            cachedData = null,
+            actualData = actual,
         )
 
-        val actual = PictureWithRelations(
-            picture = mock<Picture>().apply { `when`(this.key).thenReturn("actual") },
-            tags = emptyList(),
-            colors = emptyList(),
+        getPictureWithRelations2Case.execute(backgroundScope, "anyKey").test {
+            assertEquals("actual", awaitItem().getOrNull()?.data?.picture?.key)
+        }
+    }
+
+    @Test
+    fun `repeat the request for new data if the first attempt fails`(): TestResult = runTest {
+        val actual: PictureWithRelations = createPictureWithRelations("actual")
+
+        fakePictureRepositoryApi.setFakePictureRepositoryApiState(
+            cachedData = null,
+            actualData = actual,
+            actualRequestThrowCounter = 1,
         )
+
+        getPictureWithRelations2Case.execute(backgroundScope, "anyKey").test {
+            assertEquals(FakePictureRepositoryApi.ACTUAL_EXCEPTION_MESSAGE, awaitItem().exceptionOrNull()?.message)
+            assertEquals("actual", awaitItem().getOrNull()?.data?.picture?.key)
+        }
+    }
+
+    @Test
+    fun `retry requesting new data if the first attempt fails after receiving cached data`(): TestResult = runTest {
+        val cached: PictureWithRelations = createPictureWithRelations("cached")
+        val actual: PictureWithRelations = createPictureWithRelations("actual")
 
         fakePictureRepositoryApi.setFakePictureRepositoryApiState(
             cachedData = cached,
@@ -89,57 +101,10 @@ class GetPictureWithRelations2CaseTest {
             assertEquals("actual", awaitItem().getOrNull()?.data?.picture?.key)
         }
     }
+
+    private fun createPictureWithRelations(pictureKey: String): PictureWithRelations = PictureWithRelations(
+        picture = mock<Picture>().apply { `when`(this.key).thenReturn(pictureKey) },
+        tags = emptyList(),
+        colors = emptyList(),
+    )
 }
-
-
-private val cached = PictureWithRelations(
-    picture = Picture(
-        key = "cached",
-        url = "",
-        shortUrl = "",
-        views = 0,
-        favorites = 0,
-        source = "",
-        purity = "",
-        categories = "",
-        dimensionX = 0,
-        dimensionY = 0,
-        resolution = "",
-        ratio = "",
-        fileSize = 0,
-        fileType = "",
-        createAt = "",
-        path = "",
-        large = "",
-        original = "",
-        small = "",
-    ),
-    tags = emptyList(),
-    colors = emptyList()
-)
-
-private val actual = PictureWithRelations(
-    picture = Picture(
-        key = "actual",
-        url = "",
-        shortUrl = "",
-        views = 0,
-        favorites = 0,
-        source = "",
-        purity = "",
-        categories = "",
-        dimensionX = 0,
-        dimensionY = 0,
-        resolution = "",
-        ratio = "",
-        fileSize = 0,
-        fileType = "",
-        createAt = "",
-        path = "",
-        large = "",
-        original = "",
-        small = "",
-    ),
-    tags = emptyList(),
-    colors = emptyList()
-)
