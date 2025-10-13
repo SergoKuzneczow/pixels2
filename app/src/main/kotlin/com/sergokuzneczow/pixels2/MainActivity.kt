@@ -8,7 +8,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.sergokuzneczow.core.ui.PixelsTheme
-import com.sergokuzneczow.pixels2.ui.PixelsRoot
 
 internal class MainActivity : ComponentActivity() {
 

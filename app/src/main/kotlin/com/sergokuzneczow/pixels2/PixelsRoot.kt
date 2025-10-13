@@ -1,4 +1,4 @@
-package com.sergokuzneczow.pixels2.ui
+package com.sergokuzneczow.pixels2
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.fillMaxSize
@@ -16,7 +16,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.sergokuzneczow.core.system_components.PixelsScaffold
 import com.sergokuzneczow.core.ui.Dimensions
-import com.sergokuzneczow.pixels2.PixelsState
+import com.sergokuzneczow.pixels2.ui.PixelsNavHost
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
