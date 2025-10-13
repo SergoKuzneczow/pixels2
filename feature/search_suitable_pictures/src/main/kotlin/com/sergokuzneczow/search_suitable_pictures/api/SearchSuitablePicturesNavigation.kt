@@ -17,13 +17,11 @@ public fun NavHostController.navigateToSearchSuitablePicturesDestination(navOpti
 
 public fun NavGraphBuilder.composableSearchSuitablePicturesDestination(
     titleTextState: MutableState<String>,
-    progressBarIsVisible: MutableState<Boolean>,
     navigateToSuitablePicturesDestination: (pageKey: Long) -> Unit,
 ) {
     composable<SearchSuitablePicturesRoute> {
         SearchSuitablePicturesRootScreen(
             titleTextState = titleTextState,
-            progressBarIsVisible = progressBarIsVisible,
             navigateToSuitablePicturesDestination = navigateToSuitablePicturesDestination,
         )
     }

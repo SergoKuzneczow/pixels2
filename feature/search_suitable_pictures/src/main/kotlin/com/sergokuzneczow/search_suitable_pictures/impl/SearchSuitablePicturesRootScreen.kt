@@ -11,11 +11,9 @@ import com.sergokuzneczow.search_suitable_pictures.impl.ui.SearchSuitablePicture
 @Composable
 internal fun SearchSuitablePicturesRootScreen(
     titleTextState: MutableState<String>,
-    progressBarIsVisible: MutableState<Boolean>,
     navigateToSuitablePicturesDestination: (pageKey: Long) -> Unit,
 ) {
     titleTextState.value = stringResource(R.string.feature_search_suitable_pictures_title)
-    progressBarIsVisible.value = false
     val vm: SearchSuitablePicturesViewModel = viewModel(factory = SearchSuitablePicturesViewModel.Factory(LocalContext.current))
 
     SearchSuitablePicturesScreen(
