@@ -17,12 +17,10 @@ public fun NavController.navigateToSettingsScreenDestination(navOptions: NavOpti
 
 public fun NavGraphBuilder.composableSettingsScreenDestination(
     titleTextState: MutableState<String>,
-    progressBarIsVisible: MutableState<Boolean>,
 ) {
     composable<SettingsScreenRoute> {
         SettingsScreenRoot(
             titleTextState = titleTextState,
-            progressBarIsVisible = progressBarIsVisible
         )
     }
 }
