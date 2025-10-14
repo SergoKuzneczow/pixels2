@@ -3,11 +3,11 @@ package com.sergokuzneczow.bottom_sheet_page_filter.impl.di
 import android.app.Application
 import android.content.Context
 import com.sergokuzneczow.domain.getPage.GetPage
-import com.sergokuzneczow.domain.get_first_page_key.GetFirstPageKey
+import com.sergokuzneczow.domain.get_first_page_key_use_case.GetFirstPageKeyUseCase
 
 public interface BottomSheetPageFilterDependencies {
 
-    public val getFirstPageKey: GetFirstPageKey
+    public val getFirstPageKeyUseCase: GetFirstPageKeyUseCase
 
     public val getPage: GetPage
 

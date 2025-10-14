@@ -5,7 +5,7 @@ import androidx.annotation.NonUiContext
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import com.sergokuzneczow.domain.get_first_page_key.GetFirstPageKey
+import com.sergokuzneczow.domain.get_first_page_key_use_case.GetFirstPageKeyUseCase
 import com.sergokuzneczow.domain.get_home_screen_pager_use_case.GetHomeScreenPager4UseCase
 import com.sergokuzneczow.domain.pager4.IPixelsPager4
 import com.sergokuzneczow.home.impl.di.DaggerHomeScreenComponent
@@ -32,7 +32,7 @@ internal class HomeScreenViewModel(
     lateinit var getHomeScreenPager4UseCase: GetHomeScreenPager4UseCase
 
     @Inject
-    lateinit var getFirstPageKey: GetFirstPageKey
+    lateinit var getFirstPageKeyUseCase: GetFirstPageKeyUseCase
 
     private val homeScreenComponent: HomeScreenComponent by lazy {
         DaggerHomeScreenComponent.builder()
@@ -67,7 +67,7 @@ internal class HomeScreenViewModel(
 
     fun getPageKey(pageQuery: PageQuery, pageFilter: PageFilter, completed: (pageKey: Long) -> Unit) {
         viewModelScope.launch {
-            val pageKey: Long? = getFirstPageKey.execute(pageQuery = pageQuery, pageFilter = pageFilter)
+            val pageKey: Long? = getFirstPageKeyUseCase.execute(pageQuery = pageQuery, pageFilter = pageFilter)
             pageKey?.let { pageKey -> completed.invoke(pageKey) }
         }
     }

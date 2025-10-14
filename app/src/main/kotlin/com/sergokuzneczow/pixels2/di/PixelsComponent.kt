@@ -6,7 +6,7 @@ import com.sergokuzneczow.bottom_sheet_page_filter.impl.di.BottomSheetPageFilter
 import com.sergokuzneczow.bottom_sheet_picture_info.impl.di.BottomSheetPictureInformationFeatureDependencies
 import com.sergokuzneczow.dialog_page_filter.impl.di.DialogPageFilterDependencies
 import com.sergokuzneczow.domain.getPage.GetPage
-import com.sergokuzneczow.domain.get_first_page_key.GetFirstPageKey
+import com.sergokuzneczow.domain.get_first_page_key_use_case.GetFirstPageKeyUseCase
 import com.sergokuzneczow.domain.get_home_screen_pager_use_case.GetHomeScreenPager4UseCase
 import com.sergokuzneczow.domain.get_picture_with_relations_2_use_case.GetPictureWithRelations2UseCase
 import com.sergokuzneczow.domain.get_picture_with_relations_use_case.GetPictureWithRelationsCase
@@ -45,7 +45,7 @@ internal interface PixelsComponent :
     override val getSuitablePicturesScreenPager4UseCase: GetSuitablePicturesScreenPager4UseCase
     override val getHomeScreenPager4UseCase: GetHomeScreenPager4UseCase
     override val getPictureWithRelationsCase: GetPictureWithRelationsCase
-    override val getFirstPageKey: GetFirstPageKey
+    override val getFirstPageKeyUseCase: GetFirstPageKeyUseCase
     override val getPage: GetPage
     override val pageRepositoryApi: PageRepositoryApi
     override val getPictureWithRelations2UseCase: GetPictureWithRelations2UseCase

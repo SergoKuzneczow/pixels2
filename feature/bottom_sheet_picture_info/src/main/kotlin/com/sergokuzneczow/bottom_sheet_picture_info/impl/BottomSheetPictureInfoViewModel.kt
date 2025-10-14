@@ -8,7 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.sergokuzneczow.bottom_sheet_picture_info.impl.di.BottomSheetPictureInformationFeatureComponent
 import com.sergokuzneczow.bottom_sheet_picture_info.impl.di.DaggerBottomSheetPictureInformationFeatureComponent
 import com.sergokuzneczow.bottom_sheet_picture_info.impl.di.dependenciesProvider
-import com.sergokuzneczow.domain.get_first_page_key.GetFirstPageKey
+import com.sergokuzneczow.domain.get_first_page_key_use_case.GetFirstPageKeyUseCase
 import com.sergokuzneczow.domain.get_picture_with_relations_use_case.GetPictureWithRelationsCase
 import com.sergokuzneczow.models.PageFilter
 import com.sergokuzneczow.models.PageQuery
@@ -35,7 +35,7 @@ internal class BottomSheetPictureInfoViewModel(
     lateinit var getPictureWithRelationsCase: GetPictureWithRelationsCase
 
     @Inject
-    lateinit var getFirstPageKey: GetFirstPageKey
+    lateinit var getFirstPageKeyUseCase: GetFirstPageKeyUseCase
 
     @Inject
     lateinit var imageLoaderApi: ImageLoaderApi
@@ -75,7 +75,7 @@ internal class BottomSheetPictureInfoViewModel(
 
     internal fun getPageKey(pageQuery: PageQuery, pageFilter: PageFilter, completed: (pageKey: Long) -> Unit) {
         viewModelScope.launch {
-            val pageKey: Long? = getFirstPageKey.execute(pageQuery = pageQuery, pageFilter = pageFilter)
+            val pageKey: Long? = getFirstPageKeyUseCase.execute(pageQuery = pageQuery, pageFilter = pageFilter)
             pageKey?.let { pageKey -> completed.invoke(pageKey) }
         }
     }
