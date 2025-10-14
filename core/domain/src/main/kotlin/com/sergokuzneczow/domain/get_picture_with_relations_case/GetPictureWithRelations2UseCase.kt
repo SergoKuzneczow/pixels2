@@ -6,11 +6,13 @@ import com.sergokuzneczow.models.PictureWithRelations
 import com.sergokuzneczow.repository.api.PictureRepositoryApi
 import jakarta.inject.Inject
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 
@@ -49,7 +51,9 @@ public open class GetPictureWithRelations2UseCase @Inject constructor(
                     scope.launch { resyncListener.emit(WITH_DELAY) }
                 }
             }
-        }.onStart { scope.launch { resyncListener.emit(INSTANTLY) } }
+        }.onStart {
+            scope.launch { resyncListener.emit(INSTANTLY) }
+        }
     }
 
     public data class Answer(
