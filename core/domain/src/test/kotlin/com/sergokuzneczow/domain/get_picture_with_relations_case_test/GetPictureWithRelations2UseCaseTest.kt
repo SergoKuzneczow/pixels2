@@ -22,7 +22,7 @@ import org.mockito.kotlin.mock
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @RunWith(MockitoJUnitRunner::class)
-class GetPictureWithRelations2UseCaseTest {
+internal class GetPictureWithRelations2UseCaseTest {
 
     private val fakePictureRepositoryApi = FakePictureRepositoryApi()
 
