@@ -7,11 +7,11 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 
-internal class FakePictureRepositoryImpl : PictureRepositoryApi {
+public class FakePictureRepositoryImpl : PictureRepositoryApi {
 
-    internal companion object {
-        internal const val CACHED_EXCEPTION_MESSAGE = "Cached data source exception"
-        internal const val ACTUAL_EXCEPTION_MESSAGE = "Actual data source exception"
+    public companion object {
+        public const val CACHED_EXCEPTION_MESSAGE: String = "Cached data source exception"
+        public const val ACTUAL_EXCEPTION_MESSAGE: String = "Actual data source exception"
     }
 
     private lateinit var actualData: PictureWithRelations
@@ -52,11 +52,11 @@ internal class FakePictureRepositoryImpl : PictureRepositoryApi {
         fakeLocalDataSource.emit(pictureWithRelations)
     }
 
-    override suspend fun updatePicture(pictureKey: String) = TODO("Not yet implemented")
+    override suspend fun updatePicture(pictureKey: String): Nothing = TODO("Not yet implemented")
 
-    override suspend fun updatePictureWithRelation(pictureKey: String) = TODO("Not yet implemented")
+    override suspend fun updatePictureWithRelation(pictureKey: String): Nothing = TODO("Not yet implemented")
 
-    fun setFakePictureRepositoryApiState(
+    public fun setFakePictureRepositoryApiState(
         cachedData: PictureWithRelations?,
         actualData: PictureWithRelations,
         cachedRequestDelay: Long? = null,
