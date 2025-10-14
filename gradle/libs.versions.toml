@@ -43,6 +43,7 @@ kotlinxCoroutinesTest = "1.10.2"
 coreTesting = "2.2.0"
 mockitoCore = "5.20.0"
 mockitoKotlin = "6.1.0"
+truth = "1.4.5"
 turbine = "1.2.1"
 
 [libraries]
@@ -96,6 +97,7 @@ kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-t
 androidx-core-testing = { module = "androidx.arch.core:core-testing", version.ref = "coreTesting" }
 mockito-core = { module = "org.mockito:mockito-core", version.ref = "mockitoCore" }
 mockito-kotlin = { module = "org.mockito.kotlin:mockito-kotlin", version.ref = "mockitoKotlin" }
+truth = { module = "com.google.truth:truth", version.ref = "truth" }
 turbine = { module = "app.cash.turbine:turbine", version.ref = "turbine" }
 
 [plugins]
