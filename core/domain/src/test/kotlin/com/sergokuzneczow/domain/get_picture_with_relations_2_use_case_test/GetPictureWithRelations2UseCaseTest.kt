@@ -1,4 +1,4 @@
-package com.sergokuzneczow.domain.get_picture_with_relations_case_test
+package com.sergokuzneczow.domain.get_picture_with_relations_2_use_case_test
 
 import app.cash.turbine.test
 import com.sergokuzneczow.domain.get_picture_with_relations_2_use_case.GetPictureWithRelations2UseCase
