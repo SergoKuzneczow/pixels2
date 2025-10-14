@@ -1,4 +1,4 @@
-package com.sergokuzneczow.domain.get_picture_with_relations_case
+package com.sergokuzneczow.domain.get_picture_with_relations_use_case
 
 import com.sergokuzneczow.models.PictureWithRelations
 import com.sergokuzneczow.repository.api.PictureRepositoryApi

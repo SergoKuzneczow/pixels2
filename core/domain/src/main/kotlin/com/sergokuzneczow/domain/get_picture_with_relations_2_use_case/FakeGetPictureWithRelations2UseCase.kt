@@ -1,6 +1,6 @@
-package com.sergokuzneczow.domain.get_picture_with_relations_case
+package com.sergokuzneczow.domain.get_picture_with_relations_2_use_case
 
-import com.sergokuzneczow.domain.get_picture_with_relations_case.GetPictureWithRelations2UseCase.Answer.AnswerState
+import com.sergokuzneczow.domain.get_picture_with_relations_2_use_case.GetPictureWithRelations2UseCase.Answer.AnswerState
 import com.sergokuzneczow.models.Picture
 import com.sergokuzneczow.models.PictureWithRelations
 import com.sergokuzneczow.repository.api.PictureRepositoryApi
