@@ -15,7 +15,7 @@ import com.sergokuzneczow.repository.api.TagRepositoryApi
 import com.sergokuzneczow.repository.impl.ImageLoaderImpl
 import com.sergokuzneczow.repository.impl.NetworkMonitorImpl
 import com.sergokuzneczow.repository.impl.PageRepositoryImpl
-import com.sergokuzneczow.repository.impl.PictureRepositoryImpl
+import com.sergokuzneczow.repository.impl.picture_repository_impl.PictureRepositoryImpl
 import com.sergokuzneczow.repository.impl.StorageRepositoryImpl
 import com.sergokuzneczow.repository.impl.TagRepositoryImpl
 import dagger.Binds
