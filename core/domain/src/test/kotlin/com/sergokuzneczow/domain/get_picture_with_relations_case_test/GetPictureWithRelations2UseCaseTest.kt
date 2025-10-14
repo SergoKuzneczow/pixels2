@@ -1,7 +1,7 @@
 package com.sergokuzneczow.domain.get_picture_with_relations_case_test
 
 import app.cash.turbine.test
-import com.sergokuzneczow.domain.get_picture_with_relations_case.GetPictureWithRelations2UseCase
+import com.sergokuzneczow.domain.get_picture_with_relations_2_use_case.GetPictureWithRelations2UseCase
 import com.sergokuzneczow.models.Picture
 import com.sergokuzneczow.models.PictureWithRelations
 import junit.framework.TestCase.assertEquals

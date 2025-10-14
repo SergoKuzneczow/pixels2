@@ -2,14 +2,15 @@ package com.sergokuzneczow.selected_picture.impl.view_model
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.sergokuzneczow.domain.get_picture_with_relations_case.GetPictureWithRelations2UseCase
+import com.sergokuzneczow.domain.get_picture_with_relations_2_use_case.GetPictureWithRelations2UseCase
 import com.sergokuzneczow.selected_picture.impl.SelectedPictureIntent
 import com.sergokuzneczow.selected_picture.impl.SelectedPictureUiState
-import kotlinx.coroutines.channels.BufferOverflow
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.flow.stateIn
@@ -40,7 +41,7 @@ internal class SelectedPictureViewModel(
                             infoFabVisible = true,
                         )
                     }.onFailure {
-                        currentUiState = currentUiState.apply {
+                        currentUiState = currentUiState.run {
                             when (this) {
                                 is SelectedPictureUiState.Loading -> this.copy(exceptionMessage = it.message)
                                 is SelectedPictureUiState.Success -> this.copy(exceptionMessage = it.message)
@@ -49,24 +50,14 @@ internal class SelectedPictureViewModel(
                     }
                     currentUiState
                 }
-            }
+            }.flowOn(Dispatchers.Default)
 
-    private val intentListener: MutableSharedFlow<SelectedPictureIntent> = MutableSharedFlow(
-        replay = 1,
-        extraBufferCapacity = 1,
-        onBufferOverflow = BufferOverflow.DROP_OLDEST,
-    )
+    private val intentListener: MutableSharedFlow<SelectedPictureIntent> = MutableSharedFlow()
 
     private val intentListenerFlow: Flow<SelectedPictureUiState> =
         intentListener.map { intent ->
             currentUiStateMutex.withLock {
-                currentUiState = when (intent) {
-                    SelectedPictureIntent.CHANGE_VISIBLE_CURTAIN -> {
-                        currentUiState.let { state ->
-                            if (state is SelectedPictureUiState.Success) state.copy(curtainVisible = !state.curtainVisible, infoFabVisible = state.curtainVisible) else currentUiState
-                        }
-                    }
-                }
+                currentUiState = currentUiState.changeUiState(intent)
                 currentUiState
             }
         }
@@ -81,5 +72,13 @@ internal class SelectedPictureViewModel(
 
     internal fun setIntent(selectedPictureIntent: SelectedPictureIntent) {
         viewModelScope.launch { intentListener.emit(selectedPictureIntent) }
+    }
+
+    private fun SelectedPictureUiState.changeUiState(intent: SelectedPictureIntent): SelectedPictureUiState {
+        return when (intent) {
+            SelectedPictureIntent.CHANGE_VISIBLE_CURTAIN -> {
+                if (this is SelectedPictureUiState.Success) this.copy(curtainVisible = !this.curtainVisible, infoFabVisible = this.curtainVisible) else currentUiState
+            }
+        }
     }
 }

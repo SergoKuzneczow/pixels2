@@ -2,7 +2,7 @@ package com.sergokuzneczow.selected_picture.impl.di
 
 import android.app.Application
 import android.content.Context
-import com.sergokuzneczow.domain.get_picture_with_relations_case.GetPictureWithRelations2UseCase
+import com.sergokuzneczow.domain.get_picture_with_relations_2_use_case.GetPictureWithRelations2UseCase
 
 public interface SelectedPictureFeatureDependencies {
 

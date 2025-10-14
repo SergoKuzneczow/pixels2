@@ -3,7 +3,7 @@ package com.sergokuzneczow.selected_picture.impl.view_model
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.sergokuzneczow.domain.get_picture_with_relations_case.GetPictureWithRelations2UseCase
+import com.sergokuzneczow.domain.get_picture_with_relations_2_use_case.GetPictureWithRelations2UseCase
 import com.sergokuzneczow.selected_picture.impl.di.SelectedPictureFeatureComponent
 import com.sergokuzneczow.selected_picture.impl.di.dependenciesProvider
 import jakarta.inject.Inject

@@ -9,7 +9,7 @@ import com.sergokuzneczow.bottom_sheet_picture_info.impl.di.BottomSheetPictureIn
 import com.sergokuzneczow.bottom_sheet_picture_info.impl.di.DaggerBottomSheetPictureInformationFeatureComponent
 import com.sergokuzneczow.bottom_sheet_picture_info.impl.di.dependenciesProvider
 import com.sergokuzneczow.domain.get_first_page_key.GetFirstPageKey
-import com.sergokuzneczow.domain.get_picture_with_relations_case.GetPictureWithRelationsCase
+import com.sergokuzneczow.domain.get_picture_with_relations_use_case.GetPictureWithRelationsCase
 import com.sergokuzneczow.models.PageFilter
 import com.sergokuzneczow.models.PageQuery
 import com.sergokuzneczow.repository.api.ImageLoaderApi
