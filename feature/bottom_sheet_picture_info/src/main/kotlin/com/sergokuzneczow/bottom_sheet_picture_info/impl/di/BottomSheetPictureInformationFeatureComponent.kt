@@ -1,6 +1,6 @@
 package com.sergokuzneczow.bottom_sheet_picture_info.impl.di
 
-import com.sergokuzneczow.bottom_sheet_picture_info.impl.view_model.BottomSheetPictureInfoViewModel
+import com.sergokuzneczow.bottom_sheet_picture_info.impl.view_model.BottomSheetPictureInfoViewModelFactory
 import dagger.Component
 
 @Component(
@@ -8,7 +8,7 @@ import dagger.Component
 )
 internal interface BottomSheetPictureInformationFeatureComponent {
 
-    fun inject(destination: BottomSheetPictureInfoViewModel)
+    fun inject(destination: BottomSheetPictureInfoViewModelFactory)
 
     @Component.Builder
     interface Builder {
@@ -20,13 +20,13 @@ internal interface BottomSheetPictureInformationFeatureComponent {
 
         private var component: BottomSheetPictureInformationFeatureComponent? = null
 
-        internal fun get(d: BottomSheetPictureInformationFeatureDependencies): BottomSheetPictureInformationFeatureComponent? {
+        internal fun get(d: BottomSheetPictureInformationFeatureDependencies): BottomSheetPictureInformationFeatureComponent {
             if (component == null) {
                 component = DaggerBottomSheetPictureInformationFeatureComponent.builder()
                     .setDependencies(d)
                     .build()
             }
-            return component
+            return component ?: throw IllegalStateException("DaggerBottomSheetPictureInformationFeatureComponent must be initialize.")
         }
 
         internal fun clear() {
