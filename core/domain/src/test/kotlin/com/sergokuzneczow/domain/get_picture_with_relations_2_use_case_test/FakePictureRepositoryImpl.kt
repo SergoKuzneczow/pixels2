@@ -7,7 +7,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 
-internal class FakePictureRepositoryApi : PictureRepositoryApi {
+internal class FakePictureRepositoryImpl : PictureRepositoryApi {
 
     internal companion object {
         internal const val CACHED_EXCEPTION_MESSAGE = "Cached data source exception"

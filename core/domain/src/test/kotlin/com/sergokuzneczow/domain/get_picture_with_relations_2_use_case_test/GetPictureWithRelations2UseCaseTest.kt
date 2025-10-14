@@ -24,9 +24,9 @@ import org.mockito.kotlin.mock
 @RunWith(MockitoJUnitRunner::class)
 internal class GetPictureWithRelations2UseCaseTest {
 
-    private val fakePictureRepositoryApi = FakePictureRepositoryApi()
+    private val fakePictureRepositoryImpl = FakePictureRepositoryImpl()
 
-    private val getPictureWithRelations2UseCase = GetPictureWithRelations2UseCase(fakePictureRepositoryApi)
+    private val getPictureWithRelations2UseCase = GetPictureWithRelations2UseCase(fakePictureRepositoryImpl)
 
     @Before
     fun beforeTest() {
@@ -43,7 +43,7 @@ internal class GetPictureWithRelations2UseCaseTest {
         val cached: PictureWithRelations = createPictureWithRelations("cached")
         val actual: PictureWithRelations = createPictureWithRelations("actual")
 
-        fakePictureRepositoryApi.setFakePictureRepositoryApiState(
+        fakePictureRepositoryImpl.setFakePictureRepositoryApiState(
             cachedData = cached,
             actualData = actual,
         )
@@ -58,7 +58,7 @@ internal class GetPictureWithRelations2UseCaseTest {
     fun `cached data should be skipped, if there isn't`(): TestResult = runTest {
         val actual: PictureWithRelations = createPictureWithRelations("actual")
 
-        fakePictureRepositoryApi.setFakePictureRepositoryApiState(
+        fakePictureRepositoryImpl.setFakePictureRepositoryApiState(
             cachedData = null,
             actualData = actual,
         )
@@ -72,14 +72,14 @@ internal class GetPictureWithRelations2UseCaseTest {
     fun `repeat the request for new data if the first attempt fails`(): TestResult = runTest {
         val actual: PictureWithRelations = createPictureWithRelations("actual")
 
-        fakePictureRepositoryApi.setFakePictureRepositoryApiState(
+        fakePictureRepositoryImpl.setFakePictureRepositoryApiState(
             cachedData = null,
             actualData = actual,
             actualRequestThrowCounter = 1,
         )
 
         getPictureWithRelations2UseCase.execute(backgroundScope, "anyKey").test {
-            assertEquals(FakePictureRepositoryApi.ACTUAL_EXCEPTION_MESSAGE, awaitItem().exceptionOrNull()?.message)
+            assertEquals(FakePictureRepositoryImpl.ACTUAL_EXCEPTION_MESSAGE, awaitItem().exceptionOrNull()?.message)
             assertEquals("actual", awaitItem().getOrNull()?.data?.picture?.key)
         }
     }
@@ -89,7 +89,7 @@ internal class GetPictureWithRelations2UseCaseTest {
         val cached: PictureWithRelations = createPictureWithRelations("cached")
         val actual: PictureWithRelations = createPictureWithRelations("actual")
 
-        fakePictureRepositoryApi.setFakePictureRepositoryApiState(
+        fakePictureRepositoryImpl.setFakePictureRepositoryApiState(
             cachedData = cached,
             actualData = actual,
             actualRequestThrowCounter = 1,
@@ -97,7 +97,7 @@ internal class GetPictureWithRelations2UseCaseTest {
 
         getPictureWithRelations2UseCase.execute(backgroundScope, "anyKey").test {
             assertEquals("cached", awaitItem().getOrNull()?.data?.picture?.key)
-            assertEquals(FakePictureRepositoryApi.ACTUAL_EXCEPTION_MESSAGE, awaitItem().exceptionOrNull()?.message)
+            assertEquals(FakePictureRepositoryImpl.ACTUAL_EXCEPTION_MESSAGE, awaitItem().exceptionOrNull()?.message)
             assertEquals("actual", awaitItem().getOrNull()?.data?.picture?.key)
         }
     }
