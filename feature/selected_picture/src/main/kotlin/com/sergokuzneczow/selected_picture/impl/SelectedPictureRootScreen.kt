@@ -1,6 +1,7 @@
 package com.sergokuzneczow.selected_picture.impl
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -13,6 +14,7 @@ import com.sergokuzneczow.selected_picture.impl.view_model.SelectedPictureViewMo
 @Composable
 internal fun SelectedPictureRootScreen(
     pictureKey: String,
+    onShowSnackbar: suspend (message: String, actionOrNull: String?) -> Unit,
     navigateToBottomSheetPictureInfoDestination: (pictureKey: String) -> Unit,
 ) {
     val vm: SelectedPictureViewModel = viewModel(factory = SelectedPictureViewModelFactory(LocalContext.current, pictureKey))
@@ -23,4 +25,8 @@ internal fun SelectedPictureRootScreen(
         changeCurtainVisible = { vm.setIntent(CHANGE_VISIBLE_CURTAIN) },
         navigateToBottomSheetPictureInfoDestination = navigateToBottomSheetPictureInfoDestination,
     )
+
+    LaunchedEffect(uiState) {
+        uiState.exceptionMessage?.let { onShowSnackbar.invoke(it, null) }
+    }
 }

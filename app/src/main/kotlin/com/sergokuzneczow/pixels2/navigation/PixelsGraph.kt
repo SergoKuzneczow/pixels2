@@ -41,6 +41,7 @@ internal fun NavGraphBuilder.pixelsGraph(
         popBackStack = popBackStack,
     )
     selectedPictureDestination(
+        onShowSnackbar = onShowSnackbar,
         navigateToBottomSheetPictureInfoDestination = navigateToBottomSheetPictureInfoDestination
     )
     bottomSheetPictureInfoDestination(

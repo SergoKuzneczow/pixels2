@@ -17,12 +17,14 @@ public fun NavHostController.navigateToSelectedPictureDestination(pictureKey: St
 }
 
 public fun NavGraphBuilder.selectedPictureDestination(
+    onShowSnackbar: suspend (message: String, actionOrNull: String?) -> Unit,
     navigateToBottomSheetPictureInfoDestination: (pageKey: String, navOptions: NavOptions?) -> Unit,
 ) {
     composable<SelectedPictureRoute> { backStackEntry ->
         val selectedPictureRoute: SelectedPictureRoute = backStackEntry.toRoute<SelectedPictureRoute>()
         SelectedPictureRootScreen(
             pictureKey = selectedPictureRoute.pictureKey,
+            onShowSnackbar = onShowSnackbar,
             navigateToBottomSheetPictureInfoDestination = { pictureKey ->
                 val navOptions: NavOptions = navOptions {
                     popUpTo<SelectedPictureRoute> {
