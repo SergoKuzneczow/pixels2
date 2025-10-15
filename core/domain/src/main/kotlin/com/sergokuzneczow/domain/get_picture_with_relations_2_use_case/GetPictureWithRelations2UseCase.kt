@@ -32,8 +32,8 @@ public open class GetPictureWithRelations2UseCase @Inject constructor(
         return flow {
 
             try {
-                val cached: PictureWithRelations? = pictureRepository.getCachedPictureWithRelation(pictureKey)
-                cached?.let { emit(Result.success(Answer(it, Answer.AnswerState.CACHED))) }
+                val cachedData: PictureWithRelations? = pictureRepository.getCachedPictureWithRelation(pictureKey)
+                cachedData?.let { emit(Result.success(Answer(it, Answer.AnswerState.CACHED))) }
             } catch (e: Exception) {
                 emit(Result.failure(e))
             }
@@ -42,8 +42,9 @@ public open class GetPictureWithRelations2UseCase @Inject constructor(
                 if (it == WITH_DELAY) delay(RESYNC_DELAY)
                 try {
                     val actual: PictureWithRelations = pictureRepository.getActualPictureWithRelation(pictureKey)
-                    this.emit(Result.success(Answer(actual, Answer.AnswerState.UPDATED)))
-                    runCatching { pictureRepository.cachingPictureWithRelation(actual) }
+                    pictureRepository.cachingPictureWithRelation(actual)
+                    val newCachedData: PictureWithRelations? = pictureRepository.getCachedPictureWithRelation(pictureKey)
+                    newCachedData?.let { data -> emit(Result.success(Answer(data, Answer.AnswerState.UPDATED))) }
                 } catch (e: Exception) {
                     emit(Result.failure(e))
                     scope.launch { resyncListener.emit(WITH_DELAY) }
