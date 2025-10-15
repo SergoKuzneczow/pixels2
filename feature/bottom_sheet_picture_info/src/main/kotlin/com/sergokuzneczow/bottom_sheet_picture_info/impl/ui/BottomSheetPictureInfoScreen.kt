@@ -5,8 +5,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import com.sergokuzneczow.bottom_sheet_picture_info.impl.ColorsListUiState
+import com.sergokuzneczow.bottom_sheet_picture_info.impl.LikeThisButtonUiState
 import com.sergokuzneczow.bottom_sheet_picture_info.impl.PictureInformationUiState
-import com.sergokuzneczow.core.system_components.PixelsCircularProgressIndicator
+import com.sergokuzneczow.bottom_sheet_picture_info.impl.SavePictureButtonUiState
+import com.sergokuzneczow.bottom_sheet_picture_info.impl.TagsListUiState
 import com.sergokuzneczow.core.ui.PixelsTheme
 import com.sergokuzneczow.core.utilites.ThemePreviews
 import com.sergokuzneczow.models.Color
@@ -15,62 +18,69 @@ import com.sergokuzneczow.models.Tag
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun BottomSheetPictureInfoScreen(
-    pictureInformationUiState: PictureInformationUiState,
-    savePicture: (String) -> Unit,
-    searchLikeThisPicture: (String) -> Unit,
-    onTagChipClick: (Tag) -> Unit,
-    onColorChipClick: (Color) -> Unit,
+    pictureInfoUiState: PictureInformationUiState,
+    savePicture: (picturePath: String) -> Unit,
+    searchLikeThisPicture: (pictureKey: String) -> Unit,
+    onTagChipClick: (tag: Tag) -> Unit,
+    onColorChipClick: (color: Color) -> Unit,
     popBackStack: () -> Unit,
 ) {
     Box(modifier = Modifier.fillMaxSize()) {
-        when (pictureInformationUiState) {
-            is PictureInformationUiState.Loading -> {
-                PixelsCircularProgressIndicator()
-            }
-
-            is PictureInformationUiState.Success -> {
-                PictureInformationBottomSheet(
-                    picturePath = pictureInformationUiState.picturePath,
-                    tags = pictureInformationUiState.tags,
-                    colors = pictureInformationUiState.colors,
-                    saveButtonUiState = pictureInformationUiState.pictureSavingUiState,
-                    onTagChipClick = { tag: Tag -> onTagChipClick.invoke(tag) },
-                    onColorChipClick = { color: Color -> onColorChipClick.invoke(color) },
-                    onSavePictureClick = { savePicture.invoke(pictureInformationUiState.picturePath) },
-                    onLikeThisPictureButtonClick = { searchLikeThisPicture.invoke(pictureInformationUiState.pictureKey) },
-                    whenDismissRequest = { popBackStack.invoke() }
-                )
-            }
-        }
+        PictureInformationBottomSheet(
+            pictureInfoUiState = pictureInfoUiState,
+            onTagChipClick = { tag: Tag -> onTagChipClick.invoke(tag) },
+            onColorChipClick = { color: Color -> onColorChipClick.invoke(color) },
+            onSavePictureClick = { picturePath: String -> savePicture.invoke(picturePath) },
+            onLikeThisPictureButtonClick = { pictureKey: String -> searchLikeThisPicture.invoke(pictureKey) },
+            whenDismissRequest = { popBackStack.invoke() },
+        )
     }
 }
 
 @ThemePreviews
 @Composable
-private fun BottomSheetPictureInfoScreenPreview() {
+private fun BottomSheetPictureInfoScreenLoadingPreview() {
     PixelsTheme {
         BottomSheetPictureInfoScreen(
-            pictureInformationUiState = PictureInformationUiState.Success(
-                pictureKey = "preview",
-                picturePath = "preview",
-                tags = listOf(
-                    Tag(
-                        id = 0,
-                        name = "Preview_tag_name",
-                        alias = "",
-                        categoryId = 1,
-                        categoryName = "",
-                        purity = Tag.TagPurity.SFW,
-                        createdAt = ""
+            pictureInfoUiState = PictureInformationUiState.Loading,
+            onTagChipClick = {},
+            onColorChipClick = {},
+            savePicture = {},
+            searchLikeThisPicture = {},
+            popBackStack = {},
+        )
+    }
+}
+
+@ThemePreviews
+@Composable
+private fun BottomSheetPictureInfoScreenSuccessPreview() {
+    PixelsTheme {
+        BottomSheetPictureInfoScreen(
+            pictureInfoUiState = PictureInformationUiState.Success(
+                savePictureButtonUiState = SavePictureButtonUiState.Prepared(""),
+                likeThisButtonUiState = LikeThisButtonUiState.Success(""),
+                tagsListUiState = TagsListUiState.Success(
+                    listOf(
+                        Tag(
+                            id = 1,
+                            name = "Tag name",
+                            alias = "1",
+                            categoryId = 0,
+                            categoryName = "1",
+                            purity = Tag.TagPurity.SFW,
+                            createdAt = "1",
+                        )
                     )
                 ),
-                colors = listOf(
-                    Color(
-                        key = "#660000",
-                        name = "#660000"
+                colorsListUiState = ColorsListUiState.Success(
+                    listOf(
+                        Color(
+                            key = "#660000",
+                            name = "#660000"
+                        )
                     )
-                ),
-                pictureSavingUiState = PictureInformationUiState.PictureSavingUiState.Prepared,
+                )
             ),
             onTagChipClick = {},
             onColorChipClick = {},

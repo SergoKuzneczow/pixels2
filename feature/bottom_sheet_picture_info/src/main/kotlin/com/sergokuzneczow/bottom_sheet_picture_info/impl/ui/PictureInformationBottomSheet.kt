@@ -3,6 +3,7 @@ package com.sergokuzneczow.bottom_sheet_picture_info.impl.ui
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
@@ -30,7 +31,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.core.graphics.toColorInt
+import com.sergokuzneczow.bottom_sheet_picture_info.impl.ColorsListUiState
+import com.sergokuzneczow.bottom_sheet_picture_info.impl.LikeThisButtonUiState
 import com.sergokuzneczow.bottom_sheet_picture_info.impl.PictureInformationUiState
+import com.sergokuzneczow.bottom_sheet_picture_info.impl.SavePictureButtonUiState
+import com.sergokuzneczow.bottom_sheet_picture_info.impl.TagsListUiState
 import com.sergokuzneczow.core.system_components.PixelsCircularProgressIndicator
 import com.sergokuzneczow.core.system_components.buttons.PixelsSurfaceButton
 import com.sergokuzneczow.core.system_components.chip_segments.PixelsSuggestionFlowRow
@@ -38,20 +43,18 @@ import com.sergokuzneczow.core.system_components.chip_segments.SuggestionChip
 import com.sergokuzneczow.core.system_components.chip_segments.SuggestionChipColorsAccent
 import com.sergokuzneczow.core.ui.Dimensions
 import com.sergokuzneczow.models.Tag
+import com.sergokuzneczow.utilities.logger.log
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun PictureInformationBottomSheet(
-    picturePath: String,
-    tags: List<Tag>,
-    colors: List<com.sergokuzneczow.models.Color>,
-    saveButtonUiState: PictureInformationUiState.PictureSavingUiState,
+    pictureInfoUiState: PictureInformationUiState,
     onTagChipClick: (tag: Tag) -> Unit,
     onColorChipClick: (color: com.sergokuzneczow.models.Color) -> Unit,
     onSavePictureClick: (picturePath: String) -> Unit,
-    onLikeThisPictureButtonClick: () -> Unit,
+    onLikeThisPictureButtonClick: (pictureKey: String) -> Unit,
     whenDismissRequest: () -> Unit,
     coroutineScope: CoroutineScope = rememberCoroutineScope(),
     bottomSheetState: SheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
@@ -66,24 +69,37 @@ internal fun PictureInformationBottomSheet(
         sheetState = bottomSheetState,
         containerColor = MaterialTheme.colorScheme.surfaceContainer,
         content = {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .verticalScroll(rememberScrollState())
-            ) {
-                PictureInformation(
-                    tags = tags,
-                    colors = colors,
-                    onTagChipClick = onTagChipClick,
-                    onColorChipClick = onColorChipClick,
-                )
-                PictureActions(
-                    picturePath = picturePath,
-                    saveButtonState = saveButtonUiState,
-                    onSavePictureClick = onSavePictureClick,
-                    onLikeThisPictureClick = onLikeThisPictureButtonClick,
-                )
-                Spacer(modifier = Modifier.height(Dimensions.LargePadding))
+            when (pictureInfoUiState) {
+                PictureInformationUiState.Loading -> {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(128.dp),
+                        content = { PixelsCircularProgressIndicator() },
+                    )
+                }
+
+                is PictureInformationUiState.Success -> {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .verticalScroll(rememberScrollState())
+                    ) {
+                        PictureInformation(
+                            tagsListUiState = pictureInfoUiState.tagsListUiState,
+                            colorsListUiState = pictureInfoUiState.colorsListUiState,
+                            onTagChipClick = onTagChipClick,
+                            onColorChipClick = onColorChipClick,
+                        )
+                        PictureActions(
+                            savePictureButtonUiState = pictureInfoUiState.savePictureButtonUiState,
+                            likeThisButtonUiState = pictureInfoUiState.likeThisButtonUiState,
+                            onSavePictureClick = onSavePictureClick,
+                            onLikeThisPictureClick = onLikeThisPictureButtonClick,
+                        )
+                        Spacer(modifier = Modifier.height(Dimensions.LargePadding))
+                    }
+                }
             }
         }
     )
@@ -91,10 +107,10 @@ internal fun PictureInformationBottomSheet(
 
 @Composable
 private fun PictureActions(
-    picturePath: String,
-    saveButtonState: PictureInformationUiState.PictureSavingUiState,
+    savePictureButtonUiState: SavePictureButtonUiState,
+    likeThisButtonUiState: LikeThisButtonUiState,
     onSavePictureClick: (picturePath: String) -> Unit,
-    onLikeThisPictureClick: () -> Unit,
+    onLikeThisPictureClick: (pictureKeu: String) -> Unit,
 ) {
     Row(
         modifier = Modifier
@@ -102,104 +118,168 @@ private fun PictureActions(
             .padding(horizontal = Dimensions.Padding)
     ) {
         SavePictureButton(
-            saveButtonState = saveButtonState,
-            onSavePictureClick = { onSavePictureClick.invoke(picturePath) },
+            savePictureButtonUiState = savePictureButtonUiState,
+            onSavePictureClick = onSavePictureClick,
         )
-        PixelsSurfaceButton(
-            text = "Like this",
-            onClick = { onLikeThisPictureClick.invoke() },
-            modifier = Modifier
-                .weight(1f)
-                .padding(horizontal = Dimensions.ContentPadding)
+        LikeThisPictureButton(
+            likeThisButtonUiState = likeThisButtonUiState,
+            onLikeThisPictureClick = onLikeThisPictureClick,
         )
     }
 }
 
 @Composable
 private fun PictureInformation(
-    tags: List<Tag>,
-    colors: List<com.sergokuzneczow.models.Color>,
+    tagsListUiState: TagsListUiState,
+    colorsListUiState: ColorsListUiState,
     onTagChipClick: (tag: Tag) -> Unit,
     onColorChipClick: (color: com.sergokuzneczow.models.Color) -> Unit,
 ) {
-    val tagsSuggestionChips: List<SuggestionChip> = tags.map { SuggestionChip(label = "#${it.name}") }
-    val colorsSuggestionChips: List<SuggestionChip> = colors.map { SuggestionChip(label = it.name) }
+    when (tagsListUiState) {
+        TagsListUiState.Empty -> {}
 
-    if (tags.isNotEmpty()) {
-        Text(
-            text = "Tags:",
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = Dimensions.LargePadding, start = Dimensions.LargePadding, end = Dimensions.LargePadding),
-            color = MaterialTheme.colorScheme.onSurface,
-            textAlign = TextAlign.Start,
-            style = MaterialTheme.typography.titleMedium
-        )
+        TagsListUiState.Loading -> {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(96.dp),
+                content = { PixelsCircularProgressIndicator() }
+            )
+        }
 
-        PixelsSuggestionFlowRow(
-            suggestionChips = tagsSuggestionChips,
-            modifier = Modifier.padding(top = Dimensions.LargePadding, start = Dimensions.LargePadding, end = Dimensions.LargePadding),
-            onItemClick = { index, _ -> onTagChipClick.invoke(tags[index]) },
-            colorAccentPredicate = { index, _ ->
-                when (tags[index].purity) {
-                    Tag.TagPurity.SFW -> SuggestionChipColorsAccent.Standard
-                    Tag.TagPurity.SKETCHY -> SuggestionChipColorsAccent.Warning
-                    Tag.TagPurity.NSFW -> SuggestionChipColorsAccent.Dangerous
-                }
-            },
-        )
+        is TagsListUiState.Success -> {
+            val tagsSuggestionChips: List<SuggestionChip> = tagsListUiState.tags.map { SuggestionChip(label = "#${it.name}") }
+
+            Text(
+                text = "Tags:",
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = Dimensions.LargePadding, start = Dimensions.LargePadding, end = Dimensions.LargePadding),
+                color = MaterialTheme.colorScheme.onSurface,
+                textAlign = TextAlign.Start,
+                style = MaterialTheme.typography.titleMedium
+            )
+
+            PixelsSuggestionFlowRow(
+                suggestionChips = tagsSuggestionChips,
+                modifier = Modifier.padding(top = Dimensions.LargePadding, start = Dimensions.LargePadding, end = Dimensions.LargePadding),
+                onItemClick = { index, _ -> onTagChipClick.invoke(tagsListUiState.tags[index]) },
+                colorAccentPredicate = { index, _ ->
+                    when (tagsListUiState.tags[index].purity) {
+                        Tag.TagPurity.SFW -> SuggestionChipColorsAccent.Standard
+                        Tag.TagPurity.SKETCHY -> SuggestionChipColorsAccent.Warning
+                        Tag.TagPurity.NSFW -> SuggestionChipColorsAccent.Dangerous
+                    }
+                },
+            )
+
+        }
     }
 
-    if (colors.isNotEmpty()) {
-        Text(
-            text = "Colors:",
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = Dimensions.LargePadding, start = Dimensions.LargePadding, end = Dimensions.LargePadding),
-            color = MaterialTheme.colorScheme.onSurface,
-            textAlign = TextAlign.Start,
-            style = MaterialTheme.typography.titleMedium
-        )
+    when (colorsListUiState) {
+        ColorsListUiState.Empty -> {
+        }
 
-        PixelsSuggestionFlowRow(
-            suggestionChips = colorsSuggestionChips,
-            modifier = Modifier.padding(top = Dimensions.LargePadding, start = Dimensions.LargePadding, end = Dimensions.LargePadding),
-            onItemClick = { index, _ -> onColorChipClick.invoke(colors[index]) },
-            colorAccentPredicate = { index, _ ->
-                SuggestionChipColorsAccent.Custom(
-                    containerColor = Color(colors[index].name.toColorInt()),
-                    contentColor = Color(colors[index].name.toColorInt()),
+        ColorsListUiState.Loading -> {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(96.dp),
+                content = { PixelsCircularProgressIndicator() }
+            )
+        }
+
+        is ColorsListUiState.Success -> {
+            val colorsSuggestionChips: List<SuggestionChip> = colorsListUiState.colors.map { SuggestionChip(label = it.name) }
+            if (colorsListUiState.colors.isNotEmpty()) {
+                Text(
+                    text = "Colors:",
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = Dimensions.LargePadding, start = Dimensions.LargePadding, end = Dimensions.LargePadding),
+                    color = MaterialTheme.colorScheme.onSurface,
+                    textAlign = TextAlign.Start,
+                    style = MaterialTheme.typography.titleMedium
                 )
-            },
-        )
+
+                PixelsSuggestionFlowRow(
+                    suggestionChips = colorsSuggestionChips,
+                    modifier = Modifier.padding(top = Dimensions.LargePadding, start = Dimensions.LargePadding, end = Dimensions.LargePadding),
+                    onItemClick = { index, _ -> onColorChipClick.invoke(colorsListUiState.colors[index]) },
+                    colorAccentPredicate = { index, _ ->
+                        SuggestionChipColorsAccent.Custom(
+                            containerColor = Color(colorsListUiState.colors[index].name.toColorInt()),
+                            contentColor = Color(colorsListUiState.colors[index].name.toColorInt()),
+                        )
+                    },
+                )
+            }
+        }
     }
 }
 
 @Composable
 private fun RowScope.SavePictureButton(
-    saveButtonState: PictureInformationUiState.PictureSavingUiState,
-    onSavePictureClick: () -> Unit
+    savePictureButtonUiState: SavePictureButtonUiState,
+    onSavePictureClick: (String) -> Unit
 ) {
-    var downloading: Boolean by rememberSaveable { mutableStateOf(false) }
-    downloading = when (saveButtonState) {
-        PictureInformationUiState.PictureSavingUiState.Prepared -> false
-        is PictureInformationUiState.PictureSavingUiState.Error -> false
-        PictureInformationUiState.PictureSavingUiState.Loading -> true
-        PictureInformationUiState.PictureSavingUiState.Saving -> true
-        PictureInformationUiState.PictureSavingUiState.Success -> false
+    log(tag = "SavePictureButton") { "savePictureButtonUiState=$savePictureButtonUiState" }
+
+    var isVisibleProgressBar: Boolean by rememberSaveable { mutableStateOf(false) }
+    var isEnable: Boolean by rememberSaveable { mutableStateOf(false) }
+
+    when (savePictureButtonUiState) {
+        is SavePictureButtonUiState.Prepared -> {
+            isVisibleProgressBar = false
+            isEnable = true
+        }
+
+        is SavePictureButtonUiState.Loading -> {
+            isVisibleProgressBar = true
+            isEnable = false
+        }
+
+        is SavePictureButtonUiState.Saved -> {
+            isVisibleProgressBar = false
+            isEnable = true
+        }
     }
+
     PixelsSurfaceButton(
         text = "Save",
-        onClick = { onSavePictureClick.invoke() },
-        enabled = !downloading,
+        onClick = { onSavePictureClick.invoke(savePictureButtonUiState.picturePath) },
+        enabled = isEnable,
         iconContent = {
             AnimatedVisibility(
-                visible = downloading,
+                visible = isVisibleProgressBar,
                 enter = fadeIn(),
                 exit = fadeOut(),
                 content = { PixelsCircularProgressIndicator(modifier = Modifier.size(16.dp)) }
             )
         },
+        modifier = Modifier
+            .weight(1f)
+            .padding(horizontal = Dimensions.ContentPadding)
+    )
+}
+
+@Composable
+private fun RowScope.LikeThisPictureButton(
+    likeThisButtonUiState: LikeThisButtonUiState,
+    onLikeThisPictureClick: (String) -> Unit
+) {
+    var isEnable: Boolean by rememberSaveable { mutableStateOf(false) }
+
+    isEnable = when (likeThisButtonUiState) {
+        LikeThisButtonUiState.Empty -> false
+        LikeThisButtonUiState.Loading -> false
+        is LikeThisButtonUiState.Success -> true
+    }
+
+    PixelsSurfaceButton(
+        text = "Like this",
+        onClick = { if (likeThisButtonUiState is LikeThisButtonUiState.Success) onLikeThisPictureClick.invoke(likeThisButtonUiState.pictureKey) },
+        enabled = isEnable,
         modifier = Modifier
             .weight(1f)
             .padding(horizontal = Dimensions.ContentPadding)

@@ -1,6 +1,8 @@
 package com.sergokuzneczow.bottom_sheet_picture_info.impl
 
 import com.sergokuzneczow.models.Color
+import com.sergokuzneczow.models.PageFilter
+import com.sergokuzneczow.models.PageQuery
 import com.sergokuzneczow.models.Tag
 
 internal sealed interface PictureInformationUiState {
@@ -8,18 +10,44 @@ internal sealed interface PictureInformationUiState {
     data object Loading : PictureInformationUiState
 
     data class Success(
-        val pictureKey: String,
-        val picturePath: String,
-        val tags: List<Tag>,
-        val colors: List<Color>,
-        val pictureSavingUiState: PictureSavingUiState,
+        val savePictureButtonUiState: SavePictureButtonUiState,
+        val likeThisButtonUiState: LikeThisButtonUiState,
+        val tagsListUiState: TagsListUiState,
+        val colorsListUiState: ColorsListUiState,
     ) : PictureInformationUiState
+}
 
-    sealed interface PictureSavingUiState {
-        data object Prepared : PictureSavingUiState
-        data object Loading : PictureSavingUiState
-        data object Saving : PictureSavingUiState
-        data class Error(val throwable: Throwable) : PictureSavingUiState
-        data object Success : PictureSavingUiState
-    }
+internal sealed interface SavePictureButtonUiState {
+    val picturePath: String
+    data class Prepared(override val picturePath: String) : SavePictureButtonUiState
+    data class Loading(override val picturePath: String) : SavePictureButtonUiState
+    data class Saved(
+        override val picturePath: String,
+        val uri: String
+    ) : SavePictureButtonUiState
+}
+
+internal sealed interface LikeThisButtonUiState {
+    data object Loading : LikeThisButtonUiState
+    data object Empty : LikeThisButtonUiState
+    data class Success(val pictureKey: String) : LikeThisButtonUiState
+}
+
+internal sealed interface TagsListUiState {
+    data object Loading : TagsListUiState
+    data object Empty : TagsListUiState
+    data class Success(val tags: List<Tag>) : TagsListUiState
+}
+
+internal sealed interface ColorsListUiState {
+    data object Loading : ColorsListUiState
+    data object Empty : ColorsListUiState
+    data class Success(val colors: List<Color>) : ColorsListUiState
+}
+
+internal sealed interface PictureInformationIntent {
+    data class SavingPicture(val picturePath: String) : PictureInformationIntent
+    data class FailedSavePicture(val picturePath: String) : PictureInformationIntent
+    data class SuccessSavePicture(val picturePath: String, val uri: String) : PictureInformationIntent
+    data class SearchPageKey(val pageQuery: PageQuery, val pageFilter: PageFilter, val completedBlock: (pageKey: Long) -> Unit) : PictureInformationIntent
 }
