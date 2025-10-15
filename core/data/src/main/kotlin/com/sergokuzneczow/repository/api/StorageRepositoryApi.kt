@@ -6,4 +6,6 @@ import android.net.Uri
 public interface StorageRepositoryApi {
 
     public fun savePictureBitmapToPictureDir(bitmap: Bitmap, onStart: () -> Unit, onSuccess: (uri: Uri) -> Unit, onFailure: (e: Exception) -> Unit)
+
+    public suspend fun savePictureAwait(bitmap: Bitmap): Result<Uri>
 }
