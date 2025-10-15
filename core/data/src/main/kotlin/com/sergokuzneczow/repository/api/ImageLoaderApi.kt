@@ -5,7 +5,7 @@ import coil3.ImageLoader
 
 public interface ImageLoaderApi {
 
-    public val imageLoader : ImageLoader
+    public val imageLoader: ImageLoader
 
     public suspend fun loadBitmap(
         path: String,
@@ -13,4 +13,6 @@ public interface ImageLoaderApi {
         onSuccess: (bitmap: Bitmap) -> Unit,
         onError: (throwable: Throwable) -> Unit
     )
+
+    public suspend fun loadBitmapAwait(path: String): Result<Bitmap>
 }

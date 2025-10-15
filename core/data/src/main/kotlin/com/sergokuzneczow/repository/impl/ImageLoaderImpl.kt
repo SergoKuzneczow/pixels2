@@ -7,7 +7,10 @@ import coil3.disk.DiskCache
 import coil3.disk.directory
 import coil3.network.okhttp.OkHttpNetworkFetcherFactory
 import coil3.request.CachePolicy
+import coil3.request.ErrorResult
 import coil3.request.ImageRequest
+import coil3.request.ImageResult
+import coil3.request.SuccessResult
 import coil3.toBitmap
 import com.sergokuzneczow.repository.api.ImageLoaderApi
 import jakarta.inject.Inject
@@ -41,5 +44,17 @@ public class ImageLoaderImpl @Inject constructor(private val context: Context) :
             )
             .build()
         imageLoader.execute(request)
+    }
+
+    override suspend fun loadBitmapAwait(path: String): Result<Bitmap> {
+        val request: ImageRequest = ImageRequest.Builder(context)
+            .data(path)
+            .diskCachePolicy(CachePolicy.ENABLED)
+            .build()
+        val result: ImageResult = imageLoader.execute(request)
+        return when (result) {
+            is SuccessResult -> Result.success(result.image.toBitmap())
+            is ErrorResult -> Result.failure(result.throwable)
+        }
     }
 }
