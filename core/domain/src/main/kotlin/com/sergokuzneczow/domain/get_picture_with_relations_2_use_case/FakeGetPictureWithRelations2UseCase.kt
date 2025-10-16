@@ -1,8 +1,10 @@
 package com.sergokuzneczow.domain.get_picture_with_relations_2_use_case
 
 import com.sergokuzneczow.domain.get_picture_with_relations_2_use_case.GetPictureWithRelations2UseCase.Answer.AnswerState
+import com.sergokuzneczow.models.Color
 import com.sergokuzneczow.models.Picture
 import com.sergokuzneczow.models.PictureWithRelations
+import com.sergokuzneczow.models.Tag
 import com.sergokuzneczow.repository.api.PictureRepositoryApi
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.BufferOverflow
@@ -21,15 +23,34 @@ public class GetPictureWithRelations2FakeUseCase(
 
     override fun execute(scope: CoroutineScope, pictureKey: String): Flow<Result<Answer>> = dataSource
 
-    public suspend fun emitSuccess(pictureKey: String) {
-        dataSource.emit(createSuccessResult(pictureKey))
+    public suspend fun emitSuccess(
+        pictureKey: String = "",
+        picturePath: String = "",
+        tags: List<Tag> = emptyList(),
+        colors: List<Color> = emptyList(),
+        answerState: AnswerState = AnswerState.CACHED,
+    ) {
+        dataSource.emit(
+            createSuccessResult(
+                pictureKey = pictureKey,
+                tags = tags,
+                colors = colors,
+                answerState = answerState,
+            )
+        )
     }
 
     public suspend fun emitFailure(exceptionMessage: String) {
         dataSource.emit(createFailureResult(exceptionMessage))
     }
 
-    private fun createSuccessResult(pictureKey: String, answerState: AnswerState = AnswerState.CACHED): Result<Answer> {
+    private fun createSuccessResult(
+        pictureKey: String = "",
+        picturePath: String = "",
+        tags: List<Tag> = emptyList(),
+        colors: List<Color> = emptyList(),
+        answerState: AnswerState = AnswerState.CACHED,
+    ): Result<Answer> {
         return Result.success(
             Answer(
                 data = PictureWithRelations(
@@ -49,13 +70,13 @@ public class GetPictureWithRelations2FakeUseCase(
                         fileSize = 0,
                         fileType = "",
                         createAt = "",
-                        path = "",
+                        path = picturePath,
                         large = "",
                         original = "",
                         small = ""
                     ),
-                    tags = emptyList(),
-                    colors = emptyList(),
+                    tags = tags,
+                    colors = colors,
                 ),
                 state = answerState,
             )
