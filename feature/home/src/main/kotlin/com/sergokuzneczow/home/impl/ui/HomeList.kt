@@ -53,7 +53,7 @@ import com.sergokuzneczow.home.impl.SuggestedQueriesPage.SuggestedQuery
 import com.sergokuzneczow.models.PageFilter
 import com.sergokuzneczow.models.PageQuery
 
-private val PADDING_BETWEEN_BLOCKS: Dp = 16.dp
+private val PADDING_BETWEEN_BLOCKS: Dp = 24.dp
 private val ITEM_PADDINGS: Dp = 4.dp
 
 @Composable
@@ -199,7 +199,7 @@ private fun BoxScope.PictureItem(previewPath: String, description: String) {
             Text(
                 text = description,
                 style = MaterialTheme.typography.titleMedium,
-                color = MaterialTheme.colorScheme.inverseOnSurface,
+                color = Color(245, 244, 244, 255),
                 textAlign = TextAlign.Center,
                 modifier = Modifier.align(Alignment.Center)
             )
