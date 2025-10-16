@@ -5,11 +5,11 @@ import com.sergokuzneczow.models.PageQuery
 import com.sergokuzneczow.repository.api.PageRepositoryApi
 import jakarta.inject.Inject
 
-public class GetFirstPageKeyUseCase @Inject constructor(
+public open class GetFirstPageKeyUseCase @Inject constructor(
     private val pageRepositoryApi: PageRepositoryApi,
 ) {
 
-    public suspend fun execute(
+    public open suspend fun execute(
         pageQuery: PageQuery = PageQuery.DEFAULT,
         pageFilter: PageFilter = PageFilter.DEFAULT,
     ): Long? {
