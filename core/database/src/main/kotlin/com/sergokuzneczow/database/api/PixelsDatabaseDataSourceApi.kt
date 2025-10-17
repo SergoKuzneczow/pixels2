@@ -5,6 +5,7 @@ import com.sergokuzneczow.models.PageFilter
 import com.sergokuzneczow.models.PageQuery
 import com.sergokuzneczow.models.Picture
 import com.sergokuzneczow.models.PictureWithRelations
+import com.sergokuzneczow.models.ApplicationSettings
 import kotlinx.coroutines.flow.Flow
 
 public interface PixelsDatabaseDataSourceApi {
@@ -62,4 +63,10 @@ public interface PixelsDatabaseDataSourceApi {
     public suspend fun setPicture(picture: Picture)
 
     public suspend fun setPicture(pictureWithRelations: PictureWithRelations)
+
+    public suspend fun getSettings(): ApplicationSettings?
+
+    public fun getSettingsAsFlow(): Flow<ApplicationSettings?>
+
+    public suspend fun setSettings(applicationSettings: ApplicationSettings)
 }

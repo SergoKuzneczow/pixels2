@@ -10,6 +10,7 @@ import com.sergokuzneczow.database.impl.framework.entities.toPictureLocalModelPi
 import com.sergokuzneczow.database.impl.framework.entities.toPictureWithRelations
 import com.sergokuzneczow.database.impl.framework.impl.PageLocalSource
 import com.sergokuzneczow.database.impl.framework.impl.PictureLocalSource
+import com.sergokuzneczow.database.impl.framework.impl.PixelsSettingsLocalSource
 import com.sergokuzneczow.database.impl.framework.models.PageQueryLocalModel
 import com.sergokuzneczow.database.impl.framework.models.PictureCategoriesLocalModel
 import com.sergokuzneczow.database.impl.framework.models.PictureColorLocalModel
@@ -27,6 +28,7 @@ import com.sergokuzneczow.models.PageFilter
 import com.sergokuzneczow.models.PageQuery
 import com.sergokuzneczow.models.Picture
 import com.sergokuzneczow.models.PictureWithRelations
+import com.sergokuzneczow.models.ApplicationSettings
 import jakarta.inject.Inject
 import jakarta.inject.Singleton
 import kotlinx.coroutines.flow.Flow
@@ -44,6 +46,8 @@ public class PixelsDatabaseDataSourceImpl private constructor(
     private val pageLocalSource: PageLocalSource by lazy { PageLocalSource(roomHandler) }
 
     private val pictureLocalSource: PictureLocalSource by lazy { PictureLocalSource(roomHandler) }
+
+    private val settingsLocalSource: PixelsSettingsLocalSource by lazy { PixelsSettingsLocalSource(roomHandler) }
 
     override suspend fun setPageGetKey(
         pageNumber: Int,
@@ -151,5 +155,13 @@ public class PixelsDatabaseDataSourceImpl private constructor(
 
     override suspend fun setPicture(pictureWithRelations: PictureWithRelations) {
         pictureLocalSource.setPicture(pictureWithRelations.toPictureLocalModelPictureWithRelations())
+    }
+
+    override suspend fun getSettings(): ApplicationSettings? = settingsLocalSource.getSettings()
+
+    override fun getSettingsAsFlow(): Flow<ApplicationSettings?> = settingsLocalSource.getSettingsAsFlow()
+
+    override suspend fun setSettings(applicationSettings: ApplicationSettings) {
+        settingsLocalSource.setSettings(applicationSettings)
     }
 }

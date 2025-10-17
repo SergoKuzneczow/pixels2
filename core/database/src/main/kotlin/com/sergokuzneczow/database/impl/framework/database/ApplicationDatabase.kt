@@ -1,10 +1,10 @@
 package com.sergokuzneczow.database.impl.framework.database
 
-import androidx.room.AutoMigration
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import com.sergokuzneczow.database.impl.framework.dao.PageDao
 import com.sergokuzneczow.database.impl.framework.dao.PictureDao
+import com.sergokuzneczow.database.impl.framework.dao.PixelsSettingsDao
 import com.sergokuzneczow.database.impl.framework.dao.TagDao
 import com.sergokuzneczow.database.impl.framework.entities.ColorLocalModel
 import com.sergokuzneczow.database.impl.framework.entities.PageLocalModel
@@ -12,6 +12,7 @@ import com.sergokuzneczow.database.impl.framework.entities.PagePictureCrossRef
 import com.sergokuzneczow.database.impl.framework.entities.PictureColorCrossRef
 import com.sergokuzneczow.database.impl.framework.entities.PictureLocalModel
 import com.sergokuzneczow.database.impl.framework.entities.PictureTagCrossRef
+import com.sergokuzneczow.database.impl.framework.entities.SettingsLocalModel
 import com.sergokuzneczow.database.impl.framework.entities.TagLocalModel
 
 @Database(
@@ -20,18 +21,21 @@ import com.sergokuzneczow.database.impl.framework.entities.TagLocalModel
         PageLocalModel::class,
         TagLocalModel::class,
         ColorLocalModel::class,
+        SettingsLocalModel::class,
         PagePictureCrossRef::class,
         PictureTagCrossRef::class,
         PictureColorCrossRef::class,
     ],
-    version = 1,
+    version = 3,
     exportSchema = false,
 )
-public abstract class ApplicationDatabase : RoomDatabase() {
+internal abstract class ApplicationDatabase : RoomDatabase() {
 
-    public abstract fun getPageDao(): PageDao
+    abstract fun getPageDao(): PageDao
 
-    public abstract fun getPictureDao(): PictureDao
+    abstract fun getPictureDao(): PictureDao
 
-    public abstract fun getTagDao(): TagDao
+    abstract fun getTagDao(): TagDao
+
+    abstract fun getSettingsDao(): PixelsSettingsDao
 }
