@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SegmentedButton
+import androidx.compose.material3.SegmentedButtonColors
 import androidx.compose.material3.SegmentedButtonDefaults
 import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Text
@@ -17,14 +18,15 @@ import com.sergokuzneczow.core.ui.Dimensions
 import com.sergokuzneczow.core.ui.PixelsIcons
 import com.sergokuzneczow.core.ui.PixelsTheme
 import com.sergokuzneczow.core.utilites.ThemePreviews
-import kotlin.collections.forEachIndexed
 
 @Composable
 public fun <T> PixelsSingleChoiceSegmentedButtonRow(
     options: List<SingleChoice<T>>,
     onItemSelect: (index: Int, value: T) -> Unit,
     modifier: Modifier = Modifier,
+    enabled: Boolean = true,
     startSelector: Int = 0,
+    hasIcon: Boolean = true,
 ) {
     var selectedIndex: Int by remember { mutableIntStateOf(startSelector) }
 
@@ -42,9 +44,11 @@ public fun <T> PixelsSingleChoiceSegmentedButtonRow(
                         index = index,
                         count = options.size
                     ),
+                    enabled = enabled,
+                    colors = segmentButtonColors(),
                     border = Dimensions.Border,
                     icon = {
-                        if (index == selectedIndex) {
+                        if (index == selectedIndex && hasIcon) {
                             Icon(
                                 imageVector = PixelsIcons.selector,
                                 contentDescription = null,
@@ -56,8 +60,7 @@ public fun <T> PixelsSingleChoiceSegmentedButtonRow(
                         Text(
                             text = choice.label,
                             style = MaterialTheme.typography.bodyMedium,
-                            color = if (index == selectedIndex) MaterialTheme.colorScheme.onPrimary
-                            else MaterialTheme.colorScheme.onSurface
+                            color = if (index == selectedIndex) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface,
                         )
                     },
                 )
@@ -65,6 +68,12 @@ public fun <T> PixelsSingleChoiceSegmentedButtonRow(
         }
     )
 }
+
+@Composable
+private fun segmentButtonColors(): SegmentedButtonColors = SegmentedButtonDefaults.colors()
+    .copy(
+        inactiveContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+    )
 
 public data class SingleChoice<T>(
     val label: String,
@@ -75,7 +84,7 @@ public data class SingleChoice<T>(
 @Composable
 private fun SingleChoiceSegmentedButtonPreview() {
     PixelsTheme {
-        PixelsSingleChoiceSegmentedButtonRow<String>(
+        PixelsSingleChoiceSegmentedButtonRow(
             options = listOf(
                 SingleChoice("Preview", "value"),
                 SingleChoice("Preview", "value"),
