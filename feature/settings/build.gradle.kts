@@ -39,6 +39,8 @@ dependencies {
     // Dependencies
     implementation(project(":core:ui"))
     implementation(project(":core:utilities"))
+    implementation(project(":core:models"))
+    implementation(project(":core:data"))
     // Android compose
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.foundation.layout)
@@ -63,4 +65,11 @@ dependencies {
     // Dagger
     implementation(libs.google.dagger)
     ksp(libs.google.dagger.compiler)
+    // Tests
+    testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.androidx.core.testing)
+    testImplementation(libs.mockito.core)
+    testImplementation(libs.mockito.kotlin)
+    testImplementation(libs.turbine)
+    testImplementation(libs.truth)
 }
