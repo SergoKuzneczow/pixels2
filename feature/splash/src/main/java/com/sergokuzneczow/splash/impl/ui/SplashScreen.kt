@@ -1,4 +1,4 @@
-package com.sergokuzneczow.splash.impl
+package com.sergokuzneczow.splash.impl.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -35,13 +35,16 @@ import com.sergokuzneczow.core.ui.Dimensions
 import com.sergokuzneczow.core.ui.PixelsTheme
 import com.sergokuzneczow.core.ui.pixelsClip
 import com.sergokuzneczow.core.utilites.ThemePreviews
-import com.sergokuzneczow.models.PixelsSettings
+import com.sergokuzneczow.models.ApplicationSettings
 import com.sergokuzneczow.splash.api.SplashScreenRoute
+import com.sergokuzneczow.splash.impl.SplashScreenUiState
+import kotlin.collections.forEachIndexed
+import kotlin.collections.indexOfFirst
 
 @Composable
 internal fun SplashScreen(
     uiState: SplashScreenUiState,
-    onChangeThemeStateClick: (themeState: PixelsSettings.ThemeState) -> Unit,
+    onChangeThemeStateClick: (themeState: ApplicationSettings.SystemSettings.ThemeState) -> Unit,
     navigateToMainMenu: (NavOptions?) -> Unit,
     onDoneClick: () -> Unit,
 ) {
@@ -77,8 +80,8 @@ internal fun SplashScreen(
 
 @Composable
 internal fun BoxScope.SelectThemeState(
-    themeState: PixelsSettings.ThemeState,
-    selectedThemeState: (themeState: PixelsSettings.ThemeState) -> Unit,
+    themeState: ApplicationSettings.SystemSettings.ThemeState,
+    selectedThemeState: (themeState: ApplicationSettings.SystemSettings.ThemeState) -> Unit,
     onDoneClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -112,10 +115,10 @@ internal fun BoxScope.SelectThemeState(
 
 @Composable
 private fun ThemeStatesChoice(
-    startValue: PixelsSettings.ThemeState,
-    selectedValue: (themeState: PixelsSettings.ThemeState) -> Unit,
+    startValue: ApplicationSettings.SystemSettings.ThemeState,
+    selectedValue: (themeState: ApplicationSettings.SystemSettings.ThemeState) -> Unit,
 ) {
-    val options: List<PixelsSettings.ThemeState> = PixelsSettings.ThemeState.entries.toList()
+    val options: List<ApplicationSettings.SystemSettings.ThemeState> = ApplicationSettings.SystemSettings.ThemeState.entries.toList()
     val startSelector: Int = options.indexOfFirst { it == startValue }
     var selector: Int by remember { mutableIntStateOf(if (startSelector == -1) 0 else startSelector) }
     Row(modifier = Modifier.widthIn(min = 480.dp)) {
@@ -124,14 +127,14 @@ private fun ThemeStatesChoice(
                 isSelected = index == selector,
                 title = state.name,
                 backgroundBrush = when (state) {
-                    PixelsSettings.ThemeState.LIGHT -> Brush.verticalGradient(colors = listOf(white, white))
-                    PixelsSettings.ThemeState.DARK -> Brush.verticalGradient(colors = listOf(black, black))
-                    PixelsSettings.ThemeState.SYSTEM -> Brush.verticalGradient(colors = listOf(black, white))
+                    ApplicationSettings.SystemSettings.ThemeState.LIGHT -> Brush.verticalGradient(colors = listOf(white, white))
+                    ApplicationSettings.SystemSettings.ThemeState.DARK -> Brush.verticalGradient(colors = listOf(black, black))
+                    ApplicationSettings.SystemSettings.ThemeState.SYSTEM -> Brush.verticalGradient(colors = listOf(black, white))
                 },
                 titleColor = when (state) {
-                    PixelsSettings.ThemeState.LIGHT -> black
-                    PixelsSettings.ThemeState.DARK -> white
-                    PixelsSettings.ThemeState.SYSTEM -> white
+                    ApplicationSettings.SystemSettings.ThemeState.LIGHT -> black
+                    ApplicationSettings.SystemSettings.ThemeState.DARK -> white
+                    ApplicationSettings.SystemSettings.ThemeState.SYSTEM -> white
                 },
                 value = state,
                 onSelect = {
@@ -189,7 +192,7 @@ private val white: Color = Color(239, 239, 239, 255)
 private fun ThemeStatesChoicePreview() {
     PixelsTheme {
         ThemeStatesChoice(
-            startValue = PixelsSettings.ThemeState.LIGHT,
+            startValue = ApplicationSettings.SystemSettings.ThemeState.LIGHT,
             selectedValue = {},
         )
     }

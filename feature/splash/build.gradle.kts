@@ -39,6 +39,8 @@ dependencies {
     // Dependencies
     implementation(project(":core:ui"))
     implementation(project(":core:utilities"))
+    implementation(project(":core:models"))
+    implementation(project(":core:data"))
     // Android compose
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.foundation.layout)
@@ -52,9 +54,22 @@ dependencies {
     implementation(libs.androidx.runtime.livedata)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.navigation.compose)
+    implementation(libs.androidx.compose.adaptive)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
     // Kotlin
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.kotlinx.serialization.json)
+    implementation(libs.androidx.activity.ktx)
+    implementation(libs.androidx.fragment.ktx)
+    // Dagger
+    implementation(libs.google.dagger)
+    ksp(libs.google.dagger.compiler)
+    // Tests
+    testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.androidx.core.testing)
+    testImplementation(libs.mockito.core)
+    testImplementation(libs.mockito.kotlin)
+    testImplementation(libs.turbine)
+    testImplementation(libs.truth)
 }
