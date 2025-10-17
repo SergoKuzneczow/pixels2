@@ -1,11 +1,15 @@
 package com.sergokuzneczow.core.ui
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.border
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
@@ -30,3 +34,13 @@ public fun Modifier.pixelsShadow(): Modifier = this.shadow(
     ambientColor = Color(0, 0, 0, 0),
     spotColor = Color(0, 0, 0, 60),
 )
+
+@Composable
+public fun Modifier.pixelsBorder(shape: Shape = Dimensions.PixelsShape): Modifier = this.border(
+    width = 1.dp,
+    color = MaterialTheme.colorScheme.onSurface,
+    shape = shape,
+)
+
+@Composable
+public fun Modifier.pixelsClip(): Modifier = this.clip(Dimensions.PixelsShape)
