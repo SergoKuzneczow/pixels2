@@ -11,6 +11,7 @@ import com.sergokuzneczow.pixels2.di.applicationComponent
 import com.sergokuzneczow.search_suitable_pictures.impl.di.SearchSuitablePicturesDependencies
 import com.sergokuzneczow.selected_picture.impl.di.SelectedPictureFeatureDependencies
 import com.sergokuzneczow.settings.impl.di.SettingsFeatureDependencies
+import com.sergokuzneczow.splash.impl.di.SplashFeatureDependencies
 import com.sergokuzneczow.suitable_pictures.impl.di.SuitablePicturesFeatureDependencies
 
 public class PixelsApplication : Application(),
@@ -21,7 +22,8 @@ public class PixelsApplication : Application(),
     BottomSheetPageFilterDependencies.Contract,
     SearchSuitablePicturesDependencies.Contract,
     SelectedPictureFeatureDependencies.Contract,
-    BottomSheetPictureInformationFeatureDependencies.Contract {
+    BottomSheetPictureInformationFeatureDependencies.Contract,
+    SplashFeatureDependencies.Contract {
 
     internal val pixelsComponent: PixelsComponent by lazy {
         DaggerPixelsComponent.builder()
@@ -49,4 +51,6 @@ public class PixelsApplication : Application(),
     override fun selectedPictureFeatureDependenciesProvider(): SelectedPictureFeatureDependencies = pixelsComponent
 
     override fun bottomSheetPictureInformationFeatureDependenciesProvider(): BottomSheetPictureInformationFeatureDependencies = applicationComponent
+
+    override fun splashFeatureDependenciesProvide(): SplashFeatureDependencies = applicationComponent
 }

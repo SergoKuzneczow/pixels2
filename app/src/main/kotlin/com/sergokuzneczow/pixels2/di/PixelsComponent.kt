@@ -11,14 +11,16 @@ import com.sergokuzneczow.domain.get_home_screen_pager_use_case.GetHomeScreenPag
 import com.sergokuzneczow.domain.get_picture_with_relations_2_use_case.GetPictureWithRelations2UseCase
 import com.sergokuzneczow.domain.get_suitable_pictures_screen_pager_use_case.GetSuitablePicturesScreenPager4UseCase
 import com.sergokuzneczow.home.impl.di.HomeFeatureDependencies
-import com.sergokuzneczow.pixels2.MainActivityViewModel
 import com.sergokuzneczow.pixels2.PixelsApplication
+import com.sergokuzneczow.pixels2.view_model.MainActivityViewModelFactory
 import com.sergokuzneczow.repository.api.ImageLoaderApi
 import com.sergokuzneczow.repository.api.PageRepositoryApi
+import com.sergokuzneczow.repository.api.SettingsRepositoryApi
 import com.sergokuzneczow.repository.api.StorageRepositoryApi
 import com.sergokuzneczow.search_suitable_pictures.impl.di.SearchSuitablePicturesDependencies
 import com.sergokuzneczow.selected_picture.impl.di.SelectedPictureFeatureDependencies
 import com.sergokuzneczow.settings.impl.di.SettingsFeatureDependencies
+import com.sergokuzneczow.splash.impl.di.SplashFeatureDependencies
 import com.sergokuzneczow.suitable_pictures.impl.di.SuitablePicturesFeatureDependencies
 import dagger.BindsInstance
 import dagger.Component
@@ -38,7 +40,8 @@ internal interface PixelsComponent :
     BottomSheetPageFilterDependencies,
     SearchSuitablePicturesDependencies,
     SelectedPictureFeatureDependencies,
-    BottomSheetPictureInformationFeatureDependencies {
+    BottomSheetPictureInformationFeatureDependencies,
+    SplashFeatureDependencies {
     override val imageLoaderApi: ImageLoaderApi
     override val storageRepositoryApi: StorageRepositoryApi
     override val getSuitablePicturesScreenPager4UseCase: GetSuitablePicturesScreenPager4UseCase
@@ -47,8 +50,9 @@ internal interface PixelsComponent :
     override val getPage: GetPage
     override val pageRepositoryApi: PageRepositoryApi
     override val getPictureWithRelations2UseCase: GetPictureWithRelations2UseCase
+    override val settingsRepositoryApi: SettingsRepositoryApi
 
-    fun inject(destination: MainActivityViewModel)
+    fun inject(destination: MainActivityViewModelFactory)
 
     @Component.Builder
     interface Builder {

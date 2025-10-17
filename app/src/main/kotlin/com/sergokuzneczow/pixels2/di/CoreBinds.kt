@@ -10,14 +10,16 @@ import com.sergokuzneczow.repository.api.ImageLoaderApi
 import com.sergokuzneczow.repository.api.NetworkMonitorApi
 import com.sergokuzneczow.repository.api.PageRepositoryApi
 import com.sergokuzneczow.repository.api.PictureRepositoryApi
+import com.sergokuzneczow.repository.api.SettingsRepositoryApi
 import com.sergokuzneczow.repository.api.StorageRepositoryApi
 import com.sergokuzneczow.repository.api.TagRepositoryApi
 import com.sergokuzneczow.repository.impl.ImageLoaderImpl
 import com.sergokuzneczow.repository.impl.NetworkMonitorImpl
 import com.sergokuzneczow.repository.impl.PageRepositoryImpl
-import com.sergokuzneczow.repository.impl.picture_repository_impl.PictureRepositoryImpl
+import com.sergokuzneczow.repository.impl.SettingsRepositoryImpl
 import com.sergokuzneczow.repository.impl.StorageRepositoryImpl
 import com.sergokuzneczow.repository.impl.TagRepositoryImpl
+import com.sergokuzneczow.repository.impl.picture_repository_impl.PictureRepositoryImpl
 import dagger.Binds
 import dagger.Module
 
@@ -50,4 +52,7 @@ internal interface CoreBinds {
 
     @Binds
     fun toImageLoaderApi(i: ImageLoaderImpl): ImageLoaderApi
+
+    @Binds
+    fun toSettingsRepositoryApi(i: SettingsRepositoryImpl): SettingsRepositoryApi
 }
