@@ -6,14 +6,11 @@ import com.sergokuzneczow.models.ApplicationSettings
 import com.sergokuzneczow.repository.api.SettingsRepositoryApi
 import com.sergokuzneczow.splash.impl.SplashScreenIntent
 import com.sergokuzneczow.splash.impl.SplashScreenUiState
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
@@ -27,32 +24,28 @@ internal class SplashScreenViewModel(
 
     private var currentUiStateMutex: Mutex = Mutex()
 
-    private val dataSourceFlow: Flow<SplashScreenUiState> = flow {
-        val currentSettings: ApplicationSettings? = settingsRepositoryApi.getSettings()
-
-        if (currentSettings != null) {
-            emit(SplashScreenUiState.Success)
-        } else {
-            settingsRepositoryApi.setSettings(ApplicationSettings.DEFAULT)
-            emit(SplashScreenUiState.SelectingThemeState(ApplicationSettings.DEFAULT.systemSettings.themeState))
-        }
-    }
-
     private val intentListener: MutableSharedFlow<SplashScreenIntent> = MutableSharedFlow()
 
-    private val intentFlow: Flow<SplashScreenUiState> = flow {
+    val uiState: StateFlow<SplashScreenUiState> = flow {
+        val currentSettings: ApplicationSettings? = settingsRepositoryApi.getSettings()
+
+        if (currentSettings == null) {
+            settingsRepositoryApi.setSettings(ApplicationSettings.DEFAULT)
+            emit(SplashScreenUiState.SelectingThemeState(ApplicationSettings.DEFAULT.systemSettings.themeState))
+        } else emit(SplashScreenUiState.Finish)
+
         intentListener.collect { intent ->
             when (intent) {
                 SplashScreenIntent.Skip -> {
                     currentUiStateMutex.withLock {
-                        currentUiState = SplashScreenUiState.Success
+                        currentUiState = SplashScreenUiState.Finish
                         emit(currentUiState)
                     }
                 }
 
                 SplashScreenIntent.Done -> {
                     currentUiStateMutex.withLock {
-                        currentUiState = SplashScreenUiState.Success
+                        currentUiState = SplashScreenUiState.Finish
                         emit(currentUiState)
                     }
                 }
@@ -68,14 +61,19 @@ internal class SplashScreenViewModel(
                 }
             }
         }
-    }
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(stopTimeoutMillis = 5_000),
+        initialValue = currentUiState,
+    )
 
-    internal val uiState: StateFlow<SplashScreenUiState> =
-        merge(dataSourceFlow, intentFlow).flowOn(Dispatchers.IO).stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(stopTimeoutMillis = 5_000),
-            initialValue = currentUiState,
-        )
+//    internal val uiState: StateFlow<SplashScreenUiState> =
+//        merge(dataSourceFlow, intentFlow).flowOn(Dispatchers.IO)
+//            .stateIn(
+//            scope = viewModelScope,
+//            started = SharingStarted.WhileSubscribed(stopTimeoutMillis = 5_000),
+//            initialValue = currentUiState,
+//        )
 
     internal fun setIntent(intent: SplashScreenIntent) {
         viewModelScope.launch { intentListener.emit(intent) }

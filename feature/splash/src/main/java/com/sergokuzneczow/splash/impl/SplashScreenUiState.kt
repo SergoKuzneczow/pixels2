@@ -6,7 +6,7 @@ internal sealed interface SplashScreenUiState {
 
     data object Loading : SplashScreenUiState
 
-    data object Success : SplashScreenUiState
+    data object Finish : SplashScreenUiState
 
     data class SelectingThemeState(val themeState: ApplicationSettings.SystemSettings.ThemeState) : SplashScreenUiState
 }
