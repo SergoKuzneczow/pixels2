@@ -32,8 +32,8 @@ public class PixelsPager4<T>(
     private val sourceDataBlock: suspend (pageNumber: Int, pageSize: Int) -> Flow<List<T>>,
     private val getActualDataBlock: suspend (pageNumber: Int, pageSize: Int) -> List<T>?,
     private val setActualDataBlock: suspend (pageNumber: Int, pageSize: Int, new: List<T>) -> Unit,
-    private val getFirstPageNumberBlock: suspend () -> Int,
-    private val getLastPageNumberBlock: suspend () -> Int,
+    private val getFirstPageNumberBlock: suspend (current: Int) -> Int,
+    private val getLastPageNumberBlock: suspend (current: Int) -> Int,
     private val pageSize: Int,
     private val startPage: Int,
     private val updateDuration: Long,
@@ -187,8 +187,8 @@ public class PixelsPager4<T>(
 //        log(tag = "PixelsPager4", level = Level.INFO) { "createSyncDataCoroutine(); pageNumber=$pageNumber" }
         syncDataCoroutines[pageNumber] = coroutineScope.launch(syncDataExceptionHandler(pageNumber) + Dispatchers.IO) {
             if (refreshStrategy == RefreshStrategy.INSTANTLY) {
-                runCatching { firstPage = getFirstPageNumberBlock.invoke() }
-                runCatching { lastPage = getLastPageNumberBlock.invoke() }
+                runCatching { firstPage = getFirstPageNumberBlock.invoke(firstPage) }
+                runCatching { lastPage = getLastPageNumberBlock.invoke(lastPage) }
 
                 if (firstPage <= pageNumber && pageNumber <= lastPage) {
                     val new: List<T>? = getActualDataBlock.invoke(pageNumber, pageSize)

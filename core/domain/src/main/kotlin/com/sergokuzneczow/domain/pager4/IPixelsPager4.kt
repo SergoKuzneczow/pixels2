@@ -66,8 +66,8 @@ public interface IPixelsPager4<T> {
         private var loadStrategy: LoadStrategy = LoadStrategy.SEQUENTIALLY
         private var placeholdersStrategy: PlaceholdersStrategy = PlaceholdersStrategy.WITH
         private var refreshStrategy: RefreshStrategy = RefreshStrategy.INSTANTLY
-        private var getFirstPageNumberBlock: suspend () -> Int = { FIRST_PAGE }
-        private var getLastPageNumberBlock: suspend () -> Int = { LAST_PAGE }
+        private var getFirstPageNumberBlock: suspend (current: Int) -> Int = { FIRST_PAGE }
+        private var getLastPageNumberBlock: suspend (current: Int) -> Int = { LAST_PAGE }
         private var pageDownloadStartedCallback: (pageNumber: Int) -> Unit = {}
         private var pageSyncCompletedCallback: (pageNumber: Int, firstPage: Int, lastPage: Int, isEmpty: Boolean) -> Unit = { _, _, _, _ -> }
         private var sourceDataExceptionsCallback: (pageNumber: Int, throwable: Throwable) -> Unit = { _, _ -> }
@@ -139,12 +139,12 @@ public interface IPixelsPager4<T> {
             return this
         }
 
-        public fun setRequestFirstPageNumber(callback: suspend () -> Int): Builder<T> {
+        public fun setRequestFirstPageNumber(callback: suspend (current: Int) -> Int): Builder<T> {
             getFirstPageNumberBlock = callback
             return this
         }
 
-        public fun setRequestLastPageNumber(callback: suspend () -> Int): Builder<T> {
+        public fun setRequestLastPageNumber(callback: suspend (current: Int) -> Int): Builder<T> {
             getLastPageNumberBlock = callback
             return this
         }
