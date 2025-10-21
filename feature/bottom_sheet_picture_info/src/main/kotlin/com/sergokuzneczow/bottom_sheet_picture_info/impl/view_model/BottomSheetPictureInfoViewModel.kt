@@ -4,14 +4,17 @@ import android.graphics.Bitmap
 import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.sergokuzneczow.bottom_sheet_picture_info.PictureInformationIntent
+import com.sergokuzneczow.bottom_sheet_picture_info.PictureInformationIntent.FailedSavePicture
+import com.sergokuzneczow.bottom_sheet_picture_info.PictureInformationIntent.SavingPicture
+import com.sergokuzneczow.bottom_sheet_picture_info.PictureInformationIntent.SuccessSavePicture
 import com.sergokuzneczow.bottom_sheet_picture_info.impl.ColorsListUiState
 import com.sergokuzneczow.bottom_sheet_picture_info.impl.LikeThisButtonUiState
-import com.sergokuzneczow.bottom_sheet_picture_info.impl.PictureInformationIntent
-import com.sergokuzneczow.bottom_sheet_picture_info.impl.PictureInformationIntent.FailedSavePicture
-import com.sergokuzneczow.bottom_sheet_picture_info.impl.PictureInformationIntent.SavingPicture
-import com.sergokuzneczow.bottom_sheet_picture_info.impl.PictureInformationIntent.SuccessSavePicture
 import com.sergokuzneczow.bottom_sheet_picture_info.impl.PictureInformationUiState
-import com.sergokuzneczow.bottom_sheet_picture_info.impl.SavePictureButtonUiState.*
+import com.sergokuzneczow.bottom_sheet_picture_info.impl.PictureInformationUiState.Success
+import com.sergokuzneczow.bottom_sheet_picture_info.impl.SavePictureButtonUiState.Loading
+import com.sergokuzneczow.bottom_sheet_picture_info.impl.SavePictureButtonUiState.Prepared
+import com.sergokuzneczow.bottom_sheet_picture_info.impl.SavePictureButtonUiState.Saved
 import com.sergokuzneczow.bottom_sheet_picture_info.impl.TagsListUiState
 import com.sergokuzneczow.domain.get_first_page_key_use_case.GetFirstPageKeyUseCase
 import com.sergokuzneczow.domain.get_picture_with_relations_2_use_case.GetPictureWithRelations2UseCase
@@ -55,7 +58,7 @@ internal class BottomSheetPictureInfoViewModel(
                     result.onSuccess {
                         currentUiState = when (it.state) {
                             CACHED -> {
-                                PictureInformationUiState.Success(
+                                Success(
                                     savePictureButtonUiState = Prepared(it.data.picture.path),
                                     likeThisButtonUiState = LikeThisButtonUiState.Success(it.data.picture.key),
                                     tagsListUiState = if (it.data.tags.isNotEmpty()) TagsListUiState.Success(it.data.tags) else TagsListUiState.Loading,
@@ -64,7 +67,7 @@ internal class BottomSheetPictureInfoViewModel(
                             }
 
                             UPDATED -> {
-                                PictureInformationUiState.Success(
+                                Success(
                                     savePictureButtonUiState = Prepared(it.data.picture.path),
                                     likeThisButtonUiState = LikeThisButtonUiState.Success(it.data.picture.key),
                                     tagsListUiState = if (it.data.tags.isNotEmpty()) TagsListUiState.Success(it.data.tags) else TagsListUiState.Empty,
@@ -84,22 +87,20 @@ internal class BottomSheetPictureInfoViewModel(
             currentUiStateMutex.withLock {
                 currentUiState = when (intent) {
                     is SavingPicture -> {
-                        if (currentUiState is PictureInformationUiState.Success) {
+                        if (currentUiState is Success) {
                             savePicture(intent.picturePath)
-                            (currentUiState as PictureInformationUiState.Success).copy(savePictureButtonUiState = Loading(intent.picturePath))
+                            (currentUiState as Success).copy(savePictureButtonUiState = Loading(intent.picturePath))
                         } else currentUiState
                     }
 
                     is FailedSavePicture -> {
-                        if (currentUiState is PictureInformationUiState.Success) {
-                            (currentUiState as PictureInformationUiState.Success).copy(savePictureButtonUiState = Prepared(intent.picturePath))
-                        } else currentUiState
+                        if (currentUiState is Success) (currentUiState as Success).copy(savePictureButtonUiState = Prepared(intent.picturePath))
+                        else currentUiState
                     }
 
                     is SuccessSavePicture -> {
-                        if (currentUiState is PictureInformationUiState.Success) {
-                            (currentUiState as PictureInformationUiState.Success).copy(savePictureButtonUiState = Saved(intent.picturePath, intent.uri))
-                        } else currentUiState
+                        if (currentUiState is Success) (currentUiState as Success).copy(savePictureButtonUiState = Saved(intent.picturePath, intent.uri))
+                        else currentUiState
                     }
 
                     is PictureInformationIntent.SearchPageKey -> {

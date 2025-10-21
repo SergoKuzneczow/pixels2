@@ -44,10 +44,3 @@ internal sealed interface ColorsListUiState {
     data object Empty : ColorsListUiState
     data class Success(val colors: List<Color>) : ColorsListUiState
 }
-
-internal sealed interface PictureInformationIntent {
-    data class SavingPicture(val picturePath: String) : PictureInformationIntent
-    data class FailedSavePicture(val picturePath: String) : PictureInformationIntent
-    data class SuccessSavePicture(val picturePath: String, val uri: String) : PictureInformationIntent
-    data class SearchPageKey(val pageQuery: PageQuery, val pageFilter: PageFilter, val completedBlock: (pageKey: Long) -> Unit) : PictureInformationIntent
-}

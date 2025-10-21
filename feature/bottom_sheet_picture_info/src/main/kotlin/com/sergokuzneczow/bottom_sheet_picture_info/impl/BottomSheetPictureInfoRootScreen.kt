@@ -5,6 +5,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.sergokuzneczow.bottom_sheet_picture_info.PictureInformationIntent
 import com.sergokuzneczow.bottom_sheet_picture_info.impl.ui.BottomSheetPictureInfoScreen
 import com.sergokuzneczow.bottom_sheet_picture_info.impl.view_model.BottomSheetPictureInfoViewModel
 import com.sergokuzneczow.bottom_sheet_picture_info.impl.view_model.BottomSheetPictureInfoViewModelFactory
@@ -25,7 +26,9 @@ internal fun BottomSheetPictureInfoRootScreen(
 
     BottomSheetPictureInfoScreen(
         pictureInfoUiState = pictureInfoUiState,
-        savePicture = { picturePath: String -> vm.setIntent(PictureInformationIntent.SavingPicture(picturePath)) },
+        savePicture = { picturePath: String ->
+            vm.setIntent(PictureInformationIntent.SavingPicture(picturePath))
+        },
         searchLikeThisPicture = { pictureKey ->
             vm.setIntent(
                 PictureInformationIntent.SearchPageKey(
