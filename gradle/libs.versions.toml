@@ -45,6 +45,7 @@ mockitoCore = "5.20.0"
 mockitoKotlin = "6.1.0"
 truth = "1.4.5"
 turbine = "1.2.1"
+materialVersion = "1.10.0"
 
 [libraries]
 #Android
@@ -99,6 +100,7 @@ mockito-core = { module = "org.mockito:mockito-core", version.ref = "mockitoCore
 mockito-kotlin = { module = "org.mockito.kotlin:mockito-kotlin", version.ref = "mockitoKotlin" }
 truth = { module = "com.google.truth:truth", version.ref = "truth" }
 turbine = { module = "app.cash.turbine:turbine", version.ref = "turbine" }
+material = { group = "com.google.android.material", name = "material", version.ref = "materialVersion" }
 
 [plugins]
 #Android
