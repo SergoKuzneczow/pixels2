@@ -12,6 +12,7 @@ import com.sergokuzneczow.domain.get_picture_with_relations_2_use_case.GetPictur
 import com.sergokuzneczow.domain.get_suitable_pictures_screen_pager_use_case.GetSuitablePicturesScreenPager4UseCase
 import com.sergokuzneczow.home.impl.di.HomeFeatureDependencies
 import com.sergokuzneczow.pixels2.PixelsApplication
+import com.sergokuzneczow.pixels2.SavePictureServiceProvider
 import com.sergokuzneczow.pixels2.view_model.MainActivityViewModelFactory
 import com.sergokuzneczow.repository.api.ImageLoaderApi
 import com.sergokuzneczow.repository.api.PageRepositoryApi
@@ -53,6 +54,8 @@ internal interface PixelsComponent :
     override val settingsRepositoryApi: SettingsRepositoryApi
 
     fun inject(destination: MainActivityViewModelFactory)
+
+    fun inject(destination: SavePictureServiceProvider.ExampleService)
 
     @Component.Builder
     interface Builder {

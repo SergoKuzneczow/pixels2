@@ -3,6 +3,7 @@ package com.sergokuzneczow.pixels2.view_model
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.sergokuzneczow.models.ApplicationSettings
+import com.sergokuzneczow.pixels2.SavePictureServiceProvider
 import com.sergokuzneczow.repository.api.NetworkMonitorApi
 import com.sergokuzneczow.repository.api.SettingsRepositoryApi
 import kotlinx.coroutines.Dispatchers
@@ -15,6 +16,7 @@ import kotlinx.coroutines.flow.stateIn
 
 internal class MainActivityViewModel(
     private val networkMonitorApi: NetworkMonitorApi,
+    private val savePictureServiceProvider: SavePictureServiceProvider,
     settingsRepositoryApi: SettingsRepositoryApi,
 ) : ViewModel() {
 
@@ -30,4 +32,6 @@ internal class MainActivityViewModel(
         )
 
     internal fun getNetworkState(): Flow<Boolean> = networkMonitorApi.networkStateFlow()
+
+    internal fun getSavePictureServiceProvider(): SavePictureServiceProvider = savePictureServiceProvider
 }

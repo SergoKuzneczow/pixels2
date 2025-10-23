@@ -12,6 +12,7 @@ import com.sergokuzneczow.suitable_pictures.api.suitablePicturesScreenDestinatio
 
 internal fun NavGraphBuilder.pixelsGraph(
     onShowSnackbar: suspend (message: String, actionOrNull: String?) -> Unit,
+    onSavePictureService: (picturePath: String) -> Unit,
     popBackStack: () -> Unit,
     backMainMenu: () -> Unit,
     navigateToMainMenuDestination: (navOptions: NavOptions?) -> Unit,
@@ -46,6 +47,7 @@ internal fun NavGraphBuilder.pixelsGraph(
     )
     bottomSheetPictureInfoDestination(
         onShowSnackbar = onShowSnackbar,
+        onSavePictureService = onSavePictureService,
         navigateToSuitablePicturesDestination = navigateToSuitablePicturesDestination,
         popBackStack = popBackStack,
     )

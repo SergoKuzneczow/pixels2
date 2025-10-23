@@ -42,6 +42,7 @@ internal fun PixelsRoot(applicationState: PixelsState) {
                         duration = SnackbarDuration.Short,
                     )
                 },
+                onSavePictureService = applicationState.savePictureService,
                 modifier = Modifier.fillMaxSize()
             )
         }

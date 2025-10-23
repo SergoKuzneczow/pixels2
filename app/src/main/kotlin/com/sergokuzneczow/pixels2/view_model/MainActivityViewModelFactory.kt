@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.annotation.NonUiContext
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.sergokuzneczow.pixels2.SavePictureServiceProvider
 import com.sergokuzneczow.pixels2.di.applicationComponent
 import com.sergokuzneczow.repository.api.NetworkMonitorApi
 import com.sergokuzneczow.repository.api.SettingsRepositoryApi
@@ -13,6 +14,9 @@ internal class MainActivityViewModelFactory(@NonUiContext context: Context) : Vi
 
     @Inject
     lateinit var networkMonitorApi: NetworkMonitorApi
+
+    @Inject
+    lateinit var savePictureServiceProvider: SavePictureServiceProvider
 
     @Inject
     lateinit var settingsRepositoryApi: SettingsRepositoryApi
@@ -25,6 +29,7 @@ internal class MainActivityViewModelFactory(@NonUiContext context: Context) : Vi
         if (modelClass.isAssignableFrom(MainActivityViewModel::class.java)) {
             return MainActivityViewModel(
                 networkMonitorApi = networkMonitorApi,
+                savePictureServiceProvider = savePictureServiceProvider,
                 settingsRepositoryApi = settingsRepositoryApi,
             ) as T
         }

@@ -16,6 +16,7 @@ import com.sergokuzneczow.suitable_pictures.api.navigateToSuitablePicturesRoute
 internal fun PixelsNavHost(
     applicationState: PixelsState,
     onShowSnackbar: suspend (message: String, actionOrNull: String?) -> Unit,
+    onSavePictureService: (picturePath: String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     NavHost(
@@ -25,6 +26,7 @@ internal fun PixelsNavHost(
     ) {
         this.pixelsGraph(
             onShowSnackbar = onShowSnackbar,
+            onSavePictureService = onSavePictureService,
             popBackStack = { applicationState.navController.popBackStack() },
             backMainMenu = { applicationState.mainMenuDestination?.let { applicationState.navController.popBackStack(route = it.route!!, inclusive = false, saveState = true) } },
             navigateToMainMenuDestination = { navOptions: NavOptions? -> applicationState.navController.navigateToMainMenuDestination(navOptions) },
