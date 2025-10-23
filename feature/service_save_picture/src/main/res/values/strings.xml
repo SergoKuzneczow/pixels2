@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="title_saving_picture">Saving picture...</string>
+    <string name="title_picture_saved">Picture saved</string>
+    <string name="body_picture_saved">Picture saved</string>
+</resources>
