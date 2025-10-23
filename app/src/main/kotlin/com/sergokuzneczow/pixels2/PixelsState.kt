@@ -25,6 +25,7 @@ import kotlin.reflect.KClass
 @Composable
 internal fun rememberPixelsState(
     networkMonitor: Flow<Boolean>,
+    applicationNotificationChanelId: String,
     saveService: (picturePath: String) -> Unit = {},
     coroutineScope: CoroutineScope = rememberCoroutineScope(),
     navController: NavHostController = rememberNavController(),
@@ -39,6 +40,7 @@ internal fun rememberPixelsState(
             coroutineScope = coroutineScope,
             networkMonitor = networkMonitor,
             savePictureService = saveService,
+            applicationNotificationChanelId = applicationNotificationChanelId,
         )
     }
 }
@@ -46,9 +48,10 @@ internal fun rememberPixelsState(
 @Stable
 internal class PixelsState(
     val navController: NavHostController,
-    coroutineScope: CoroutineScope,
-    networkMonitor: Flow<Boolean>,
+    val coroutineScope: CoroutineScope,
+    val networkMonitor: Flow<Boolean>,
     val savePictureService: (picturePath: String) -> Unit = {},
+    val applicationNotificationChanelId: String,
 ) {
 
     init {

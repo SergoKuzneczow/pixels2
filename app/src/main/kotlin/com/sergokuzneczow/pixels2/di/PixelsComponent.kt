@@ -12,7 +12,6 @@ import com.sergokuzneczow.domain.get_picture_with_relations_2_use_case.GetPictur
 import com.sergokuzneczow.domain.get_suitable_pictures_screen_pager_use_case.GetSuitablePicturesScreenPager4UseCase
 import com.sergokuzneczow.home.impl.di.HomeFeatureDependencies
 import com.sergokuzneczow.pixels2.PixelsApplication
-import com.sergokuzneczow.pixels2.SavePictureServiceProvider
 import com.sergokuzneczow.pixels2.view_model.MainActivityViewModelFactory
 import com.sergokuzneczow.repository.api.ImageLoaderApi
 import com.sergokuzneczow.repository.api.PageRepositoryApi
@@ -20,6 +19,7 @@ import com.sergokuzneczow.repository.api.SettingsRepositoryApi
 import com.sergokuzneczow.repository.api.StorageRepositoryApi
 import com.sergokuzneczow.search_suitable_pictures.impl.di.SearchSuitablePicturesDependencies
 import com.sergokuzneczow.selected_picture.impl.di.SelectedPictureFeatureDependencies
+import com.sergokuzneczow.service_save_picture.impl.di.ServiceSavePictureFeatureDependencies
 import com.sergokuzneczow.settings.impl.di.SettingsFeatureDependencies
 import com.sergokuzneczow.splash.impl.di.SplashFeatureDependencies
 import com.sergokuzneczow.suitable_pictures.impl.di.SuitablePicturesFeatureDependencies
@@ -42,7 +42,9 @@ internal interface PixelsComponent :
     SearchSuitablePicturesDependencies,
     SelectedPictureFeatureDependencies,
     BottomSheetPictureInformationFeatureDependencies,
-    SplashFeatureDependencies {
+    SplashFeatureDependencies,
+    ServiceSavePictureFeatureDependencies
+{
     override val imageLoaderApi: ImageLoaderApi
     override val storageRepositoryApi: StorageRepositoryApi
     override val getSuitablePicturesScreenPager4UseCase: GetSuitablePicturesScreenPager4UseCase
@@ -54,8 +56,6 @@ internal interface PixelsComponent :
     override val settingsRepositoryApi: SettingsRepositoryApi
 
     fun inject(destination: MainActivityViewModelFactory)
-
-    fun inject(destination: SavePictureServiceProvider.ExampleService)
 
     @Component.Builder
     interface Builder {

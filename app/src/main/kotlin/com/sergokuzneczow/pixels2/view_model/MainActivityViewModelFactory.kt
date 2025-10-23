@@ -4,10 +4,10 @@ import android.content.Context
 import androidx.annotation.NonUiContext
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.sergokuzneczow.pixels2.SavePictureServiceProvider
 import com.sergokuzneczow.pixels2.di.applicationComponent
 import com.sergokuzneczow.repository.api.NetworkMonitorApi
 import com.sergokuzneczow.repository.api.SettingsRepositoryApi
+import com.sergokuzneczow.service_save_picture.api.PictureSavingServiceProviderApi
 import javax.inject.Inject
 
 internal class MainActivityViewModelFactory(@NonUiContext context: Context) : ViewModelProvider.Factory {
@@ -16,7 +16,7 @@ internal class MainActivityViewModelFactory(@NonUiContext context: Context) : Vi
     lateinit var networkMonitorApi: NetworkMonitorApi
 
     @Inject
-    lateinit var savePictureServiceProvider: SavePictureServiceProvider
+    lateinit var savePictureServiceProvider: PictureSavingServiceProviderApi
 
     @Inject
     lateinit var settingsRepositoryApi: SettingsRepositoryApi

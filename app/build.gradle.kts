@@ -60,6 +60,7 @@ dependencies {
     implementation(project(":feature:search_suitable_pictures"))
     implementation(project(":feature:selected_picture"))
     implementation(project(":feature:bottom_sheet_picture_info"))
+    implementation(project(":feature:service_save_picture"))
     // Android compose
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.foundation.layout)
