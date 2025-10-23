@@ -17,14 +17,16 @@ public fun NavHostController.navigateToBottomSheetPictureInfoDestination(picture
 
 public fun NavGraphBuilder.bottomSheetPictureInfoDestination(
     onShowSnackbar: suspend (message: String, actionOrNull: String?) -> Unit,
-    navigateToSuitablePicturesDestination: (pageKey: Long) -> Unit,
+    onSavePictureService: (picturePath: String) -> Unit,
     popBackStack: () -> Unit,
+    navigateToSuitablePicturesDestination: (pageKey: Long) -> Unit,
 ) {
     dialog<BottomSheetPictureInfoRoute> { backStackEntry ->
         val data: BottomSheetPictureInfoRoute = backStackEntry.toRoute()
         BottomSheetPictureInfoRootScreen(
             pictureKey = data.pictureKey,
             onShowSnackbar = onShowSnackbar,
+            onSavePictureService=onSavePictureService,
             navigateToSuitablePicturesDestination = navigateToSuitablePicturesDestination,
             popBackStack = popBackStack,
         )

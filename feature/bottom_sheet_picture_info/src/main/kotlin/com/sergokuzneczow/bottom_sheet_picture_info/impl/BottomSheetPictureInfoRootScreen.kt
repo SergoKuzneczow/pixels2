@@ -18,6 +18,7 @@ import com.sergokuzneczow.models.Tag
 internal fun BottomSheetPictureInfoRootScreen(
     pictureKey: String,
     onShowSnackbar: suspend (message: String, actionOrNull: String?) -> Unit,
+    onSavePictureService: (picturePath: String) -> Unit,
     navigateToSuitablePicturesDestination: (pageKey: Long) -> Unit,
     popBackStack: () -> Unit
 ) {
@@ -27,7 +28,8 @@ internal fun BottomSheetPictureInfoRootScreen(
     BottomSheetPictureInfoScreen(
         pictureInfoUiState = pictureInfoUiState,
         savePicture = { picturePath: String ->
-            vm.setIntent(PictureInformationIntent.SavingPicture(picturePath))
+//            vm.setIntent(PictureInformationIntent.SavingPicture(picturePath))
+            onSavePictureService.invoke(picturePath)
         },
         searchLikeThisPicture = { pictureKey ->
             vm.setIntent(
