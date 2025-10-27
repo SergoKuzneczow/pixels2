@@ -1,5 +1,7 @@
 package com.sergokuzneczow.pixels2.ui
 
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavOptions
@@ -16,7 +18,8 @@ import com.sergokuzneczow.suitable_pictures.api.navigateToSuitablePicturesRoute
 internal fun PixelsNavHost(
     applicationState: PixelsState,
     onShowSnackbar: suspend (message: String, actionOrNull: String?) -> Unit,
-    onSavePictureService: (picturePath: String) -> Unit,
+    onShowNotification: (chanelId: String, intent: Intent, title: String, message: String) -> Unit,
+    onSavePicture: (String, (Result<Uri>) -> Unit) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     NavHost(
@@ -26,7 +29,8 @@ internal fun PixelsNavHost(
     ) {
         this.pixelsGraph(
             onShowSnackbar = onShowSnackbar,
-            onSavePictureService = onSavePictureService,
+            onShowNotification = onShowNotification,
+            onSavePicture = onSavePicture,
             popBackStack = { applicationState.navController.popBackStack() },
             backMainMenu = { applicationState.mainMenuDestination?.let { applicationState.navController.popBackStack(route = it.route!!, inclusive = false, saveState = true) } },
             navigateToMainMenuDestination = { navOptions: NavOptions? -> applicationState.navController.navigateToMainMenuDestination(navOptions) },

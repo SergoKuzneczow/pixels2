@@ -1,5 +1,7 @@
 package com.sergokuzneczow.pixels2.navigation
 
+import android.content.Intent
+import android.net.Uri
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import com.sergokuzneczow.bottom_sheet_page_filter.api.bottomSheetPageFilterScreenDestination
@@ -12,7 +14,8 @@ import com.sergokuzneczow.suitable_pictures.api.suitablePicturesScreenDestinatio
 
 internal fun NavGraphBuilder.pixelsGraph(
     onShowSnackbar: suspend (message: String, actionOrNull: String?) -> Unit,
-    onSavePictureService: (picturePath: String) -> Unit,
+    onShowNotification: (chanelId: String, intent: Intent, title: String, message: String) -> Unit,
+    onSavePicture: (String, (Result<Uri>) -> Unit) -> Unit,
     popBackStack: () -> Unit,
     backMainMenu: () -> Unit,
     navigateToMainMenuDestination: (navOptions: NavOptions?) -> Unit,
@@ -47,7 +50,8 @@ internal fun NavGraphBuilder.pixelsGraph(
     )
     bottomSheetPictureInfoDestination(
         onShowSnackbar = onShowSnackbar,
-        onSavePictureService = onSavePictureService,
+        onShowNotification = onShowNotification,
+        onSavePicture = onSavePicture,
         navigateToSuitablePicturesDestination = navigateToSuitablePicturesDestination,
         popBackStack = popBackStack,
     )

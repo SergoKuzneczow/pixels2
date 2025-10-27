@@ -2,6 +2,7 @@ package com.sergokuzneczow.pixels2
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
+import androidx.compose.runtime.State
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.navigation.NavController
@@ -15,18 +16,14 @@ import com.sergokuzneczow.main_menu.api.MainMenuRoute
 import com.sergokuzneczow.splash.api.SplashScreenRoute
 import com.sergokuzneczow.utilities.logger.log
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.stateIn
 import kotlin.reflect.KClass
 
 @Composable
 internal fun rememberPixelsState(
-    networkMonitor: Flow<Boolean>,
     applicationNotificationChanelId: String,
-    saveService: (picturePath: String) -> Unit = {},
+    darkThemeMonitor: State<Boolean?>,
+    networkMonitor: State<Boolean>,
+    toastMonitor: State<String?>,
     coroutineScope: CoroutineScope = rememberCoroutineScope(),
     navController: NavHostController = rememberNavController(),
 ): PixelsState {
@@ -34,13 +31,17 @@ internal fun rememberPixelsState(
         navController,
         coroutineScope,
         networkMonitor,
+        toastMonitor,
+        applicationNotificationChanelId,
+        darkThemeMonitor,
     ) {
         PixelsState(
             navController = navController,
             coroutineScope = coroutineScope,
-            networkMonitor = networkMonitor,
-            savePictureService = saveService,
             applicationNotificationChanelId = applicationNotificationChanelId,
+            darkThemeMonitor = darkThemeMonitor,
+            networkMonitor = networkMonitor,
+            toastMonitor = toastMonitor,
         )
     }
 }
@@ -49,9 +50,10 @@ internal fun rememberPixelsState(
 internal class PixelsState(
     val navController: NavHostController,
     val coroutineScope: CoroutineScope,
-    val networkMonitor: Flow<Boolean>,
-    val savePictureService: (picturePath: String) -> Unit = {},
     val applicationNotificationChanelId: String,
+    darkThemeMonitor: State<Boolean?>,
+    networkMonitor: State<Boolean>,
+    toastMonitor: State<String?>,
 ) {
 
     init {
@@ -70,10 +72,9 @@ internal class PixelsState(
 
     val startDestination: KClass<*> = SplashScreenRoute::class
 
-    val isOffline: StateFlow<Boolean> = networkMonitor.map(Boolean::not)
-        .stateIn(
-            scope = coroutineScope,
-            started = SharingStarted.WhileSubscribed(5_000),
-            initialValue = false,
-        )
+    val isOnline: State<Boolean> = networkMonitor
+
+    val isDark: State<Boolean?> = darkThemeMonitor
+
+    val toast: State<String?> = toastMonitor
 }
