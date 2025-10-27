@@ -20,8 +20,6 @@ import com.sergokuzneczow.repository.impl.SettingsRepositoryImpl
 import com.sergokuzneczow.repository.impl.StorageRepositoryImpl
 import com.sergokuzneczow.repository.impl.TagRepositoryImpl
 import com.sergokuzneczow.repository.impl.picture_repository_impl.PictureRepositoryImpl
-import com.sergokuzneczow.service_save_picture.api.PictureSavingServiceProviderApi
-import com.sergokuzneczow.service_save_picture.impl.PictureSavingServiceProviderImpl
 import dagger.Binds
 import dagger.Module
 
@@ -57,7 +55,4 @@ internal interface CoreBinds {
 
     @Binds
     fun toSettingsRepositoryApi(i: SettingsRepositoryImpl): SettingsRepositoryApi
-
-    @Binds
-    fun toSavePictureServiceProviderApi(i: PictureSavingServiceProviderImpl): PictureSavingServiceProviderApi
 }
