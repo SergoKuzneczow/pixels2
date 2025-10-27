@@ -19,8 +19,8 @@ import com.sergokuzneczow.models.Tag
 @Composable
 internal fun BottomSheetPictureInfoScreen(
     pictureInfoUiState: PictureInformationUiState,
-    savePicture: (picturePath: String) -> Unit,
-    searchLikeThisPicture: (pictureKey: String) -> Unit,
+    onSavePictureClick: (picturePath: String) -> Unit,
+    onLikeThisPictureClick: (pictureKey: String) -> Unit,
     onTagChipClick: (tag: Tag) -> Unit,
     onColorChipClick: (color: Color) -> Unit,
     popBackStack: () -> Unit,
@@ -28,11 +28,11 @@ internal fun BottomSheetPictureInfoScreen(
     Box(modifier = Modifier.fillMaxSize()) {
         PictureInformationBottomSheet(
             pictureInfoUiState = pictureInfoUiState,
-            onTagChipClick = { tag: Tag -> onTagChipClick.invoke(tag) },
-            onColorChipClick = { color: Color -> onColorChipClick.invoke(color) },
-            onSavePictureClick = { picturePath: String -> savePicture.invoke(picturePath) },
-            onLikeThisPictureButtonClick = { pictureKey: String -> searchLikeThisPicture.invoke(pictureKey) },
-            whenDismissRequest = { popBackStack.invoke() },
+            onTagChipClick = onTagChipClick,
+            onColorChipClick = onColorChipClick,
+            onSavePictureClick = onSavePictureClick,
+            onLikeThisPictureClick = onLikeThisPictureClick,
+            onDismissRequest = { popBackStack.invoke() },
         )
     }
 }
@@ -45,8 +45,8 @@ private fun BottomSheetPictureInfoScreenLoadingPreview() {
             pictureInfoUiState = PictureInformationUiState.Loading,
             onTagChipClick = {},
             onColorChipClick = {},
-            savePicture = {},
-            searchLikeThisPicture = {},
+            onSavePictureClick = {},
+            onLikeThisPictureClick = {},
             popBackStack = {},
         )
     }
@@ -84,8 +84,8 @@ private fun BottomSheetPictureInfoScreenSuccessPreview() {
             ),
             onTagChipClick = {},
             onColorChipClick = {},
-            savePicture = {},
-            searchLikeThisPicture = {},
+            onSavePictureClick = {},
+            onLikeThisPictureClick = {},
             popBackStack = {},
         )
     }

@@ -1,5 +1,7 @@
 package com.sergokuzneczow.bottom_sheet_picture_info.api
 
+import android.content.Intent
+import android.net.Uri
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.NavOptions
@@ -17,7 +19,8 @@ public fun NavHostController.navigateToBottomSheetPictureInfoDestination(picture
 
 public fun NavGraphBuilder.bottomSheetPictureInfoDestination(
     onShowSnackbar: suspend (message: String, actionOrNull: String?) -> Unit,
-    onSavePictureService: (picturePath: String) -> Unit,
+    onShowNotification: (chanelId: String, intent: Intent, title: String, message: String) -> Unit,
+    onSavePicture: (String, (Result<Uri>) -> Unit) -> Unit,
     popBackStack: () -> Unit,
     navigateToSuitablePicturesDestination: (pageKey: Long) -> Unit,
 ) {
@@ -26,7 +29,8 @@ public fun NavGraphBuilder.bottomSheetPictureInfoDestination(
         BottomSheetPictureInfoRootScreen(
             pictureKey = data.pictureKey,
             onShowSnackbar = onShowSnackbar,
-            onSavePictureService=onSavePictureService,
+            onShowNotification = onShowNotification,
+            onSavePicture = onSavePicture,
             navigateToSuitablePicturesDestination = navigateToSuitablePicturesDestination,
             popBackStack = popBackStack,
         )

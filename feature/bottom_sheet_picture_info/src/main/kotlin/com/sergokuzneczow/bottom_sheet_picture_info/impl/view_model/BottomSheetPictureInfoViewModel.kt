@@ -1,15 +1,13 @@
 package com.sergokuzneczow.bottom_sheet_picture_info.impl.view_model
 
-import android.graphics.Bitmap
-import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.sergokuzneczow.bottom_sheet_picture_info.PictureInformationIntent
-import com.sergokuzneczow.bottom_sheet_picture_info.PictureInformationIntent.FailedSavePicture
-import com.sergokuzneczow.bottom_sheet_picture_info.PictureInformationIntent.SavingPicture
-import com.sergokuzneczow.bottom_sheet_picture_info.PictureInformationIntent.SuccessSavePicture
 import com.sergokuzneczow.bottom_sheet_picture_info.impl.ColorsListUiState
 import com.sergokuzneczow.bottom_sheet_picture_info.impl.LikeThisButtonUiState
+import com.sergokuzneczow.bottom_sheet_picture_info.impl.PictureInformationIntent
+import com.sergokuzneczow.bottom_sheet_picture_info.impl.PictureInformationIntent.FailedSavePicture
+import com.sergokuzneczow.bottom_sheet_picture_info.impl.PictureInformationIntent.SavingPicture
+import com.sergokuzneczow.bottom_sheet_picture_info.impl.PictureInformationIntent.SuccessSavePicture
 import com.sergokuzneczow.bottom_sheet_picture_info.impl.PictureInformationUiState
 import com.sergokuzneczow.bottom_sheet_picture_info.impl.PictureInformationUiState.Success
 import com.sergokuzneczow.bottom_sheet_picture_info.impl.SavePictureButtonUiState.Loading
@@ -25,7 +23,6 @@ import com.sergokuzneczow.models.PageQuery
 import com.sergokuzneczow.repository.api.ImageLoaderApi
 import com.sergokuzneczow.repository.api.StorageRepositoryApi
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -87,10 +84,8 @@ internal class BottomSheetPictureInfoViewModel(
             currentUiStateMutex.withLock {
                 currentUiState = when (intent) {
                     is SavingPicture -> {
-                        if (currentUiState is Success) {
-                            savePicture(intent.picturePath)
-                            (currentUiState as Success).copy(savePictureButtonUiState = Loading(intent.picturePath))
-                        } else currentUiState
+                        if (currentUiState is Success) (currentUiState as Success).copy(savePictureButtonUiState = Loading(intent.picturePath))
+                        else currentUiState
                     }
 
                     is FailedSavePicture -> {
@@ -131,26 +126,6 @@ internal class BottomSheetPictureInfoViewModel(
         viewModelScope.launch {
             val pageKey: Long? = getFirstPageKeyUseCase.execute(pageQuery = pageQuery, pageFilter = pageFilter)
             pageKey?.let { pageKey -> completedBlock.invoke(pageKey) }
-        }
-    }
-
-    private fun savePicture(picturePath: String) {
-        viewModelScope.launch(Dispatchers.IO) {
-            val loadResult: Result<Bitmap> = imageLoaderApi.loadBitmapAwait(picturePath)
-            if (loadResult.isFailure) {
-                setIntent(FailedSavePicture(picturePath))
-                cancel()
-            } else {
-                val bitmap: Bitmap = loadResult.getOrThrow()
-                val saveResult: Result<Uri> = storageRepositoryApi.savePictureAwait(bitmap)
-                if (saveResult.isFailure) {
-                    setIntent(FailedSavePicture(picturePath))
-                    cancel()
-                } else {
-                    val uri: Uri = saveResult.getOrThrow()
-                    setIntent(SuccessSavePicture(picturePath, uri.path.toString()))
-                }
-            }
         }
     }
 }

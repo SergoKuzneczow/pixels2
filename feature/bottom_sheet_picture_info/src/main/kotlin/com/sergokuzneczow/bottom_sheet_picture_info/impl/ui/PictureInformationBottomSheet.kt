@@ -54,8 +54,8 @@ internal fun PictureInformationBottomSheet(
     onTagChipClick: (tag: Tag) -> Unit,
     onColorChipClick: (color: com.sergokuzneczow.models.Color) -> Unit,
     onSavePictureClick: (picturePath: String) -> Unit,
-    onLikeThisPictureButtonClick: (pictureKey: String) -> Unit,
-    whenDismissRequest: () -> Unit,
+    onLikeThisPictureClick: (pictureKey: String) -> Unit,
+    onDismissRequest: () -> Unit,
     coroutineScope: CoroutineScope = rememberCoroutineScope(),
     bottomSheetState: SheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
 ) {
@@ -63,7 +63,7 @@ internal fun PictureInformationBottomSheet(
         onDismissRequest = {
             coroutineScope.launch {
                 bottomSheetState.hide()
-                whenDismissRequest.invoke()
+                onDismissRequest.invoke()
             }
         },
         sheetState = bottomSheetState,
@@ -95,7 +95,7 @@ internal fun PictureInformationBottomSheet(
                             savePictureButtonUiState = pictureInfoUiState.savePictureButtonUiState,
                             likeThisButtonUiState = pictureInfoUiState.likeThisButtonUiState,
                             onSavePictureClick = onSavePictureClick,
-                            onLikeThisPictureClick = onLikeThisPictureButtonClick,
+                            onLikeThisPictureClick = onLikeThisPictureClick,
                         )
                         Spacer(modifier = Modifier.height(Dimensions.LargePadding))
                     }
@@ -221,7 +221,7 @@ private fun PictureInformation(
 @Composable
 private fun RowScope.SavePictureButton(
     savePictureButtonUiState: SavePictureButtonUiState,
-    onSavePictureClick: (String) -> Unit
+    onSavePictureClick: (String) -> Unit,
 ) {
     log(tag = "SavePictureButton") { "savePictureButtonUiState=$savePictureButtonUiState" }
 
@@ -266,7 +266,7 @@ private fun RowScope.SavePictureButton(
 @Composable
 private fun RowScope.LikeThisPictureButton(
     likeThisButtonUiState: LikeThisButtonUiState,
-    onLikeThisPictureClick: (String) -> Unit
+    onLikeThisPictureClick: (String) -> Unit,
 ) {
     var isEnable: Boolean by rememberSaveable { mutableStateOf(false) }
 

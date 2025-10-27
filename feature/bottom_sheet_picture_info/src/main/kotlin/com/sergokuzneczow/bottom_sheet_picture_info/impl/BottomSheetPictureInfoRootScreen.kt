@@ -1,11 +1,12 @@
 package com.sergokuzneczow.bottom_sheet_picture_info.impl
 
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.sergokuzneczow.bottom_sheet_picture_info.PictureInformationIntent
 import com.sergokuzneczow.bottom_sheet_picture_info.impl.ui.BottomSheetPictureInfoScreen
 import com.sergokuzneczow.bottom_sheet_picture_info.impl.view_model.BottomSheetPictureInfoViewModel
 import com.sergokuzneczow.bottom_sheet_picture_info.impl.view_model.BottomSheetPictureInfoViewModelFactory
@@ -18,20 +19,32 @@ import com.sergokuzneczow.models.Tag
 internal fun BottomSheetPictureInfoRootScreen(
     pictureKey: String,
     onShowSnackbar: suspend (message: String, actionOrNull: String?) -> Unit,
-    onSavePictureService: (picturePath: String) -> Unit,
+    onShowNotification: (chanelId: String, intent: Intent, title: String, message: String) -> Unit,
+    onSavePicture: (String, (Result<Uri>) -> Unit) -> Unit,
     navigateToSuitablePicturesDestination: (pageKey: Long) -> Unit,
-    popBackStack: () -> Unit
+    popBackStack: () -> Unit,
 ) {
     val vm: BottomSheetPictureInfoViewModel = viewModel(factory = BottomSheetPictureInfoViewModelFactory(LocalContext.current, pictureKey))
     val pictureInfoUiState: PictureInformationUiState by vm.uiState.collectAsStateWithLifecycle()
 
     BottomSheetPictureInfoScreen(
         pictureInfoUiState = pictureInfoUiState,
-        savePicture = { picturePath: String ->
-//            vm.setIntent(PictureInformationIntent.SavingPicture(picturePath))
-            onSavePictureService.invoke(picturePath)
+        onSavePictureClick = { picturePath: String ->
+            vm.setIntent(PictureInformationIntent.SavingPicture(picturePath))
+            onSavePicture.invoke(picturePath, { result: Result<Uri> ->
+                result.onSuccess { uri ->
+                    vm.setIntent(PictureInformationIntent.SuccessSavePicture(picturePath, uri.toString()))
+                    val intent = Intent().apply {
+                        action = Intent.ACTION_VIEW
+                        setDataAndType(uri, "image/*")
+                    }
+                    onShowNotification.invoke("message_chanel_id", intent, "Picture saved", "${uri.path}")
+                }.onFailure {
+                    vm.setIntent(PictureInformationIntent.FailedSavePicture(picturePath))
+                }
+            })
         },
-        searchLikeThisPicture = { pictureKey ->
+        onLikeThisPictureClick = { pictureKey ->
             vm.setIntent(
                 PictureInformationIntent.SearchPageKey(
                     pageQuery = PageQuery.Like(pictureKey = pictureKey, description = pictureKey),
