@@ -1,37 +1,72 @@
 package com.sergokuzneczow.pixels2.view_model
 
+import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.sergokuzneczow.domain.picture_load_and_save_use_case.LoadAndSavePictureUseCase
 import com.sergokuzneczow.models.ApplicationSettings
 import com.sergokuzneczow.repository.api.NetworkMonitorApi
 import com.sergokuzneczow.repository.api.SettingsRepositoryApi
-import com.sergokuzneczow.service_save_picture.api.PictureSavingServiceProviderApi
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 
 internal class MainActivityViewModel(
-    private val networkMonitorApi: NetworkMonitorApi,
-    private val savePictureServiceProvider: PictureSavingServiceProviderApi,
+    networkMonitorApi: NetworkMonitorApi,
     settingsRepositoryApi: SettingsRepositoryApi,
+    private val loadAndSavePictureUseCase: LoadAndSavePictureUseCase,
 ) : ViewModel() {
 
-    internal val themeState: StateFlow<ApplicationSettings.SystemSettings.ThemeState> = settingsRepositoryApi.getSettingsAsFlow()
+    internal val themeState: StateFlow<Boolean?> = settingsRepositoryApi.getSettingsAsFlow()
         .map {
             it?.systemSettings?.themeState ?: ApplicationSettings.SystemSettings.ThemeState.SYSTEM
+        }.map {
+            when (it) {
+                ApplicationSettings.SystemSettings.ThemeState.LIGHT -> false
+                ApplicationSettings.SystemSettings.ThemeState.DARK -> true
+                ApplicationSettings.SystemSettings.ThemeState.SYSTEM -> null
+            }
         }.flowOn(
             context = Dispatchers.IO
         ).stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(stopTimeoutMillis = 5_000),
-            initialValue = ApplicationSettings.SystemSettings.ThemeState.SYSTEM,
+            initialValue = null,
         )
 
-    internal fun getNetworkState(): Flow<Boolean> = networkMonitorApi.networkStateFlow()
+    internal val networkState: StateFlow<Boolean> = networkMonitorApi.networkStateFlow()
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5_000),
+            initialValue = true,
+        )
 
-    internal fun getSavePictureServiceProvider(): PictureSavingServiceProviderApi = savePictureServiceProvider
+    private val toastListener: MutableSharedFlow<String> = MutableSharedFlow()
+
+    internal val toastState: StateFlow<String?> = flow {
+        toastListener.collect { emit(it) }
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5_000),
+        initialValue = null,
+    )
+
+    internal fun loadAndSavePicture(picturePath: String, block: (result: Result<Uri>) -> Unit) {
+        viewModelScope.launch(Dispatchers.IO) {
+            loadAndSavePictureUseCase.execute(
+                picturePath = picturePath,
+                result = { result: Result<Uri> -> block.invoke(result) },
+            )
+        }
+    }
+
+    internal fun setToast(message: String) {
+        viewModelScope.launch { toastListener.emit(message) }
+    }
 }
