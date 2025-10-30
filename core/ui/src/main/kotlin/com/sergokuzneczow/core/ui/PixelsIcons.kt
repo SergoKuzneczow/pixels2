@@ -13,11 +13,16 @@ import com.sergokuzneczow.core.ui.icons.Favorites
 import com.sergokuzneczow.core.ui.icons.Filter
 import com.sergokuzneczow.core.ui.icons.Home
 import com.sergokuzneczow.core.ui.icons.Information
-import com.sergokuzneczow.core.ui.icons.SuccessVariant
 import com.sergokuzneczow.core.ui.icons.New
+import com.sergokuzneczow.core.ui.icons.Pixels
+import com.sergokuzneczow.core.ui.icons.PixelsBlue
+import com.sergokuzneczow.core.ui.icons.PixelsGreen
+import com.sergokuzneczow.core.ui.icons.PixelsRed
+import com.sergokuzneczow.core.ui.icons.PixelsYellow
 import com.sergokuzneczow.core.ui.icons.Search
 import com.sergokuzneczow.core.ui.icons.Selector
 import com.sergokuzneczow.core.ui.icons.Settings
+import com.sergokuzneczow.core.ui.icons.SuccessVariant
 import com.sergokuzneczow.core.ui.icons.Top
 import com.sergokuzneczow.core.ui.icons.Views
 import com.sergokuzneczow.core.utilites.ThemePreviews
@@ -37,6 +42,11 @@ public object PixelsIcons {
     public val download: ImageVector = PixelsIcons.Download
     public val successVariant: ImageVector = PixelsIcons.SuccessVariant
     public val failureVariant: ImageVector = PixelsIcons.FailureVariant
+    public val pixels: ImageVector = PixelsIcons.Pixels
+    public val pixelsBlue: ImageVector = PixelsIcons.PixelsBlue
+    public val pixelsRed: ImageVector = PixelsIcons.PixelsRed
+    public val pixelsGreen: ImageVector = PixelsIcons.PixelsGreen
+    public val pixelsYellow: ImageVector = PixelsIcons.PixelsYellow
 }
 
 
