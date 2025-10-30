@@ -8,7 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import com.sergokuzneczow.core.system_components.PixelsCircularProgressIndicator
+import com.sergokuzneczow.core.system_components.progress_indicators.PixelsCircularProgressIndicator
 import com.sergokuzneczow.core.system_components.PixelsPrimaryFloatingActionButton
 import com.sergokuzneczow.core.system_components.PixelsTopBar
 import com.sergokuzneczow.core.ui.PixelsIcons

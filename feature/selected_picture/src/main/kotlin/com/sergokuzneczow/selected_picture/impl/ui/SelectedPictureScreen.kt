@@ -3,12 +3,8 @@ package com.sergokuzneczow.selected_picture.impl.ui
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import com.sergokuzneczow.core.system_components.PixelsCircularProgressIndicator
+import com.sergokuzneczow.core.system_components.progress_indicators.PixelsCircularProgressIndicator
 import com.sergokuzneczow.selected_picture.impl.SelectedPictureUiState
 
 @Composable

@@ -21,7 +21,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.sergokuzneczow.core.system_components.chip_segments.FilterSegmentColorsAccent
-import com.sergokuzneczow.core.system_components.PixelsCircularProgressIndicator
+import com.sergokuzneczow.core.system_components.progress_indicators.PixelsCircularProgressIndicator
 import com.sergokuzneczow.core.system_components.chip_segments.PixelsFilterSegment
 import com.sergokuzneczow.core.system_components.chip_segments.FilterSegmentChip
 import com.sergokuzneczow.core.system_components.chip_segments.FilterSegmentStrategy

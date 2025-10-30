@@ -1,4 +1,4 @@
-package com.sergokuzneczow.core.system_components
+package com.sergokuzneczow.core.system_components.progress_indicators
 
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.size

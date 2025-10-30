@@ -36,7 +36,7 @@ import com.sergokuzneczow.bottom_sheet_picture_info.impl.LikeThisButtonUiState
 import com.sergokuzneczow.bottom_sheet_picture_info.impl.PictureInformationUiState
 import com.sergokuzneczow.bottom_sheet_picture_info.impl.SavePictureButtonUiState
 import com.sergokuzneczow.bottom_sheet_picture_info.impl.TagsListUiState
-import com.sergokuzneczow.core.system_components.PixelsCircularProgressIndicator
+import com.sergokuzneczow.core.system_components.progress_indicators.PixelsCircularProgressIndicator
 import com.sergokuzneczow.core.system_components.buttons.PixelsSurfaceButton
 import com.sergokuzneczow.core.system_components.chip_segments.PixelsSuggestionFlowRow
 import com.sergokuzneczow.core.system_components.chip_segments.SuggestionChip
