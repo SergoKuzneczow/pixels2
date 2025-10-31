@@ -40,7 +40,7 @@ internal fun SuitablePicturesScreen(
                 }
             }
 
-            is SuitablePicturesUiState.Loading -> PixelsProgressIndicator(Dimensions.SmallProgressBarSize)
+            is SuitablePicturesUiState.Loading -> PixelsProgressIndicator()
 
             is SuitablePicturesUiState.Success -> {
                 SuitablePicturesList(
