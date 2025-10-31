@@ -23,7 +23,7 @@ public fun PixelsSuggestionFlowRow(
     suggestionChips: List<SuggestionChip>,
     modifier: Modifier = Modifier,
     onItemClick: (index: Int, suggestionChip: SuggestionChip) -> Unit = { _, _ -> },
-    colorAccentPredicate: (index: Int, suggestionChip: SuggestionChip) -> SuggestionChipColorsAccent = { _, _ -> SuggestionChipColorsAccent.Standard }
+    colorAccentPredicate: (index: Int, suggestionChip: SuggestionChip) -> SuggestionChipColorsAccent = { _, _ -> SuggestionChipColorsAccent.Standard },
 ) {
     FlowRow(
         maxItemsInEachRow = 8,
@@ -61,7 +61,7 @@ private fun colorsAccent(colorsAccent: SuggestionChipColorsAccent): ChipColors {
     return when (colorsAccent) {
         SuggestionChipColorsAccent.Standard -> {
             suggestionChipColors(
-                containerColor = MaterialTheme.colorScheme.surfaceContainer,
+                containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
                 labelColor = MaterialTheme.colorScheme.onSurface,
                 iconContentColor = MaterialTheme.colorScheme.onSurface,
             )
