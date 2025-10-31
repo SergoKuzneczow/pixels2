@@ -70,7 +70,7 @@ private fun colorsAccent(colorsAccent: SuggestionChipColorsAccent): ChipColors {
         SuggestionChipColorsAccent.Warning -> {
             suggestionChipColors(
                 containerColor = SuggestionChipWarningColors.containerColor,
-                labelColor = SuggestionChipWarningColors.contentColor,
+                labelColor = MaterialTheme.colorScheme.onSurface,
                 iconContentColor = SuggestionChipWarningColors.contentColor,
             )
         }
@@ -78,7 +78,7 @@ private fun colorsAccent(colorsAccent: SuggestionChipColorsAccent): ChipColors {
         SuggestionChipColorsAccent.Dangerous -> {
             suggestionChipColors(
                 containerColor = SuggestionChipDangerousColors.containerColor,
-                labelColor = SuggestionChipDangerousColors.contentColor,
+                labelColor = MaterialTheme.colorScheme.onSurface,
                 iconContentColor = SuggestionChipDangerousColors.contentColor,
             )
         }
