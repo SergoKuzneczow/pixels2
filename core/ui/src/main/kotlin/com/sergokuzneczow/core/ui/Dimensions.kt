@@ -25,6 +25,10 @@ public data object Dimensions {
     public val SmallElevation: Dp = 2.dp
     public val Border: BorderStroke = BorderStroke(1.dp, Color(1, 1, 1, 20))
     public val IconSize: Dp = 24.dp
+    public val ProgressBarSize: Dp = 48.dp
+    public val LargeProgressBarSize: Dp = 72.dp
+    public val SmallProgressBarSize: Dp = 18.dp
+    public val VerySmallProgressBarSize: Dp = 16.dp
 }
 
 @Composable
