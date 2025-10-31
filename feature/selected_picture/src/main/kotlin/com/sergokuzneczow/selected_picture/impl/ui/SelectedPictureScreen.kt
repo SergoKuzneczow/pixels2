@@ -16,7 +16,7 @@ internal fun SelectedPictureScreen(
 ) {
     Box(modifier = Modifier.fillMaxSize()) {
         when (uiState) {
-            is SelectedPictureUiState.Loading -> PixelsProgressIndicator(Dimensions.SmallProgressBarSize)
+            is SelectedPictureUiState.Loading -> PixelsProgressIndicator()
 
             is SelectedPictureUiState.Success -> {
                 Curtain(curtainVisible = uiState.curtainVisible)
