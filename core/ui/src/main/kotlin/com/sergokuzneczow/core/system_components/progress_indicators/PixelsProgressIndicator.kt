@@ -19,12 +19,18 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.sergokuzneczow.core.ui.Dimensions
 import com.sergokuzneczow.core.ui.PixelsIcons
 import com.sergokuzneczow.core.ui.PixelsTheme
 import com.sergokuzneczow.core.utilites.ThemePreviews
 
 @Composable
-public fun BoxScope.PixelsProgressIndicator(size: Dp = 96.dp) {
+public fun PixelsProgressIndicator(size: Dp = Dimensions.ProgressBarSize) {
+    Box { PixelsProgressIndicator(size) }
+}
+
+@Composable
+public fun BoxScope.PixelsProgressIndicator(size: Dp = Dimensions.ProgressBarSize) {
     val infiniteTransition = rememberInfiniteTransition()
     val a1 = infiniteTransition.animateValue(
         initialValue = 0.dp,
