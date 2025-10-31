@@ -11,7 +11,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import com.sergokuzneczow.core.system_components.progress_indicators.PixelsCircularProgressIndicator
+import com.sergokuzneczow.core.system_components.progress_indicators.PixelsProgressIndicator
 import com.sergokuzneczow.core.ui.Dimensions
 import com.sergokuzneczow.models.ApplicationSettings
 import com.sergokuzneczow.settings.impl.SettingsScreenUiState
@@ -23,9 +23,7 @@ internal fun SettingsScreen(
 ) {
     Column(modifier = Modifier.fillMaxSize()) {
         when (uiState) {
-            is SettingsScreenUiState.Loading -> {
-                PixelsCircularProgressIndicator()
-            }
+            is SettingsScreenUiState.Loading -> PixelsProgressIndicator(Dimensions.SmallProgressBarSize)
 
             is SettingsScreenUiState.Success -> {
                 Spacer(modifier = Modifier.height(Dimensions.PixelsTopBarBoxHeight))
