@@ -9,7 +9,7 @@ import com.sergokuzneczow.splash.impl.di.SplashFeatureComponent
 import com.sergokuzneczow.splash.impl.di.dependenciesProvider
 import jakarta.inject.Inject
 
-internal class SplashScreenViewModelFactory(@NonUiContext context: Context, ) : ViewModelProvider.Factory {
+internal class SplashScreenViewModelFactory(@NonUiContext context: Context) : ViewModelProvider.Factory {
 
     @Inject
     lateinit var settingsRepositoryApi: SettingsRepositoryApi
