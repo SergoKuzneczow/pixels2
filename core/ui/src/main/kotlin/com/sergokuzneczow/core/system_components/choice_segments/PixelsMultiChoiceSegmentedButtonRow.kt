@@ -27,7 +27,7 @@ public fun PixelsMultiChoiceSegmentedButtonRow(
     onCheckedChange: (itemsState: List<Boolean>) -> Unit,
     modifier: Modifier = Modifier,
     multiChoiceStrategy: MultiChoiceStrategy = MultiChoiceStrategy.NOT_EMPTY,
-    colorAccentPredicate: (index: Int, value: MultiChoice) -> MultiChoiceColorsAccent = { _, _ -> MultiChoiceColorsAccent.STANDARD }
+    colorAccentPredicate: (index: Int, value: MultiChoice) -> MultiChoiceColorsAccent = { _, _ -> MultiChoiceColorsAccent.STANDARD },
 ) {
     var selectedIndexes: List<Boolean> by remember { mutableStateOf(options.map { it.selected }) }
 
@@ -107,7 +107,7 @@ private fun colorsAccent(colorsAccent: MultiChoiceColorsAccent): SegmentedButton
                 activeContentColor = MultiChoiceWarningColors.selectedContentColor,
                 activeBorderColor = MultiChoiceWarningColors.selectedContainerColor,
                 inactiveContainerColor = MultiChoiceWarningColors.containerColor,
-                inactiveContentColor = MultiChoiceWarningColors.contentColor,
+                inactiveContentColor = MaterialTheme.colorScheme.onSurface,
                 inactiveBorderColor = MultiChoiceWarningColors.containerColor,
             )
         }
@@ -118,7 +118,7 @@ private fun colorsAccent(colorsAccent: MultiChoiceColorsAccent): SegmentedButton
                 activeContentColor = MultiChoiceDangerousColors.selectedContentColor,
                 activeBorderColor = MultiChoiceDangerousColors.selectedContainerColor,
                 inactiveContainerColor = MultiChoiceDangerousColors.containerColor,
-                inactiveContentColor = MultiChoiceDangerousColors.contentColor,
+                inactiveContentColor = MaterialTheme.colorScheme.onSurface,
                 inactiveBorderColor = MultiChoiceDangerousColors.containerColor,
             )
         }
