@@ -4,7 +4,8 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import com.sergokuzneczow.core.system_components.progress_indicators.PixelsCircularProgressIndicator
+import com.sergokuzneczow.core.system_components.progress_indicators.PixelsProgressIndicator
+import com.sergokuzneczow.core.ui.Dimensions
 import com.sergokuzneczow.selected_picture.impl.SelectedPictureUiState
 
 @Composable
@@ -13,13 +14,9 @@ internal fun SelectedPictureScreen(
     changeCurtainVisible: () -> Unit,
     navigateToBottomSheetPictureInfoDestination: (String) -> Unit,
 ) {
-//    var curtainVisible: Boolean by rememberSaveable { mutableStateOf(false) }
-
     Box(modifier = Modifier.fillMaxSize()) {
         when (uiState) {
-            is SelectedPictureUiState.Loading -> {
-                PixelsCircularProgressIndicator()
-            }
+            is SelectedPictureUiState.Loading -> PixelsProgressIndicator(Dimensions.SmallProgressBarSize)
 
             is SelectedPictureUiState.Success -> {
                 Curtain(curtainVisible = uiState.curtainVisible)
