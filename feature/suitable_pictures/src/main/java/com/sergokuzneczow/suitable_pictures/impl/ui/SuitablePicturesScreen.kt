@@ -8,9 +8,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import com.sergokuzneczow.core.system_components.progress_indicators.PixelsCircularProgressIndicator
 import com.sergokuzneczow.core.system_components.PixelsPrimaryFloatingActionButton
 import com.sergokuzneczow.core.system_components.PixelsTopBar
+import com.sergokuzneczow.core.system_components.progress_indicators.PixelsProgressIndicator
+import com.sergokuzneczow.core.ui.Dimensions
 import com.sergokuzneczow.core.ui.PixelsIcons
 import com.sergokuzneczow.suitable_pictures.R.string.empty_collection
 import com.sergokuzneczow.suitable_pictures.impl.SuitablePicturesUiState
@@ -39,11 +40,7 @@ internal fun SuitablePicturesScreen(
                 }
             }
 
-            is SuitablePicturesUiState.Loading -> {
-                Box(modifier = Modifier.fillMaxSize()) {
-                    PixelsCircularProgressIndicator()
-                }
-            }
+            is SuitablePicturesUiState.Loading -> PixelsProgressIndicator(Dimensions.SmallProgressBarSize)
 
             is SuitablePicturesUiState.Success -> {
                 SuitablePicturesList(
@@ -62,7 +59,8 @@ internal fun SuitablePicturesScreen(
             visibleProgressBar = false,
             onHomeIconClick = {
                 log { "onCLick" }
-                backMainMenu.invoke() }
+                backMainMenu.invoke()
+            }
         )
     }
 }
