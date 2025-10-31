@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -36,11 +35,11 @@ import com.sergokuzneczow.bottom_sheet_picture_info.impl.LikeThisButtonUiState
 import com.sergokuzneczow.bottom_sheet_picture_info.impl.PictureInformationUiState
 import com.sergokuzneczow.bottom_sheet_picture_info.impl.SavePictureButtonUiState
 import com.sergokuzneczow.bottom_sheet_picture_info.impl.TagsListUiState
-import com.sergokuzneczow.core.system_components.progress_indicators.PixelsCircularProgressIndicator
 import com.sergokuzneczow.core.system_components.buttons.PixelsSurfaceButton
 import com.sergokuzneczow.core.system_components.chip_segments.PixelsSuggestionFlowRow
 import com.sergokuzneczow.core.system_components.chip_segments.SuggestionChip
 import com.sergokuzneczow.core.system_components.chip_segments.SuggestionChipColorsAccent
+import com.sergokuzneczow.core.system_components.progress_indicators.PixelsProgressIndicator
 import com.sergokuzneczow.core.ui.Dimensions
 import com.sergokuzneczow.models.Tag
 import com.sergokuzneczow.utilities.logger.log
@@ -75,7 +74,7 @@ internal fun PictureInformationBottomSheet(
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(128.dp),
-                        content = { PixelsCircularProgressIndicator() },
+                        content = { PixelsProgressIndicator(Dimensions.SmallProgressBarSize) },
                     )
                 }
 
@@ -143,7 +142,7 @@ private fun PictureInformation(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(96.dp),
-                content = { PixelsCircularProgressIndicator() }
+                content = { PixelsProgressIndicator(Dimensions.SmallProgressBarSize) }
             )
         }
 
@@ -185,7 +184,7 @@ private fun PictureInformation(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(96.dp),
-                content = { PixelsCircularProgressIndicator() }
+                content = { PixelsProgressIndicator(Dimensions.SmallProgressBarSize) }
             )
         }
 
@@ -254,7 +253,7 @@ private fun RowScope.SavePictureButton(
                 visible = isVisibleProgressBar,
                 enter = fadeIn(),
                 exit = fadeOut(),
-                content = { PixelsCircularProgressIndicator(modifier = Modifier.size(16.dp)) }
+                content = { PixelsProgressIndicator(Dimensions.VerySmallProgressBarSize) }
             )
         },
         modifier = Modifier
