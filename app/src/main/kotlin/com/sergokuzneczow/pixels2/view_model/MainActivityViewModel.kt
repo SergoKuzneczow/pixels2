@@ -9,6 +9,7 @@ import com.sergokuzneczow.repository.api.NetworkMonitorApi
 import com.sergokuzneczow.repository.api.SettingsRepositoryApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.flow
@@ -57,6 +58,16 @@ internal class MainActivityViewModel(
         initialValue = null,
     )
 
+    private val progressListener: MutableSharedFlow<Boolean> = MutableStateFlow(true)
+
+    internal val progressState: StateFlow<Boolean> = flow {
+        progressListener.collect { emit(it) }
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5_000),
+        initialValue = true,
+    )
+
     internal fun loadAndSavePicture(picturePath: String, block: (result: Result<Uri>) -> Unit) {
         viewModelScope.launch(Dispatchers.IO) {
             loadAndSavePictureUseCase.execute(
@@ -68,5 +79,9 @@ internal class MainActivityViewModel(
 
     internal fun setToast(message: String) {
         viewModelScope.launch { toastListener.emit(message) }
+    }
+
+    internal fun setProgress(isVisible: Boolean) {
+        viewModelScope.launch { progressListener.emit(isVisible) }
     }
 }

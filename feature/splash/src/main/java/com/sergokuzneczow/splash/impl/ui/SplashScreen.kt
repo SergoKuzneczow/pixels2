@@ -6,7 +6,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavOptions
 import androidx.navigation.navOptions
-import com.sergokuzneczow.core.system_components.progress_indicators.PixelsProgressIndicator
 import com.sergokuzneczow.models.ApplicationSettings
 import com.sergokuzneczow.splash.api.SplashScreenRoute
 import com.sergokuzneczow.splash.impl.SplashScreenUiState
@@ -15,14 +14,16 @@ import com.sergokuzneczow.splash.impl.SplashScreenUiState
 internal fun SplashScreen(
     uiState: SplashScreenUiState,
     onChangeThemeStateClick: (themeState: ApplicationSettings.SystemSettings.ThemeState) -> Unit,
+    onChangeProgressBar: (isVisible: Boolean) -> Unit,
     navigateToMainMenu: (NavOptions?) -> Unit,
     onDoneClick: () -> Unit,
 ) {
     Box(modifier = Modifier.fillMaxSize()) {
         when (uiState) {
-            SplashScreenUiState.Loading -> PixelsProgressIndicator()
+            SplashScreenUiState.Loading -> onChangeProgressBar.invoke(true)
 
             SplashScreenUiState.Finish -> {
+                onChangeProgressBar.invoke(false)
                 val navOptions: NavOptions = navOptions {
                     popUpTo<SplashScreenRoute> {
                         saveState = true

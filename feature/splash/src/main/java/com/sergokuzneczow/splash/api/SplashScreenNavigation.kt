@@ -15,10 +15,12 @@ public fun NavHostController.navigateToSplashScreenDestination(navOptions: NavOp
 }
 
 public fun NavGraphBuilder.splashScreenDestination(
+    onChangeProgressBar: (isVisible: Boolean) -> Unit,
     navigateToMainMenu: (NavOptions?) -> Unit
 ) {
     composable<SplashScreenRoute> {
         SplashRootScreen(
+            onChangeProgressBar=onChangeProgressBar,
             navigateToMainMenu = navigateToMainMenu
         )
     }

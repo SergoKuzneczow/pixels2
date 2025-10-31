@@ -24,6 +24,7 @@ internal fun rememberPixelsState(
     darkThemeMonitor: State<Boolean?>,
     networkMonitor: State<Boolean>,
     toastMonitor: State<String?>,
+    progressMonitor: State<Boolean>,
     coroutineScope: CoroutineScope = rememberCoroutineScope(),
     navController: NavHostController = rememberNavController(),
 ): PixelsState {
@@ -34,6 +35,7 @@ internal fun rememberPixelsState(
         toastMonitor,
         applicationNotificationChanelId,
         darkThemeMonitor,
+        progressMonitor,
     ) {
         PixelsState(
             navController = navController,
@@ -42,6 +44,7 @@ internal fun rememberPixelsState(
             darkThemeMonitor = darkThemeMonitor,
             networkMonitor = networkMonitor,
             toastMonitor = toastMonitor,
+            progressMonitor = progressMonitor,
         )
     }
 }
@@ -52,6 +55,7 @@ internal class PixelsState(
     val coroutineScope: CoroutineScope,
     val applicationNotificationChanelId: String,
     darkThemeMonitor: State<Boolean?>,
+    progressMonitor: State<Boolean>,
     networkMonitor: State<Boolean>,
     toastMonitor: State<String?>,
 ) {
@@ -75,6 +79,8 @@ internal class PixelsState(
     val isOnline: State<Boolean> = networkMonitor
 
     val isDark: State<Boolean?> = darkThemeMonitor
+
+    val isProgress: State<Boolean> = progressMonitor
 
     val toast: State<String?> = toastMonitor
 }

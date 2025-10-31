@@ -42,7 +42,8 @@ internal class MainActivity : ComponentActivity() {
                 applicationNotificationChanelId = createApplicationNotificationChannel(),
                 darkThemeMonitor = vm.themeState.collectAsStateWithLifecycle(),
                 networkMonitor = vm.networkState.collectAsStateWithLifecycle(),
-                toastMonitor = vm.toastState.collectAsStateWithLifecycle()
+                toastMonitor = vm.toastState.collectAsStateWithLifecycle(),
+                progressMonitor = vm.progressState.collectAsStateWithLifecycle(),
             )
 
             PixelsTheme(
@@ -56,6 +57,7 @@ internal class MainActivity : ComponentActivity() {
                                     showNotification(chanelId = applicationState.applicationNotificationChanelId, intent, title, message)
                                 else vm.setToast("$title: $message")
                             },
+                            onChangeProgressBar = { isVisible: Boolean -> vm.setProgress(isVisible) },
                             onSavePicture = vm::loadAndSavePicture,
                         )
                     }
