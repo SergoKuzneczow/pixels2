@@ -10,6 +10,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.sergokuzneczow.home.R
 import com.sergokuzneczow.home.impl.ui.HomeScreen
+import com.sergokuzneczow.home.impl.view_model.HomeScreenViewModel
+import com.sergokuzneczow.home.impl.view_model.HomeScreenViewModelFactory
 
 @Composable
 internal fun HomeScreenRoot(
@@ -17,7 +19,7 @@ internal fun HomeScreenRoot(
     titleTextState: MutableState<String>,
     navigateToSuitablePicturesDestination: (pageKey: Long) -> Unit,
 ) {
-    val vm: HomeScreenViewModel = viewModel(factory = HomeScreenViewModel.Factory(LocalContext.current))
+    val vm: HomeScreenViewModel = viewModel(factory = HomeScreenViewModelFactory(LocalContext.current))
     titleTextState.value = stringResource(R.string.feature_home_title)
     val homeListUiState: HomeListUiState by vm.getHomeListUiState().collectAsStateWithLifecycle()
     val exceptionsUiState: String? by vm.getExceptionsFlow().collectAsStateWithLifecycle()

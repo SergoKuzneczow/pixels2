@@ -42,7 +42,7 @@ import androidx.window.core.layout.WindowSizeClass.Companion.WIDTH_DP_EXPANDED_L
 import androidx.window.core.layout.WindowSizeClass.Companion.WIDTH_DP_MEDIUM_LOWER_BOUND
 import coil3.compose.AsyncImagePainter
 import coil3.compose.rememberAsyncImagePainter
-import com.sergokuzneczow.core.system_components.progress_indicators.PixelsCircularProgressIndicator
+import com.sergokuzneczow.core.system_components.progress_indicators.PixelsProgressIndicator
 import com.sergokuzneczow.core.ui.Dimensions
 import com.sergokuzneczow.core.ui.PixelsTheme
 import com.sergokuzneczow.core.utilites.ThemePreviews
@@ -163,7 +163,7 @@ private fun SuggestedQueriesPage(
                         .clickable(onClick = { if (item != null) itemClick.invoke(item.pageQuery, item.pageFilter) })
                 ) {
                     if (item != null) PictureItem(item.previewPath, item.description)
-                    else PixelsCircularProgressIndicator()
+                    else PixelsProgressIndicator(Dimensions.SmallProgressBarSize)
                 }
             }
         }
@@ -205,7 +205,7 @@ private fun BoxScope.PictureItem(previewPath: String, description: String) {
             )
         }
 
-        false -> PixelsCircularProgressIndicator()
+        false -> PixelsProgressIndicator(Dimensions.SmallProgressBarSize)
     }
 }
 

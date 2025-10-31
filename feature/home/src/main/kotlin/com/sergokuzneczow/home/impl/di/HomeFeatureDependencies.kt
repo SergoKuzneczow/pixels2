@@ -6,12 +6,10 @@ import com.sergokuzneczow.domain.get_first_page_key_use_case.GetFirstPageKeyUseC
 import com.sergokuzneczow.domain.get_home_screen_pager_use_case.GetHomeScreenPager4UseCase
 import com.sergokuzneczow.repository.api.ImageLoaderApi
 
-
 public interface HomeFeatureDependencies {
     public val getHomeScreenPager4UseCase: GetHomeScreenPager4UseCase
     public val getFirstPageKeyUseCase: GetFirstPageKeyUseCase
     public val imageLoaderApi: ImageLoaderApi
-
     public interface Contract {
         public fun homeFeatureDependenciesProvide(): HomeFeatureDependencies
     }
