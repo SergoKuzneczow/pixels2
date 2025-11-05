@@ -74,7 +74,7 @@ internal enum class MainMenuTopDestination(
     ),
     SEARCH(
         icon = PixelsIcons.search,
-        titleTextId = com.sergokuzneczow.settings.R.string.feature_settings_title,
+        titleTextId = com.sergokuzneczow.search_suitable_pictures.R.string.feature_search_suitable_pictures_title,
         route = SearchSuitablePicturesRoute::class,
     ),
     SETTINGS(
