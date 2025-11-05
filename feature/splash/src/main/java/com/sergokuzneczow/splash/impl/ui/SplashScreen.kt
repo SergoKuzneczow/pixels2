@@ -36,6 +36,7 @@ internal fun SplashScreen(
             }
 
             is SplashScreenUiState.SelectingThemeState -> {
+                onChangeProgressBar.invoke(false)
                 SelectThemeState(
                     themeState = uiState.themeState,
                     selectedThemeState = onChangeThemeStateClick,
