@@ -26,7 +26,7 @@ public fun <T> PixelsSingleChoiceSegmentedButtonRow(
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
     startSelector: Int = 0,
-    hasIcon: Boolean = true,
+    hasIcon: Boolean = false,
 ) {
     var selectedIndex: Int by remember { mutableIntStateOf(startSelector) }
 
@@ -70,10 +70,14 @@ public fun <T> PixelsSingleChoiceSegmentedButtonRow(
 }
 
 @Composable
-private fun segmentButtonColors(): SegmentedButtonColors = SegmentedButtonDefaults.colors()
-    .copy(
-        inactiveContainerColor = MaterialTheme.colorScheme.surfaceVariant,
-    )
+private fun segmentButtonColors(): SegmentedButtonColors = SegmentedButtonDefaults.colors().copy(
+    activeContainerColor = MaterialTheme.colorScheme.primary,
+    activeContentColor = MaterialTheme.colorScheme.onPrimary,
+    activeBorderColor = MaterialTheme.colorScheme.primary,
+    inactiveContainerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
+    inactiveContentColor = MaterialTheme.colorScheme.onSurface,
+    inactiveBorderColor = MaterialTheme.colorScheme.surfaceContainer,
+)
 
 public data class SingleChoice<T>(
     val label: String,

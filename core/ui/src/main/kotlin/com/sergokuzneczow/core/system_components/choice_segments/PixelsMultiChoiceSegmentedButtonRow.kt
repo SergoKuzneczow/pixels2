@@ -28,6 +28,7 @@ public fun PixelsMultiChoiceSegmentedButtonRow(
     modifier: Modifier = Modifier,
     multiChoiceStrategy: MultiChoiceStrategy = MultiChoiceStrategy.NOT_EMPTY,
     colorAccentPredicate: (index: Int, value: MultiChoice) -> MultiChoiceColorsAccent = { _, _ -> MultiChoiceColorsAccent.STANDARD },
+    hasIcon: Boolean = false,
 ) {
     var selectedIndexes: List<Boolean> by remember { mutableStateOf(options.map { it.selected }) }
 
@@ -66,7 +67,7 @@ public fun PixelsMultiChoiceSegmentedButtonRow(
                     colors = colorsAccent(colorsAccent = colorAccentPredicate.invoke(index, choice)),
                     border = Dimensions.Border,
                     icon = {
-                        if (selectedIndexes[index]) {
+                        if (selectedIndexes[index] && hasIcon) {
                             Icon(
                                 imageVector = PixelsIcons.selector,
                                 contentDescription = null,
@@ -92,14 +93,12 @@ private fun colorsAccent(colorsAccent: MultiChoiceColorsAccent): SegmentedButton
         activeContainerColor = MaterialTheme.colorScheme.primary,
         activeContentColor = MaterialTheme.colorScheme.onPrimary,
         activeBorderColor = MaterialTheme.colorScheme.primary,
-        inactiveContainerColor = MaterialTheme.colorScheme.surfaceContainer,
+        inactiveContainerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
         inactiveContentColor = MaterialTheme.colorScheme.onSurface,
         inactiveBorderColor = MaterialTheme.colorScheme.surfaceContainer,
     )
     return when (colorsAccent) {
-        MultiChoiceColorsAccent.STANDARD -> {
-            standard
-        }
+        MultiChoiceColorsAccent.STANDARD -> standard
 
         MultiChoiceColorsAccent.WARNING -> {
             standard.copy(
