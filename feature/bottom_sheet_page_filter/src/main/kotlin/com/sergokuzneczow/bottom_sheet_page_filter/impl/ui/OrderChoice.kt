@@ -30,7 +30,7 @@ internal fun OrderChoice(
     )
     val startSelector = options.indexOfFirst { it.value == startValue }
     Text(
-        text = stringResource(R.string.sorting_chips),
+        text = stringResource(R.string.order_chips),
         style = MaterialTheme.typography.titleSmall,
         color = MaterialTheme.colorScheme.onSurface,
         modifier = Modifier

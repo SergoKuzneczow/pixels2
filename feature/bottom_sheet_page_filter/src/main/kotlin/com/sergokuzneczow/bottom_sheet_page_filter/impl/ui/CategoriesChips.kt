@@ -34,7 +34,7 @@ internal fun CategoriesChips(
         ),
     )
     Text(
-        text = stringResource(R.string.purities_chips),
+        text = stringResource(R.string.categories_chips),
         style = MaterialTheme.typography.titleSmall,
         color = MaterialTheme.colorScheme.onSurface,
         modifier = Modifier
