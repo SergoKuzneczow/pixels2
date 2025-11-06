@@ -15,6 +15,10 @@ import androidx.compose.ui.unit.dp
 
 public data object Dimensions {
     public val PixelsTopBarBoxHeight: Dp = 128.dp
+    public val ChipsCornerShape: RoundedCornerShape = RoundedCornerShape(24.dp)
+    public val ButtonCornerShape: RoundedCornerShape = RoundedCornerShape(16.dp)
+    public val FabCornerShape: RoundedCornerShape = RoundedCornerShape(12.dp)
+    public val ContainerCornerShape: RoundedCornerShape = RoundedCornerShape(12.dp)
     public val PixelsShape: RoundedCornerShape = RoundedCornerShape(15.dp)
     public val RoundShape: RoundedCornerShape = RoundedCornerShape(30.dp)
     public val SmallPadding: Dp = 4.dp
@@ -22,7 +26,7 @@ public data object Dimensions {
     public val LargePadding: Dp = 16.dp
     public val ContentPadding: Dp = 4.dp
     public val Elevation: Dp = 4.dp
-    public val SmallElevation: Dp = 2.dp
+    public val SmallElevation: Dp = 4.dp
     public val Border: BorderStroke = BorderStroke(1.dp, Color(1, 1, 1, 20))
     public val IconSize: Dp = 24.dp
     public val ProgressBarSize: Dp = 32.dp
@@ -40,11 +44,26 @@ public fun Modifier.pixelsShadow(): Modifier = this.shadow(
 )
 
 @Composable
+public fun Modifier.pixelsContainerShadow(): Modifier = this.shadow(
+    elevation = Dimensions.SmallElevation,
+    shape = Dimensions.ContainerCornerShape,
+    clip = true,
+)
+
+@Composable
+public fun Modifier.pixelsButtonShadow(): Modifier = this.shadow(
+    elevation = Dimensions.SmallElevation,
+    shape = Dimensions.ButtonCornerShape,
+    clip = true,
+)
+
+@Composable
 public fun Modifier.pixelsBorder(shape: Shape = Dimensions.PixelsShape): Modifier = this.border(
     width = 1.dp,
     color = MaterialTheme.colorScheme.onSurface,
     shape = shape,
 )
 
-@Composable
 public fun Modifier.pixelsClip(): Modifier = this.clip(Dimensions.PixelsShape)
+public fun Modifier.pixelsContainerClip(): Modifier = this.clip(Dimensions.ContainerCornerShape)
+public fun Modifier.pixelsButtonClip(): Modifier = this.clip(Dimensions.ButtonCornerShape)
