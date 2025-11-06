@@ -7,20 +7,18 @@ import androidx.compose.animation.core.animateValue
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.sergokuzneczow.core.ui.Dimensions
-import com.sergokuzneczow.core.ui.PixelsIcons
 import com.sergokuzneczow.core.ui.PixelsTheme
 import com.sergokuzneczow.core.utilites.ThemePreviews
 
@@ -73,16 +71,16 @@ public fun BoxScope.PixelsProgressIndicator(size: Dp = Dimensions.ProgressBarSiz
             .size(size)
             .align(Alignment.Center)
     ) {
-        ItemProgressIndicator(PixelsIcons.pixelsBlue, a1.value, size / 2, Alignment.TopStart)
-        ItemProgressIndicator(PixelsIcons.pixelsRed, a2.value, size / 2, Alignment.TopEnd)
-        ItemProgressIndicator(PixelsIcons.pixelsGreen, a3.value, size / 2, Alignment.BottomStart)
-        ItemProgressIndicator(PixelsIcons.pixelsYellow, a4.value, size / 2, Alignment.BottomEnd)
+        ItemProgressIndicator(Color(2, 15, 248, 255), a1.value, size / 2, Alignment.TopStart)
+        ItemProgressIndicator(Color(184, 4, 4, 255), a2.value, size / 2, Alignment.TopEnd)
+        ItemProgressIndicator(Color(31, 154, 6, 255), a3.value, size / 2, Alignment.BottomStart)
+        ItemProgressIndicator(Color(220, 192, 3, 255), a4.value, size / 2, Alignment.BottomEnd)
     }
 }
 
 @Composable
 private fun BoxScope.ItemProgressIndicator(
-    imageVector: ImageVector,
+    color: Color,
     itemSize: Dp,
     containerSize: Dp,
     alignment: Alignment,
@@ -92,13 +90,11 @@ private fun BoxScope.ItemProgressIndicator(
             .size(containerSize)
             .align(alignment)
     ) {
-        Image(
-            imageVector = imageVector,
-            contentDescription = null,
+        Spacer(
             modifier = Modifier
                 .size(itemSize)
-                .clip(RoundedCornerShape(8.dp))
                 .align(Alignment.Center)
+                .background(color)
         )
     }
 }
