@@ -1,4 +1,4 @@
-<h1 align="center">Pixels2</a> 
+<h1 align="center">Pixels2</h1>
 <h2 align="left">About project</h2>
   <body>
     <p align="left">Hi there <img src="https://github.com/blackcater/blackcater/raw/main/images/Hi.gif" height="24"/>.
