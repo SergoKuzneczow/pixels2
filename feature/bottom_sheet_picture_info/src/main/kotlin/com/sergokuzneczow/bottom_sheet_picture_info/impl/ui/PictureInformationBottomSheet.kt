@@ -222,8 +222,6 @@ private fun RowScope.SavePictureButton(
     savePictureButtonUiState: SavePictureButtonUiState,
     onSavePictureClick: (String) -> Unit,
 ) {
-    log(tag = "SavePictureButton") { "savePictureButtonUiState=$savePictureButtonUiState" }
-
     var isVisibleProgressBar: Boolean by rememberSaveable { mutableStateOf(false) }
     var isEnable: Boolean by rememberSaveable { mutableStateOf(false) }
 
@@ -248,14 +246,7 @@ private fun RowScope.SavePictureButton(
         text = "Save",
         onClick = { onSavePictureClick.invoke(savePictureButtonUiState.picturePath) },
         enabled = isEnable,
-        iconContent = {
-            AnimatedVisibility(
-                visible = isVisibleProgressBar,
-                enter = fadeIn(),
-                exit = fadeOut(),
-                content = { PixelsProgressIndicator(Dimensions.VerySmallProgressBarSize) }
-            )
-        },
+        isVisibleProgress = isVisibleProgressBar,
         modifier = Modifier
             .weight(1f)
             .padding(horizontal = Dimensions.ContentPadding)
