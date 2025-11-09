@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.isImeVisible
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
@@ -14,6 +15,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldColors
 import androidx.compose.material3.TextFieldDefaults
@@ -33,6 +35,7 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.sergokuzneczow.core.ui.Dimensions
 import com.sergokuzneczow.core.ui.PixelsIcons
 import com.sergokuzneczow.core.ui.PixelsTheme
 import com.sergokuzneczow.core.utilites.ThemePreviews
@@ -42,7 +45,7 @@ private val TOP_BAR_HEIGHT: Dp = 56.dp
 @Composable
 public fun BoxScope.PixelsSearchTextField(
     done: (text: String) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     var rememberedText: String by rememberSaveable { mutableStateOf("") }
 
@@ -77,22 +80,35 @@ private fun colors(): TextFieldColors = TextFieldDefaults.colors(
     focusedContainerColor = MaterialTheme.colorScheme.surfaceContainer,
     unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
     focusedTextColor = MaterialTheme.colorScheme.onSurface,
+    disabledTextColor = MaterialTheme.colorScheme.onSurface,
+
+    focusedLabelColor = MaterialTheme.colorScheme.onSurface,
+    unfocusedLabelColor = MaterialTheme.colorScheme.onSurface,
+    disabledLabelColor = MaterialTheme.colorScheme.onSurface,
+    errorLabelColor = MaterialTheme.colorScheme.onSurface,
+
     cursorColor = MaterialTheme.colorScheme.primary,
+
     focusedLeadingIconColor = MaterialTheme.colorScheme.onSurface,
     unfocusedLeadingIconColor = MaterialTheme.colorScheme.onSurface,
-    unfocusedPlaceholderColor = MaterialTheme.colorScheme.onSurfaceVariant,
-    focusedPlaceholderColor = MaterialTheme.colorScheme.onSurfaceVariant,
+
+    unfocusedPlaceholderColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f),
+    focusedPlaceholderColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f),
+
     unfocusedIndicatorColor = Color(0, 0, 0, 0),
 )
 
 @ThemePreviews
 @Composable
 private fun PixelsOutlinedTextFieldPreview() {
-    Box(modifier = Modifier.fillMaxWidth()) {
+    Box {
         PixelsTheme {
-            PixelsSearchTextField(
-                done = {},
-            )
+            Surface {
+                PixelsSearchTextField(
+                    done = {},
+                    modifier = Modifier.padding(Dimensions.Padding)
+                )
+            }
         }
     }
 }
