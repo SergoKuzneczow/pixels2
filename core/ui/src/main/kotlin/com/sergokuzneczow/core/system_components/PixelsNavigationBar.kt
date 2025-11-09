@@ -257,7 +257,7 @@ private object PixelsNavigationDefaults {
     fun content() = MaterialTheme.colorScheme.onSurface
 
     @Composable
-    fun selectedContent() = MaterialTheme.colorScheme.inverseOnSurface
+    fun selectedContent() = MaterialTheme.colorScheme.onPrimary
 
     @Composable
     fun accent() = MaterialTheme.colorScheme.secondaryContainer
