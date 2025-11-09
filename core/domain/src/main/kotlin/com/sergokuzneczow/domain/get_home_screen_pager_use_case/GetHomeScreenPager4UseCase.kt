@@ -46,7 +46,7 @@ public class GetHomeScreenPager4UseCase @Inject constructor(
             getActualDataBlock = { pageNumber, pageSize -> getActualData(pageNumber, pageSize) },
             setActualDataBlock = { pageNumber, _, new -> cachingData(pageNumber, new) },
         )
-            .setPageSize(6)
+            .setPageSize(12)
             .setStartStrategy(IPixelsPager4.StartStrategy.INSTANTLY)
             .setPlaceholderStrategy(IPixelsPager4.PlaceholdersStrategy.WITH)
             .setLoadStrategy(IPixelsPager4.LoadStrategy.SEQUENTIALLY)
