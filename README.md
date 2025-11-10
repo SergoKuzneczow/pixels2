@@ -15,7 +15,6 @@
         <li>Retrofit</li>
         <li>Room</li>
         <li>Coil</li>
-        <li>Junit4</li>
         <li>Mockito</li>
         <li>Turbine</li>
         <li>Truth</li>
@@ -58,7 +57,6 @@
         <li>Retrofit</li>
         <li>Room</li>
         <li>Coil</li>
-        <li>Junit4</li>
         <li>Mockito</li>
         <li>Turbine</li>
         <li>Truth</li>
