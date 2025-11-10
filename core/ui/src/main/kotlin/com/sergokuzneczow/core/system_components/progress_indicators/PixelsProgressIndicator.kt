@@ -8,6 +8,8 @@ import androidx.compose.animation.core.animateValue
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
@@ -30,7 +32,11 @@ public fun BoxScope.PixelsProgressAnimatedVisibilityIndicator(
     size: Dp = Dimensions.ProgressBarSize,
 ) {
     Row(modifier = Modifier.align(Alignment.Center)) {
-        AnimatedVisibility(isVisible) {
+        AnimatedVisibility(
+            visible = isVisible,
+            enter = fadeIn(tween(durationMillis = 200, easing = LinearEasing)),
+            exit = fadeOut(tween(durationMillis = 200, easing = LinearEasing)),
+        ) {
             Box { PixelsProgressIndicator(size) }
         }
     }
@@ -43,7 +49,11 @@ public fun PixelsProgressAnimatedVisibilityIndicator(
     size: Dp = Dimensions.ProgressBarSize,
 ) {
     Row(modifier = modifier) {
-        AnimatedVisibility(isVisible) {
+        AnimatedVisibility(
+            visible = isVisible,
+            enter = fadeIn(tween(durationMillis = 200, easing = LinearEasing)),
+            exit = fadeOut(tween(durationMillis = 200, easing = LinearEasing)),
+        ) {
             Box { PixelsProgressIndicator(size) }
         }
     }
