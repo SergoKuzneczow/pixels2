@@ -13,5 +13,3 @@
 .externalNativeBuild
 .cxx
 local.properties
-core/network/src/main/java/com/sergokuzneczow/network/impl/retrofit/api/RetrofitApiSettings.kt
-RetrofitApiSettings.kt
