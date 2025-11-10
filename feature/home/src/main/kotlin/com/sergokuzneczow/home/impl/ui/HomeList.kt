@@ -20,13 +20,14 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.adaptive.WindowAdaptiveInfo
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -42,7 +43,7 @@ import androidx.window.core.layout.WindowSizeClass.Companion.WIDTH_DP_EXPANDED_L
 import androidx.window.core.layout.WindowSizeClass.Companion.WIDTH_DP_MEDIUM_LOWER_BOUND
 import coil3.compose.AsyncImagePainter
 import coil3.compose.rememberAsyncImagePainter
-import com.sergokuzneczow.core.system_components.progress_indicators.PixelsProgressIndicator
+import com.sergokuzneczow.core.system_components.progress_indicators.PixelsProgressAnimatedVisibilityIndicator
 import com.sergokuzneczow.core.ui.Dimensions
 import com.sergokuzneczow.core.ui.PixelsTheme
 import com.sergokuzneczow.core.utilites.ThemePreviews
@@ -153,6 +154,7 @@ private fun SuggestedQueriesPage(
             modifier = Modifier.fillMaxWidth()
         ) {
             rowItems.forEach { item: SuggestedQuery? ->
+                var progressIndicatorVisible: Boolean by remember { mutableStateOf(true) }
                 Box(
                     modifier = Modifier
                         .padding(ITEM_PADDINGS)
@@ -162,8 +164,11 @@ private fun SuggestedQueriesPage(
                         .background(MaterialTheme.colorScheme.surfaceContainer)
                         .clickable(onClick = { if (item != null) itemClick.invoke(item.pageQuery, item.pageFilter) })
                 ) {
-                    if (item != null) PictureItem(item.previewPath, item.description)
-                    else PixelsProgressIndicator(Dimensions.SmallProgressBarSize)
+                    if (item != null) PictureItem(item.previewPath, item.description, onPictureLoaded = { progressIndicatorVisible = it })
+                    PixelsProgressAnimatedVisibilityIndicator(
+                        progressIndicatorVisible,
+                        Dimensions.SmallProgressBarSize,
+                        )
                 }
             }
         }
@@ -171,10 +176,14 @@ private fun SuggestedQueriesPage(
 }
 
 @Composable
-private fun BoxScope.PictureItem(previewPath: String, description: String) {
+private fun BoxScope.PictureItem(
+    previewPath: String,
+    description: String,
+    onPictureLoaded: (isLoaded: Boolean) -> Unit,
+) {
     val painter: AsyncImagePainter = rememberAsyncImagePainter(previewPath)
     val state: AsyncImagePainter.State by painter.state.collectAsStateWithLifecycle()
-    var success: Boolean by rememberSaveable { mutableStateOf(false) }
+    var success: Boolean by remember { mutableStateOf(false) }
     when (state) {
         is AsyncImagePainter.State.Empty -> success = false
         is AsyncImagePainter.State.Loading -> success = false
@@ -203,9 +212,10 @@ private fun BoxScope.PictureItem(previewPath: String, description: String) {
                 textAlign = TextAlign.Center,
                 modifier = Modifier.align(Alignment.Center)
             )
+            onPictureLoaded.invoke(false)
         }
 
-        false -> PixelsProgressIndicator(Dimensions.SmallProgressBarSize)
+        false -> onPictureLoaded.invoke(true)
     }
 }
 
@@ -248,10 +258,12 @@ private fun calculateRowSize(
 @Composable
 private fun StandardQueriesPreview() {
     PixelsTheme {
-        StandardQueries(
-            standardQueries = HomeListUiState.Loading().standardQuery,
-            itemClick = { _, _ -> }
-        )
+        Surface {
+            StandardQueries(
+                standardQueries = HomeListUiState.Loading().standardQuery,
+                itemClick = { _, _ -> }
+            )
+        }
     }
 }
 
@@ -277,36 +289,20 @@ private fun SuggestedQueriesPagePreview() {
             pageQuery = PageQuery.DEFAULT,
             pageFilter = PageFilter.DEFAULT,
         ),
-        SuggestedQuery(
-            description = "Preview",
-            previewPath = "",
-            pageQuery = PageQuery.DEFAULT,
-            pageFilter = PageFilter.DEFAULT,
-        ),
-        SuggestedQuery(
-            description = "Preview",
-            previewPath = "",
-            pageQuery = PageQuery.DEFAULT,
-            pageFilter = PageFilter.DEFAULT,
-        ),
-        SuggestedQuery(
-            description = "Preview",
-            previewPath = "",
-            pageQuery = PageQuery.DEFAULT,
-            pageFilter = PageFilter.DEFAULT,
-        ),
     )
     PixelsTheme {
-        SuggestedQueriesPage(
-            suggestedQueriesPage = SuggestedQueriesPage(items = suggestedQueries),
-            itemClick = { _, _ -> }
-        )
+        Surface {
+            SuggestedQueriesPage(
+                suggestedQueriesPage = SuggestedQueriesPage(items = suggestedQueries),
+                itemClick = { _, _ -> }
+            )
+        }
     }
 }
 
 @ThemePreviews
 @Composable
-private fun HomeListPreview() {
+private fun HomeListSuccess() {
     val homeListUiState = HomeListUiState.Success(
         suggestedQueriesPages = listOf(
             SuggestedQueriesPage(
@@ -316,16 +312,33 @@ private fun HomeListPreview() {
                         previewPath = "",
                         pageQuery = PageQuery.DEFAULT,
                         pageFilter = PageFilter.DEFAULT,
-                    )
+                    ),
                 )
             )
         )
     )
     PixelsTheme {
-        HomeList(
-            homeListUiState = homeListUiState,
-            itemClick = { _, _ -> },
-            nextPage = {},
-        )
+        Surface {
+            HomeList(
+                homeListUiState = homeListUiState,
+                itemClick = { _, _ -> },
+                nextPage = {},
+            )
+        }
+    }
+}
+
+@ThemePreviews
+@Composable
+private fun HomeListLoading() {
+    val homeListUiState = HomeListUiState.Loading()
+    PixelsTheme {
+        Surface {
+            HomeList(
+                homeListUiState = homeListUiState,
+                itemClick = { _, _ -> },
+                nextPage = {},
+            )
+        }
     }
 }
