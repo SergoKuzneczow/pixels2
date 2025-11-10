@@ -1,5 +1,6 @@
 package com.sergokuzneczow.core.system_components.progress_indicators
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.VectorConverter
@@ -10,6 +11,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
@@ -21,6 +23,31 @@ import androidx.compose.ui.unit.dp
 import com.sergokuzneczow.core.ui.Dimensions
 import com.sergokuzneczow.core.ui.PixelsTheme
 import com.sergokuzneczow.core.utilites.ThemePreviews
+
+@Composable
+public fun BoxScope.PixelsProgressAnimatedVisibilityIndicator(
+    isVisible: Boolean,
+    size: Dp = Dimensions.ProgressBarSize,
+) {
+    Row(modifier = Modifier.align(Alignment.Center)) {
+        AnimatedVisibility(isVisible) {
+            Box { PixelsProgressIndicator(size) }
+        }
+    }
+}
+
+@Composable
+public fun PixelsProgressAnimatedVisibilityIndicator(
+    isVisible: Boolean,
+    modifier: Modifier = Modifier,
+    size: Dp = Dimensions.ProgressBarSize,
+) {
+    Row(modifier = modifier) {
+        AnimatedVisibility(isVisible) {
+            Box { PixelsProgressIndicator(size) }
+        }
+    }
+}
 
 @Composable
 public fun PixelsProgressIndicator(size: Dp = Dimensions.ProgressBarSize) {
