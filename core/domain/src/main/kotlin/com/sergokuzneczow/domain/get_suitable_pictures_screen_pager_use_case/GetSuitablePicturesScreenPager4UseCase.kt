@@ -11,6 +11,7 @@ import jakarta.inject.Inject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.onEach
 
 public class GetSuitablePicturesScreenPager4UseCase @Inject constructor(
     private val pageRepositoryApi: PageRepositoryApi,
@@ -40,7 +41,7 @@ public class GetSuitablePicturesScreenPager4UseCase @Inject constructor(
         coroutineScope: CoroutineScope,
         pageQuery: PageQuery = PAGE_QUERY,
         pageFilter: PageFilter = PAGE_FILTER,
-    ): SharedFlow<IPixelsPager4.Answer<Picture?>> {
+    ): Flow<IPixelsPager4.Answer<Picture?>> {
         pixelsPager = IPixelsPager4.Builder(
             coroutineScope = coroutineScope,
             sourceDataBlock = { pageNumber, _ -> dataSource(pageNumber, pageQuery, pageFilter) },
@@ -54,7 +55,9 @@ public class GetSuitablePicturesScreenPager4UseCase @Inject constructor(
             .setLoadStrategy(IPixelsPager4.LoadStrategy.SEQUENTIALLY)
             .build()
 
-        return pixelsPager?.getPages() ?: throw IllegalStateException("Property pager must initialize.")
+        return pixelsPager?.getPages()
+            ?.onEach { (_, meta) -> if (!meta.empty) pixelsPager?.changePlaceholdersStrategy(IPixelsPager4.PlaceholdersStrategy.WITH) }
+            ?: throw IllegalStateException("Property pager must initialize.")
     }
 
     public fun nextPage() {
