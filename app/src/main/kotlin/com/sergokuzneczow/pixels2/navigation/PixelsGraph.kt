@@ -4,6 +4,7 @@ import android.content.Intent
 import android.net.Uri
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
+import com.sergokuzneczow.application_setup.api.applicationSetupScreenDestination
 import com.sergokuzneczow.bottom_sheet_page_filter.api.bottomSheetPageFilterScreenDestination
 import com.sergokuzneczow.bottom_sheet_picture_info.api.bottomSheetPictureInfoDestination
 import com.sergokuzneczow.dialog_page_filter.api.dialogPageFilterScreenDestination
@@ -19,6 +20,7 @@ internal fun NavGraphBuilder.pixelsGraph(
     onSavePicture: (String, (Result<Uri>) -> Unit) -> Unit,
     popBackStack: () -> Unit,
     backMainMenu: () -> Unit,
+    navigateToApplicationSetupDestination: (navOptions: NavOptions?) -> Unit,
     navigateToMainMenuDestination: (navOptions: NavOptions?) -> Unit,
     navigateToSuitablePicturesDestination: (pageKey: Long) -> Unit,
     navigateToBottomSheetPageFilterDestination: (pageKey: Long, navOptions: NavOptions?) -> Unit,
@@ -27,7 +29,12 @@ internal fun NavGraphBuilder.pixelsGraph(
 ) {
     splashScreenDestination(
         onChangeProgressBar = onChangeProgressBar,
-        navigateToMainMenu = navigateToMainMenuDestination
+        navigateToMainMenu = navigateToMainMenuDestination,
+        navigateToApplicationSetup = navigateToApplicationSetupDestination,
+    )
+    applicationSetupScreenDestination(
+        onChangeProgressBar = onChangeProgressBar,
+        navigateToMainMenu = navigateToMainMenuDestination,
     )
     mainMenuScreenDestination(
         onShowSnackbar = onShowSnackbar,

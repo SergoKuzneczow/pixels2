@@ -1,6 +1,7 @@
 package com.sergokuzneczow.pixels2
 
 import android.app.Application
+import com.sergokuzneczow.application_setup.impl.di.ApplicationSetupFeatureDependencies
 import com.sergokuzneczow.bottom_sheet_page_filter.impl.di.BottomSheetPageFilterDependencies
 import com.sergokuzneczow.bottom_sheet_picture_info.impl.di.BottomSheetPictureInformationFeatureDependencies
 import com.sergokuzneczow.dialog_page_filter.impl.di.DialogPageFilterDependencies
@@ -25,7 +26,8 @@ public class PixelsApplication : Application(),
     SelectedPictureFeatureDependencies.Contract,
     BottomSheetPictureInformationFeatureDependencies.Contract,
     SplashFeatureDependencies.Contract,
-    ServiceSavePictureFeatureDependencies.Contract {
+    ServiceSavePictureFeatureDependencies.Contract,
+    ApplicationSetupFeatureDependencies.Contract {
 
     internal val pixelsComponent: PixelsComponent by lazy {
         DaggerPixelsComponent.builder()
@@ -57,4 +59,6 @@ public class PixelsApplication : Application(),
     override fun splashFeatureDependenciesProvide(): SplashFeatureDependencies = applicationComponent
 
     override fun serviceSavePictureFeatureDependenciesProvider(): ServiceSavePictureFeatureDependencies = applicationComponent
+
+    override fun applicationSetupFeatureDependencies(): ApplicationSetupFeatureDependencies = applicationComponent
 }

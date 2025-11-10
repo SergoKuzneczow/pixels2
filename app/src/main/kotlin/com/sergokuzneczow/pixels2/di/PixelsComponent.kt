@@ -2,6 +2,7 @@ package com.sergokuzneczow.pixels2.di
 
 import android.content.Context
 import androidx.annotation.NonUiContext
+import com.sergokuzneczow.application_setup.impl.di.ApplicationSetupFeatureDependencies
 import com.sergokuzneczow.bottom_sheet_page_filter.impl.di.BottomSheetPageFilterDependencies
 import com.sergokuzneczow.bottom_sheet_picture_info.impl.di.BottomSheetPictureInformationFeatureDependencies
 import com.sergokuzneczow.dialog_page_filter.impl.di.DialogPageFilterDependencies
@@ -43,8 +44,8 @@ internal interface PixelsComponent :
     SelectedPictureFeatureDependencies,
     BottomSheetPictureInformationFeatureDependencies,
     SplashFeatureDependencies,
-    ServiceSavePictureFeatureDependencies
-{
+    ServiceSavePictureFeatureDependencies,
+    ApplicationSetupFeatureDependencies {
     override val imageLoaderApi: ImageLoaderApi
     override val storageRepositoryApi: StorageRepositoryApi
     override val getSuitablePicturesScreenPager4UseCase: GetSuitablePicturesScreenPager4UseCase

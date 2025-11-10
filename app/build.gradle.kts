@@ -17,8 +17,6 @@ android {
         targetSdk = 36
         versionCode = 1
         versionName = "1.0"
-
-//        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
@@ -61,6 +59,7 @@ dependencies {
     implementation(project(":feature:selected_picture"))
     implementation(project(":feature:bottom_sheet_picture_info"))
     implementation(project(":feature:service_save_picture"))
+    implementation(project(":feature:application_setup"))
     // Android compose
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.foundation.layout)
@@ -89,10 +88,4 @@ dependencies {
     // Coil
     implementation(libs.coil.compose)
     implementation(libs.coil.network.okhttp)
-//    //Tests
-//    testImplementation(libs.junit)
-//    androidTestImplementation(libs.androidx.junit)
-//    androidTestImplementation(libs.androidx.espresso.core)
-//    androidTestImplementation(platform(libs.androidx.compose.bom))
-//    androidTestImplementation(libs.androidx.ui.test.junit4)
 }

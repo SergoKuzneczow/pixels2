@@ -6,6 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.NavHost
+import com.sergokuzneczow.application_setup.api.navigateToApplicationSetupScreenDestination
 import com.sergokuzneczow.bottom_sheet_page_filter.api.navigateToBottomSheetPageFilterDestination
 import com.sergokuzneczow.bottom_sheet_picture_info.api.navigateToBottomSheetPictureInfoDestination
 import com.sergokuzneczow.main_menu.api.navigateToMainMenuDestination
@@ -35,6 +36,7 @@ internal fun PixelsNavHost(
             onSavePicture = onSavePicture,
             popBackStack = { applicationState.navController.popBackStack() },
             backMainMenu = { applicationState.mainMenuDestination?.let { applicationState.navController.popBackStack(route = it.route!!, inclusive = false, saveState = true) } },
+            navigateToApplicationSetupDestination = { navOptions: NavOptions? -> applicationState.navController.navigateToApplicationSetupScreenDestination(navOptions) },
             navigateToMainMenuDestination = { navOptions: NavOptions? -> applicationState.navController.navigateToMainMenuDestination(navOptions) },
             navigateToSuitablePicturesDestination = { pageKey: Long -> applicationState.navController.navigateToSuitablePicturesRoute(pageKey) },
             navigateToSelectedPictureDestination = { pictureKey: String -> applicationState.navController.navigateToSelectedPictureDestination(pictureKey) },
