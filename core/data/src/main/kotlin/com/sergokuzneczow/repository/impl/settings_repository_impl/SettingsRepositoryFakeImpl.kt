@@ -7,8 +7,8 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 
 public class SettingsRepositoryFakeImpl @Inject constructor(
-    public val getSettingsReturn: (() -> ApplicationSettings?)? = null,
-    public val getSettingsAsFlowReturn: (() -> MutableStateFlow<ApplicationSettings?>)? = null,
+    public var getSettingsReturn: (() -> ApplicationSettings?)? = null,
+    public var getSettingsAsFlowReturn: (() -> MutableStateFlow<ApplicationSettings?>)? = null,
 ) : SettingsRepositoryApi {
 
     override suspend fun getSettings(): ApplicationSettings? = getSettingsReturn?.invoke()
@@ -19,6 +19,7 @@ public class SettingsRepositoryFakeImpl @Inject constructor(
     }
 
     override suspend fun setSettings(applicationSettings: ApplicationSettings) {
+        getSettingsReturn = { applicationSettings }
         getSettingsAsFlowReturn?.invoke()?.emit(applicationSettings)
     }
 }
