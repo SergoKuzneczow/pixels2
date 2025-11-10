@@ -6,7 +6,7 @@ import com.sergokuzneczow.domain.get_first_page_key_use_case.GetFirstPageKeyUseC
 import com.sergokuzneczow.domain.get_home_screen_pager_use_case.GetHomeScreenPager4UseCase
 import com.sergokuzneczow.domain.pager4.IPixelsPager4
 import com.sergokuzneczow.home.impl.HomeListUiState
-import com.sergokuzneczow.home.impl.toSuggestedQueriesPages
+import com.sergokuzneczow.home.impl.models.toSuggestedQueriesPages
 import com.sergokuzneczow.models.PageFilter
 import com.sergokuzneczow.models.PageQuery
 import com.sergokuzneczow.models.PictureWithRelations
