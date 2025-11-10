@@ -14,15 +14,15 @@ import com.sergokuzneczow.splash.impl.view_model.SplashScreenViewModelFactory
 internal fun SplashRootScreen(
     onChangeProgressBar: (isVisible: Boolean) -> Unit,
     navigateToMainMenu: (NavOptions?) -> Unit,
+    navigateToApplicationSetup: (NavOptions?) -> Unit,
 ) {
     val vm: SplashScreenViewModel = viewModel(factory = SplashScreenViewModelFactory(context = LocalContext.current))
     val uiState: SplashScreenUiState by vm.uiState.collectAsStateWithLifecycle()
 
     SplashScreen(
         uiState = uiState,
-        onChangeThemeStateClick = { vm.setIntent(SplashScreenIntent.SelectThemeState(themeState = it)) },
         onChangeProgressBar = onChangeProgressBar,
-        onDoneClick = { vm.setIntent(SplashScreenIntent.Done) },
         navigateToMainMenu = navigateToMainMenu,
+        navigateToApplicationSetup = navigateToApplicationSetup,
     )
 }
