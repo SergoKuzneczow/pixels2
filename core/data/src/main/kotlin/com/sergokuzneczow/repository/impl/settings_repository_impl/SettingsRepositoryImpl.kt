@@ -1,4 +1,4 @@
-package com.sergokuzneczow.repository.impl
+package com.sergokuzneczow.repository.impl.settings_repository_impl
 
 import com.sergokuzneczow.database.api.PixelsDatabaseDataSourceApi
 import com.sergokuzneczow.models.ApplicationSettings
