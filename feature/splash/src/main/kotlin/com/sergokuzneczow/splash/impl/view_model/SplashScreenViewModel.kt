@@ -11,7 +11,6 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.launch
 
 internal class SplashScreenViewModel(
     private val settingsRepositoryApi: SettingsRepositoryApi,
@@ -25,8 +24,8 @@ internal class SplashScreenViewModel(
         runCatching { settingsRepositoryApi.getSettings() }
             .onSuccess { applicationSettings ->
                 delay(1_500)
-                if (applicationSettings == null) emit(SplashScreenUiState.NotHaveSettings)
-                else emit(SplashScreenUiState.HaveSettings)
+                if (applicationSettings != null) emit(SplashScreenUiState.HaveSettings)
+                else emit(SplashScreenUiState.NotHaveSettings)
             }
             .onFailure {
                 delay(3_000)
