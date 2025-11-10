@@ -39,7 +39,7 @@ public class PixelsPager4<T>(
     private val updateDuration: Long,
     private val startStrategy: StartStrategy,
     private val loadStrategy: LoadStrategy,
-    private val placeholdersStrategy: PlaceholdersStrategy,
+    private var placeholdersStrategy: PlaceholdersStrategy,
     private val refreshStrategy: RefreshStrategy,
 ) : IPixelsPager4<T> {
 
@@ -125,6 +125,10 @@ public class PixelsPager4<T>(
                 LoadStrategy.PARALLEL -> whenLoadStrategyIsParallel()
             }
         }
+    }
+
+    override fun changePlaceholdersStrategy(newPlaceholdersStrategy: PlaceholdersStrategy) {
+        placeholdersStrategy = newPlaceholdersStrategy
     }
 
     private fun whenLoadStrategyIsSequentially() {

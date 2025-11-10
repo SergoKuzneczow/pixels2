@@ -19,6 +19,8 @@ public interface IPixelsPager4<T> {
 
     public fun nextPage()
 
+    public fun changePlaceholdersStrategy(newPlaceholdersStrategy: PlaceholdersStrategy)
+
     public enum class StartStrategy {
         INSTANTLY,
         LAZY,
