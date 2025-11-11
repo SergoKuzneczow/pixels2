@@ -9,6 +9,10 @@ android {
     namespace = "com.sergokuzneczow.utilities"
     compileSdk = 36
 
+    buildFeatures {
+        buildConfig = true
+    }
+
     defaultConfig {
         minSdk = 24
     }

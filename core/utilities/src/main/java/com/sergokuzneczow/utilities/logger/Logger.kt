@@ -1,8 +1,9 @@
 package com.sergokuzneczow.utilities.logger
 
 import android.util.Log
+import com.sergokuzneczow.utilities.BuildConfig
 
-public const val loggingEnabled: Boolean = true
+public val loggingEnabled: Boolean = BuildConfig.DEBUG
 
 public enum class Level(public val const: Int) {
     VERBOSE(Log.VERBOSE),
