@@ -4,51 +4,70 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.sergokuzneczow.domain.get_first_page_key_use_case.GetFirstPageKeyUseCase
 import com.sergokuzneczow.domain.get_home_screen_pager_use_case.GetHomeScreenPager4UseCase
-import com.sergokuzneczow.domain.pager4.IPixelsPager4
+import com.sergokuzneczow.home.impl.HomeListIntent
 import com.sergokuzneczow.home.impl.HomeListUiState
 import com.sergokuzneczow.home.impl.models.toSuggestedQueriesPages
 import com.sergokuzneczow.models.PageFilter
 import com.sergokuzneczow.models.PageQuery
-import com.sergokuzneczow.models.PictureWithRelations
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.FlowCollector
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.merge
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 
 internal class HomeScreenViewModel(
     private val getHomeScreenPager4UseCase: GetHomeScreenPager4UseCase,
     private val getFirstPageKeyUseCase: GetFirstPageKeyUseCase,
 ) : ViewModel() {
 
-    private val homeListUiState: MutableStateFlow<HomeListUiState> = MutableStateFlow(HomeListUiState.Loading())
+    private var currentUiState: HomeListUiState = HomeListUiState.Loading
 
-    private val exceptionsFlow: MutableStateFlow<String?> = MutableStateFlow(null)
+    private val currentUiStateMutex: Mutex = Mutex()
 
-    init {
-        getHomeScreenPager4UseCase.execute(coroutineScope = viewModelScope + Dispatchers.IO)
-            .onEach { answer: IPixelsPager4.Answer<PictureWithRelations?> ->
-                if (answer.pages.values.last().pageState is IPixelsPager4.Answer.Page.PageState.Error) {
-                    exceptionsFlow.emit((answer.pages.values.last().pageState as IPixelsPager4.Answer.Page.PageState.Error).message)
-                } else exceptionsFlow.emit(null)
+    private val intentListener: MutableSharedFlow<HomeListIntent> = MutableSharedFlow()
 
-                homeListUiState.emit(HomeListUiState.Success(suggestedQueriesPages = answer.toSuggestedQueriesPages()))
-            }.launchIn(viewModelScope)
+    internal val uiState: StateFlow<HomeListUiState> = merge(
+        flow {
+            updateCurrentUiState { HomeListUiState.Success(suggestedQueriesPages = null) }
+
+            getHomeScreenPager4UseCase.execute(coroutineScope = viewModelScope + Dispatchers.IO).collect { answer ->
+                updateCurrentUiState { HomeListUiState.Success(suggestedQueriesPages = answer.toSuggestedQueriesPages()) }
+            }
+        },
+        flow {
+            intentListener.collect { intent ->
+                when (intent) {
+                    HomeListIntent.NextPage -> getHomeScreenPager4UseCase.nextPage()
+                    is HomeListIntent.SelectQuery -> {
+                        val pageKey: Long? = getFirstPageKeyUseCase.execute(intent.pageQuery, intent.pageFilter)
+                        pageKey?.let { pageKey -> updateCurrentUiState { HomeListUiState.OpenSelectedQuery(pageKey) } }
+                    }
+                }
+            }
+        }
+    ).stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(stopTimeoutMillis = 5_000),
+        initialValue = currentUiState,
+    )
+
+    fun setIntent(intent: HomeListIntent) {
+        viewModelScope.launch { intentListener.emit(intent) }
     }
 
-    fun getHomeListUiState(): StateFlow<HomeListUiState> = homeListUiState.asStateFlow()
-
-    fun getExceptionsFlow(): StateFlow<String?> = exceptionsFlow.asStateFlow()
-
-    fun nextPage(): Unit = getHomeScreenPager4UseCase.nextPage()
-
-    fun getPageKey(pageQuery: PageQuery, pageFilter: PageFilter, completed: (pageKey: Long) -> Unit) {
-        viewModelScope.launch {
-            val pageKey: Long? = getFirstPageKeyUseCase.execute(pageQuery = pageQuery, pageFilter = pageFilter)
-            pageKey?.let { pageKey -> completed.invoke(pageKey) }
+    private suspend fun FlowCollector<HomeListUiState>.updateCurrentUiState(block: () -> HomeListUiState) {
+        currentUiStateMutex.withLock {
+            currentUiState = block.invoke()
+            emit(currentUiState)
         }
     }
 }
