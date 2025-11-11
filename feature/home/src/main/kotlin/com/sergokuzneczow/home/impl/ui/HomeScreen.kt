@@ -8,16 +8,15 @@ import com.sergokuzneczow.models.PageQuery
 @Composable
 internal fun HomeScreen(
     uiState: HomeListUiState,
+    onChangeProgressBar: (isVisible: Boolean) -> Unit,
     onSelectQuery: (PageQuery, PageFilter) -> Unit,
     nextPage: () -> Unit,
-    navigateToSuitablePicturesDestination: (Long) -> Unit,
 ) {
     when (uiState) {
-        is HomeListUiState.Loading -> {
-
-        }
+        is HomeListUiState.Loading -> onChangeProgressBar.invoke(true)
 
         is HomeListUiState.Success -> {
+            onChangeProgressBar.invoke(false)
             HomeList(
                 standardQuery = uiState.standardQuery,
                 suggestedQueriesPages = uiState.suggestedQueriesPages,
@@ -25,7 +24,5 @@ internal fun HomeScreen(
                 nextPage = nextPage
             )
         }
-
-        is HomeListUiState.OpenSelectedQuery -> navigateToSuitablePicturesDestination.invoke(uiState.pageKey)
     }
 }

@@ -16,12 +16,14 @@ public fun NavController.navigateToHomeDestination(navOptions: NavOptions) {
 }
 
 public fun NavGraphBuilder.composableHomeDestination(
+    onChangeProgressBar: (isVisible: Boolean) -> Unit,
     onShowSnackbar: suspend (message: String, actionOrNull: String?) -> Unit,
     titleTextState: MutableState<String>,
     navigateToSuitablePicturesDestination: (pageKey: Long) -> Unit,
 ) {
     composable<HomeScreenRoute> {
         HomeScreenRoot(
+            onChangeProgressBar = onChangeProgressBar,
             onShowSnackbar = onShowSnackbar,
             titleTextState = titleTextState,
             navigateToSuitablePicturesDestination = navigateToSuitablePicturesDestination

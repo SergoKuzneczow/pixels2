@@ -16,6 +16,4 @@ internal sealed interface HomeListUiState {
             suggestedQueriesPages = suggestedQueriesPages
         )
     }
-
-    data class OpenSelectedQuery(val pageKey: Long) : HomeListUiState
 }

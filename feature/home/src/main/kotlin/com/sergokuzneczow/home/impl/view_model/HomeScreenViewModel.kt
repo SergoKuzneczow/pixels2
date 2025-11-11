@@ -7,15 +7,11 @@ import com.sergokuzneczow.domain.get_home_screen_pager_use_case.GetHomeScreenPag
 import com.sergokuzneczow.home.impl.HomeListIntent
 import com.sergokuzneczow.home.impl.HomeListUiState
 import com.sergokuzneczow.home.impl.models.toSuggestedQueriesPages
-import com.sergokuzneczow.models.PageFilter
-import com.sergokuzneczow.models.PageQuery
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.flow.stateIn
@@ -48,8 +44,8 @@ internal class HomeScreenViewModel(
                 when (intent) {
                     HomeListIntent.NextPage -> getHomeScreenPager4UseCase.nextPage()
                     is HomeListIntent.SelectQuery -> {
-                        val pageKey: Long? = getFirstPageKeyUseCase.execute(intent.pageQuery, intent.pageFilter)
-                        pageKey?.let { pageKey -> updateCurrentUiState { HomeListUiState.OpenSelectedQuery(pageKey) } }
+                        runCatching { getFirstPageKeyUseCase.execute(intent.pageQuery, intent.pageFilter) ?: throw IllegalStateException("Page key can't be null.") }
+                            .onSuccess { pageKey -> intent.completed.invoke(pageKey) }
                     }
                 }
             }

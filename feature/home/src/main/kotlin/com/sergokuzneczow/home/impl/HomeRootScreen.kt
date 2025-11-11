@@ -7,7 +7,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.sergokuzneczow.home.impl.HomeListIntent
 import com.sergokuzneczow.home.R
 import com.sergokuzneczow.home.impl.ui.HomeScreen
 import com.sergokuzneczow.home.impl.view_model.HomeScreenViewModel
@@ -15,6 +14,7 @@ import com.sergokuzneczow.home.impl.view_model.HomeScreenViewModelFactory
 
 @Composable
 internal fun HomeScreenRoot(
+    onChangeProgressBar: (isVisible: Boolean) -> Unit,
     onShowSnackbar: suspend (message: String, actionOrNull: String?) -> Unit,
     titleTextState: MutableState<String>,
     navigateToSuitablePicturesDestination: (pageKey: Long) -> Unit,
@@ -26,8 +26,16 @@ internal fun HomeScreenRoot(
 
     HomeScreen(
         uiState = homeListUiState,
-        onSelectQuery = { pageQuery, pageFilter -> vm.setIntent(HomeListIntent.SelectQuery(pageQuery, pageFilter)) },
+        onChangeProgressBar = onChangeProgressBar,
+        onSelectQuery = { pageQuery, pageFilter ->
+            vm.setIntent(
+                HomeListIntent.SelectQuery(
+                    pageQuery = pageQuery,
+                    pageFilter = pageFilter,
+                    completed = { navigateToSuitablePicturesDestination.invoke(it) }
+                )
+            )
+        },
         nextPage = { vm.setIntent(HomeListIntent.NextPage) },
-        navigateToSuitablePicturesDestination = navigateToSuitablePicturesDestination,
     )
 }
