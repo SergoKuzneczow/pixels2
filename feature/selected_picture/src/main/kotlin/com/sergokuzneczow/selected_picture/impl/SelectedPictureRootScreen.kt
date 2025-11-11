@@ -27,6 +27,6 @@ internal fun SelectedPictureRootScreen(
     )
 
     LaunchedEffect(uiState) {
-        uiState.exceptionMessage?.let { onShowSnackbar.invoke(it, null) }
+        uiState.exceptionMessage?.let { /*onShowSnackbar.invoke(it, null)*/ }
     }
 }
