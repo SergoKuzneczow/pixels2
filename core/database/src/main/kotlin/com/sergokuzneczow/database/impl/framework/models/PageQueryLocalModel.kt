@@ -36,7 +36,7 @@ internal fun PageQuery.toPageQueryLocalModel(): PageQueryLocalModel = when (this
 }
 
 internal fun PageQueryLocalModel.toPageQuery(): PageQuery = when (this) {
-    is PageQueryLocalModel.Empty -> PageQuery.Empty()
+    is PageQueryLocalModel.Empty -> PageQuery.Empty
     is PageQueryLocalModel.KeyWord -> PageQuery.KeyWord(this.word)
     is PageQueryLocalModel.KeyWords -> PageQuery.KeyWords(this.words, this.descriptions)
     is PageQueryLocalModel.Like -> PageQuery.Like(pictureKey = this.pictureKey, description = this.description)

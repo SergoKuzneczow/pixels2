@@ -35,7 +35,7 @@ internal class HomeScreenViewModel(
         flow {
             updateCurrentUiState { HomeListUiState.Success(suggestedQueriesPages = null) }
 
-            getHomeScreenPager4UseCase.execute(coroutineScope = viewModelScope + Dispatchers.IO).collect { answer ->
+            getHomeScreenPager4UseCase.execute(coroutineScope = viewModelScope).collect { answer ->
                 updateCurrentUiState { HomeListUiState.Success(suggestedQueriesPages = answer.toSuggestedQueriesPages()) }
             }
         },

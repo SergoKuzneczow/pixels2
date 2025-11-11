@@ -26,20 +26,20 @@ internal fun List<PictureWithRelations?>.toSuggestedQueriesNew(): List<Suggested
     var typePosition = 0
     return this.mapIndexed { _, picture ->
         when (typePosition) {
-            3 -> {
+            2 -> {
                 typePosition++
                 val colorName: String? = picture?.let { if (it.colors.isNotEmpty()) it.colors[0].name else null }
                 if (colorName != null) {
                     SuggestedQueriesPage.SuggestedQuery(
                         description = "Color $colorName",
                         previewPath = picture.picture.original,
-                        pageQuery = PageQuery.Empty(),
+                        pageQuery = PageQuery.Empty,
                         pageFilter = PageFilter.DEFAULT.copy(pictureColor = PageFilter.PictureColor(colorName)),
                     )
                 } else null
             }
 
-            6 -> {
+            5 -> {
                 /**
                  * Обнуление типа специального Item для зацикливания.*/
                 typePosition = 0

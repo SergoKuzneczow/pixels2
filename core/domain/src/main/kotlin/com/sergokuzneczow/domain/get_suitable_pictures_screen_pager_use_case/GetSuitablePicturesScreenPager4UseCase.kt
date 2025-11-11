@@ -17,7 +17,7 @@ public class GetSuitablePicturesScreenPager4UseCase @Inject constructor(
     private val pageRepositoryApi: PageRepositoryApi,
 ) {
     private companion object {
-        private val PAGE_QUERY = PageQuery.Empty()
+        private val PAGE_QUERY = PageQuery.Empty
         private val PAGE_FILTER = PageFilter(
             pictureSorting = PageFilter.PictureSorting.RANDOM,
             pictureOrder = PageFilter.PictureOrder.DESC,

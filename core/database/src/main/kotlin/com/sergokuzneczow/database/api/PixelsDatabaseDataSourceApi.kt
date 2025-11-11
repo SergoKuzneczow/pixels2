@@ -12,7 +12,7 @@ public interface PixelsDatabaseDataSourceApi {
 
     public suspend fun setPageGetKey(
         pageNumber: Int = 1,
-        pageQuery: PageQuery = PageQuery.Empty(),
+        pageQuery: PageQuery = PageQuery.Empty,
         pageFilter: PageFilter
     ): Long?
 
@@ -22,35 +22,35 @@ public interface PixelsDatabaseDataSourceApi {
 
     public suspend fun getPageLoadTimeOrNull(
         pageNumber: Int,
-        pageQuery: PageQuery = PageQuery.Empty(),
+        pageQuery: PageQuery = PageQuery.Empty,
         pageFilter: PageFilter
     ): Long?
 
     public fun getPicturesPage(
         pageNumber: Int,
-        pageQuery: PageQuery = PageQuery.Empty(),
+        pageQuery: PageQuery = PageQuery.Empty,
         pageFilter: PageFilter,
     ): Flow<List<Picture>>
 
     public fun getPicturesWithRelationsPage(
         pageNumber: Int,
-        pageQuery: PageQuery = PageQuery.Empty(),
+        pageQuery: PageQuery = PageQuery.Empty,
         pageFilter: PageFilter,
     ): Flow<List<PictureWithRelations>>
 
-    public suspend fun deletePages(pageQuery: PageQuery = PageQuery.Empty(), pageFilter: PageFilter)
+    public suspend fun deletePages(pageQuery: PageQuery = PageQuery.Empty, pageFilter: PageFilter)
 
     public suspend fun clearAndInsertPictures(
         pictures: List<Picture>,
         pageNumber: Int,
-        pageQuery: PageQuery = PageQuery.Empty(),
+        pageQuery: PageQuery = PageQuery.Empty,
         pageFilter: PageFilter,
     )
 
     public suspend fun clearAndInsertPicturesWithRelations(
         pictureWithRelations: List<PictureWithRelations>,
         pageNumber: Int,
-        pageQuery: PageQuery = PageQuery.Empty(),
+        pageQuery: PageQuery = PageQuery.Empty,
         pageFilter: PageFilter,
     )
 

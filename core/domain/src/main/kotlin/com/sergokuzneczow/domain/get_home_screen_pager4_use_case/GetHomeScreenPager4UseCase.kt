@@ -11,11 +11,11 @@ import jakarta.inject.Inject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 
-public class GetHomeScreenPager4UseCase @Inject constructor(
+public open class GetHomeScreenPager4UseCase @Inject constructor(
     private val pageRepositoryApi: PageRepositoryApi,
 ) {
     private companion object {
-        private val PAGE_QUERY = PageQuery.Empty()
+        private val PAGE_QUERY = PageQuery.Empty
         private val PAGE_FILTER = PageFilter(
             pictureSorting = PageFilter.PictureSorting.RANDOM,
             pictureOrder = PageFilter.PictureOrder.DESC,
@@ -36,7 +36,7 @@ public class GetHomeScreenPager4UseCase @Inject constructor(
 
     private var pixelsPager: IPixelsPager4<PictureWithRelations>? = null
 
-    public fun execute(
+    public open fun execute(
         coroutineScope: CoroutineScope,
     ): Flow<IPixelsPager4.Answer<PictureWithRelations?>> {
         pixelsPager = IPixelsPager4.Builder(
@@ -53,7 +53,7 @@ public class GetHomeScreenPager4UseCase @Inject constructor(
         return pixelsPager?.getPages() ?: throw IllegalStateException("Property pixelsPager must initialize.")
     }
 
-    public fun nextPage() {
+    public open fun nextPage() {
         pixelsPager?.nextPage()
     }
 
