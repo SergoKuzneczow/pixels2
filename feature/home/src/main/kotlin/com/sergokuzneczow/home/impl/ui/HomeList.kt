@@ -44,13 +44,14 @@ import androidx.window.core.layout.WindowSizeClass.Companion.WIDTH_DP_MEDIUM_LOW
 import coil3.compose.AsyncImagePainter
 import coil3.compose.rememberAsyncImagePainter
 import com.sergokuzneczow.core.system_components.progress_indicators.PixelsProgressAnimatedVisibilityIndicator
+import com.sergokuzneczow.core.system_components.progress_indicators.PixelsProgressIndicator
 import com.sergokuzneczow.core.ui.Dimensions
 import com.sergokuzneczow.core.ui.PixelsTheme
 import com.sergokuzneczow.core.utilites.ThemePreviews
 import com.sergokuzneczow.home.impl.HomeListUiState
-import com.sergokuzneczow.home.impl.StandardQuery
-import com.sergokuzneczow.home.impl.SuggestedQueriesPage
-import com.sergokuzneczow.home.impl.SuggestedQueriesPage.SuggestedQuery
+import com.sergokuzneczow.home.impl.models.StandardQuery
+import com.sergokuzneczow.home.impl.models.SuggestedQueriesPage
+import com.sergokuzneczow.home.impl.models.SuggestedQueriesPage.SuggestedQuery
 import com.sergokuzneczow.models.PageFilter
 import com.sergokuzneczow.models.PageQuery
 
@@ -59,8 +60,9 @@ private val ITEM_PADDINGS: Dp = 4.dp
 
 @Composable
 internal fun HomeList(
-    homeListUiState: HomeListUiState,
-    itemClick: (PageQuery, PageFilter) -> Unit,
+    standardQuery: List<StandardQuery>?,
+    suggestedQueriesPages: List<SuggestedQueriesPage>?,
+    onItemClick: (PageQuery, PageFilter) -> Unit,
     nextPage: () -> Unit,
 ) {
     LazyColumn(
@@ -72,31 +74,27 @@ internal fun HomeList(
         ),
         modifier = Modifier.fillMaxSize()
     ) {
-        when (homeListUiState) {
-            is HomeListUiState.Loading -> {
-                item {
-                    StandardQueries(
-                        standardQueries = homeListUiState.standardQuery,
-                        itemClick = itemClick,
-                    )
-                }
-            }
 
-            is HomeListUiState.Success -> {
-                item {
-                    StandardQueries(
-                        standardQueries = homeListUiState.standardQuery,
-                        itemClick = itemClick,
-                    )
-                }
-                item { Spacer(modifier = Modifier.height(PADDING_BETWEEN_BLOCKS)) }
-                itemsIndexed(homeListUiState.suggestedQueriesPages) { position, page ->
-                    SuggestedQueriesPage(
-                        suggestedQueriesPage = page,
-                        itemClick = itemClick,
-                    )
-                    if (homeListUiState.suggestedQueriesPages.size - 4 < position) nextPage.invoke()
-                }
+        standardQuery?.let { queries ->
+            item {
+                StandardQueries(
+                    standardQueries = queries,
+                    itemClick = onItemClick,
+                )
+            }
+        }
+
+        if (suggestedQueriesPages == null) {
+            item { Spacer(modifier = Modifier.height(PADDING_BETWEEN_BLOCKS)) }
+            item { Box(modifier = Modifier.fillMaxWidth()) { PixelsProgressIndicator() } }
+        } else {
+            item { Spacer(modifier = Modifier.height(PADDING_BETWEEN_BLOCKS)) }
+            itemsIndexed(suggestedQueriesPages) { position, page ->
+                SuggestedQueriesPage(
+                    suggestedQueriesPage = page,
+                    itemClick = onItemClick,
+                )
+                if (suggestedQueriesPages.size - 2 < position) nextPage.invoke()
             }
         }
     }
@@ -168,7 +166,7 @@ private fun SuggestedQueriesPage(
                     PixelsProgressAnimatedVisibilityIndicator(
                         progressIndicatorVisible,
                         Dimensions.SmallProgressBarSize,
-                        )
+                    )
                 }
             }
         }
@@ -192,6 +190,7 @@ private fun BoxScope.PictureItem(
     }
     when (success) {
         true -> {
+            onPictureLoaded.invoke(false)
             Image(
                 painter = painter,
                 contentDescription = previewPath,
@@ -212,7 +211,6 @@ private fun BoxScope.PictureItem(
                 textAlign = TextAlign.Center,
                 modifier = Modifier.align(Alignment.Center)
             )
-            onPictureLoaded.invoke(false)
         }
 
         false -> onPictureLoaded.invoke(true)
@@ -260,7 +258,7 @@ private fun StandardQueriesPreview() {
     PixelsTheme {
         Surface {
             StandardQueries(
-                standardQueries = HomeListUiState.Loading().standardQuery,
+                standardQueries = HomeListUiState.Success(null).standardQuery,
                 itemClick = { _, _ -> }
             )
         }
@@ -303,41 +301,24 @@ private fun SuggestedQueriesPagePreview() {
 @ThemePreviews
 @Composable
 private fun HomeListSuccess() {
-    val homeListUiState = HomeListUiState.Success(
-        suggestedQueriesPages = listOf(
-            SuggestedQueriesPage(
-                items = listOf(
-                    SuggestedQuery(
-                        description = "",
-                        previewPath = "",
-                        pageQuery = PageQuery.DEFAULT,
-                        pageFilter = PageFilter.DEFAULT,
-                    ),
-                )
-            )
-        )
-    )
     PixelsTheme {
         Surface {
             HomeList(
-                homeListUiState = homeListUiState,
-                itemClick = { _, _ -> },
-                nextPage = {},
-            )
-        }
-    }
-}
-
-@ThemePreviews
-@Composable
-private fun HomeListLoading() {
-    val homeListUiState = HomeListUiState.Loading()
-    PixelsTheme {
-        Surface {
-            HomeList(
-                homeListUiState = homeListUiState,
-                itemClick = { _, _ -> },
-                nextPage = {},
+                standardQuery = StandardQuery.standardQueries,
+                suggestedQueriesPages = listOf(
+                    SuggestedQueriesPage(
+                        items = listOf(
+                            SuggestedQuery(
+                                description = "Description",
+                                previewPath = "Preview path",
+                                pageQuery = PageQuery.DEFAULT,
+                                pageFilter = PageFilter.DEFAULT,
+                            ),
+                        )
+                    )
+                ),
+                onItemClick = { _, _ -> },
+                nextPage = {}
             )
         }
     }
