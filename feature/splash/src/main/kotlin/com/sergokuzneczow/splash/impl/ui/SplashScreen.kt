@@ -28,14 +28,10 @@ internal fun SplashScreen(
     Box(modifier = Modifier.fillMaxSize()) {
         when (uiState) {
             SplashScreenUiState.Loading -> onChangeProgressBar.invoke(true)
-            SplashScreenUiState.NotHaveSettings -> {
-                onChangeProgressBar.invoke(true)
-                navigateToApplicationSetup.invoke(navOptions)
-            }
 
-            SplashScreenUiState.HaveSettings -> {
-                onChangeProgressBar.invoke(false) // change on true when global progress bar will be using in all features
-                navigateToMainMenu.invoke(navOptions)
+            is SplashScreenUiState.Success -> {
+                if (uiState.hasSettings) navigateToMainMenu.invoke(navOptions)
+                else navigateToApplicationSetup.invoke(navOptions)
             }
         }
     }
