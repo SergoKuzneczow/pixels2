@@ -1,4 +1,4 @@
-package com.sergokuzneczow.domain.get_home_screen_pager_use_case
+package com.sergokuzneczow.domain.get_home_screen_pager4_use_case
 
 import com.sergokuzneczow.domain.pager4.IPixelsPager4
 import com.sergokuzneczow.models.PageFilter

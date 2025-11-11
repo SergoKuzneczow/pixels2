@@ -3,7 +3,7 @@ package com.sergokuzneczow.home.impl.di
 import android.app.Application
 import android.content.Context
 import com.sergokuzneczow.domain.get_first_page_key_use_case.GetFirstPageKeyUseCase
-import com.sergokuzneczow.domain.get_home_screen_pager_use_case.GetHomeScreenPager4UseCase
+import com.sergokuzneczow.domain.get_home_screen_pager4_use_case.GetHomeScreenPager4UseCase
 import com.sergokuzneczow.repository.api.ImageLoaderApi
 
 public interface HomeFeatureDependencies {

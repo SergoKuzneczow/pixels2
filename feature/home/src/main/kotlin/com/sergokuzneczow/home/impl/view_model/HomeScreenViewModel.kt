@@ -3,7 +3,7 @@ package com.sergokuzneczow.home.impl.view_model
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.sergokuzneczow.domain.get_first_page_key_use_case.GetFirstPageKeyUseCase
-import com.sergokuzneczow.domain.get_home_screen_pager_use_case.GetHomeScreenPager4UseCase
+import com.sergokuzneczow.domain.get_home_screen_pager4_use_case.GetHomeScreenPager4UseCase
 import com.sergokuzneczow.home.impl.HomeListIntent
 import com.sergokuzneczow.home.impl.HomeListUiState
 import com.sergokuzneczow.home.impl.models.toSuggestedQueriesPages

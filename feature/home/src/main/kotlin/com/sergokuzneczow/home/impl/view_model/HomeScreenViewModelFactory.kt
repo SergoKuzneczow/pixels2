@@ -5,7 +5,7 @@ import androidx.annotation.NonUiContext
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.sergokuzneczow.domain.get_first_page_key_use_case.GetFirstPageKeyUseCase
-import com.sergokuzneczow.domain.get_home_screen_pager_use_case.GetHomeScreenPager4UseCase
+import com.sergokuzneczow.domain.get_home_screen_pager4_use_case.GetHomeScreenPager4UseCase
 import com.sergokuzneczow.home.impl.di.HomeFeatureComponent
 import com.sergokuzneczow.home.impl.di.dependenciesProvider
 import javax.inject.Inject
