@@ -37,6 +37,7 @@ internal fun NavGraphBuilder.pixelsGraph(
         navigateToMainMenu = navigateToMainMenuDestination,
     )
     mainMenuScreenDestination(
+        onChangeProgressBar = onChangeProgressBar,
         onShowSnackbar = onShowSnackbar,
         navigateToSuitablePicturesDestination = navigateToSuitablePicturesDestination,
     )
