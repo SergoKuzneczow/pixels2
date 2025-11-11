@@ -1,8 +1,9 @@
 <h1 align="center">Pixels2</h1>
 <h2 align="left">О проекте</h2>
   <body>
-    <p align="left">Всем привет <img src="https://github.com/blackcater/blackcater/raw/main/images/Hi.gif" height="24"/>.
-    <br>Проект Pixels2 был создан с целью исследования возможностей Jetpack Compose. Это приложение использует открытый API сервиса <a href="https://wallhaven.cc/help/api">"wallhaven"</a> и позволяет пользователю просматривать графические ресурсы, размещённые на этом сервисе.</p>
+    <p align="left">Привет <img src="https://github.com/blackcater/blackcater/raw/main/images/Hi.gif" height="24"/>.
+    <br>Проект Pixels2 был создан с целью исследования возможностей Jetpack Compose. Это приложение использует открытый API сервиса <a href="https://wallhaven.cc/help/api">"wallhaven"</a> и позволяет пользователю просматривать графические ресурсы, размещённые на этом сервисе.
+    <br>Скачать apk файл проекта можно по <a href="https://github.com/SergoKuzneczow/pixels2/raw/refs/heads/main/app/release/app-release.apk">ссылке.</a></p>
   </body>
 <h2 align="left">Технологический стек</h2>
   <body>
@@ -44,7 +45,8 @@
 <h2 align="left">About project</h2>
   <body>
     <p align="left">Hi there <img src="https://github.com/blackcater/blackcater/raw/main/images/Hi.gif" height="24"/>.
-    <br>The project Pixels2 was created with the aim of exploring the capabilities of Jetpack Compose. This application uses the open API of the <a href="https://wallhaven.cc/help/api">"wallhaven"</a> service and allows the user to view graphic resources hosted on this service.</p>
+    <br>The project Pixels2 was created with the aim of exploring the capabilities of Jetpack Compose. This application uses the open API of the <a href="https://wallhaven.cc/help/api">"wallhaven"</a> service and allows the user to view graphic resources hosted on this service.
+    <br>You can download the project's apk file from <a href="https://github.com/SergoKuzneczow/pixels2/raw/refs/heads/main/app/release/app-release.apk">the link.</a></p>
   </body>
 <h2 align="left">Tech stack</h2>
   <body>
