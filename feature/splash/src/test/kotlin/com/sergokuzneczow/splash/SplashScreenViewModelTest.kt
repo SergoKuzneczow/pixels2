@@ -47,28 +47,30 @@ class SplashScreenViewModelTest {
     }
 
     @Test
-    fun `must return NotHaveSettings state, when getSettings() return null value`(): TestResult = runTest {
-        settingsRepositoryFakeApi = SettingsRepositoryFakeImpl(getSettingsReturn = { null })
-        splashScreenViewModel = SplashScreenViewModel(settingsRepositoryApi = settingsRepositoryFakeApi)
-
-        splashScreenViewModel.uiState.test {
-            skipItems(1) // skip LoadingState
-
-            val notHaveSettingsState: SplashScreenUiState = awaitItem()
-            assertThat(notHaveSettingsState).isInstanceOf(SplashScreenUiState.NotHaveSettings::class.java)
-        }
-    }
-
-    @Test
-    fun `must return HaveSettings state, when getSettings() return notnull value`(): TestResult = runTest {
+    fun `must return Success with hasSettings=true, when application has settings`(): TestResult = runTest {
         settingsRepositoryFakeApi = SettingsRepositoryFakeImpl(getSettingsReturn = { ApplicationSettings.DEFAULT })
         splashScreenViewModel = SplashScreenViewModel(settingsRepositoryApi = settingsRepositoryFakeApi)
 
         splashScreenViewModel.uiState.test {
             skipItems(1) // skip LoadingState
 
-            val notHaveSettingsState: SplashScreenUiState = awaitItem()
-            assertThat(notHaveSettingsState).isInstanceOf(SplashScreenUiState.HaveSettings::class.java)
+            val success: SplashScreenUiState = awaitItem()
+            assertThat(success).isInstanceOf(SplashScreenUiState.Success::class.java)
+            assertThat((success as SplashScreenUiState.Success).hasSettings).isEqualTo(true)
+        }
+    }
+
+    @Test
+    fun `must return Success with hasSettings=false, when application hasn't settings`(): TestResult = runTest {
+        settingsRepositoryFakeApi = SettingsRepositoryFakeImpl(getSettingsReturn = { null })
+        splashScreenViewModel = SplashScreenViewModel(settingsRepositoryApi = settingsRepositoryFakeApi)
+
+        splashScreenViewModel.uiState.test {
+            skipItems(1) // skip LoadingState
+
+            val success: SplashScreenUiState = awaitItem()
+            assertThat(success).isInstanceOf(SplashScreenUiState.Success::class.java)
+            assertThat((success as SplashScreenUiState.Success).hasSettings).isEqualTo(false)
         }
     }
 }
