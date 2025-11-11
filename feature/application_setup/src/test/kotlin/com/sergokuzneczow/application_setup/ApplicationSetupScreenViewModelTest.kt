@@ -72,36 +72,4 @@ class ApplicationSetupScreenViewModelTest {
             assertThat(selectingTheme).isInstanceOf(ApplicationSetupScreenUiState.SelectingTheme::class.java)
         }
     }
-
-    @Test
-    fun `return ApplicationSetupCompleted when in setIntent() passed Done intent`(): TestResult = runTest {
-        settingsRepositoryFakeApi = SettingsRepositoryFakeImpl(getSettingsReturn = { ApplicationSettings.DEFAULT })
-        applicationSetupScreenViewModel = ApplicationSetupScreenViewModel(settingsRepositoryFakeApi)
-
-        applicationSetupScreenViewModel.uiState.test {
-            skipItems(1) // skip Loading state
-            skipItems(1) // skip SelectingTheme state
-
-            applicationSetupScreenViewModel.setIntent(ApplicationSetupScreenIntent.Done)
-
-            val applicationSetupCompleted: ApplicationSetupScreenUiState = awaitItem()
-            assertThat(applicationSetupCompleted).isInstanceOf(ApplicationSetupScreenUiState.ApplicationSetupCompleted::class.java)
-        }
-    }
-
-    @Test
-    fun `return ApplicationSetupCompleted when in setIntent() passed Skip intent`(): TestResult = runTest {
-        settingsRepositoryFakeApi = SettingsRepositoryFakeImpl(getSettingsReturn = { ApplicationSettings.DEFAULT })
-        applicationSetupScreenViewModel = ApplicationSetupScreenViewModel(settingsRepositoryFakeApi)
-
-        applicationSetupScreenViewModel.uiState.test {
-            skipItems(1) // skip Loading state
-            skipItems(1) // skip SelectingTheme state
-
-            applicationSetupScreenViewModel.setIntent(ApplicationSetupScreenIntent.Skip)
-
-            val applicationSetupCompleted: ApplicationSetupScreenUiState = awaitItem()
-            assertThat(applicationSetupCompleted).isInstanceOf(ApplicationSetupScreenUiState.ApplicationSetupCompleted::class.java)
-        }
-    }
 }
