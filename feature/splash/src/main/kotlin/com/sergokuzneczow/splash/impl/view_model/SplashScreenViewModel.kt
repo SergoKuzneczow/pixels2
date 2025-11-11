@@ -26,9 +26,10 @@ internal class SplashScreenViewModel(
         var settingsChecked = false
         while (!settingsChecked) {
             runCatching { settingsRepositoryApi.getSettings() }
-                .onSuccess {
+                .onSuccess { value ->
                     settingsChecked = true
-                    emit(SplashScreenUiState.Success(hasSettings = true))
+                    if (value == null) emit(SplashScreenUiState.Success(hasSettings = false))
+                    else emit(SplashScreenUiState.Success(hasSettings = true))
                 }
                 .onFailure { delay(1_000) }
         }
