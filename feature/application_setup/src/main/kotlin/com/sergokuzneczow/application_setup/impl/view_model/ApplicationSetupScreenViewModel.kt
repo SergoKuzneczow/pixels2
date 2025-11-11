@@ -18,7 +18,6 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
-import kotlin.time.Duration.Companion.seconds
 
 internal class ApplicationSetupScreenViewModel(
     private val settingsRepositoryApi: SettingsRepositoryApi,
@@ -31,57 +30,42 @@ internal class ApplicationSetupScreenViewModel(
     private val intentListener: MutableSharedFlow<ApplicationSetupScreenIntent> = MutableSharedFlow()
 
     val uiState: StateFlow<ApplicationSetupScreenUiState> = flow {
-        runCatching {
-            val currentSettings: ApplicationSettings? = settingsRepositoryApi.getSettings()
-            if (currentSettings == null) {
-                runCatching { settingsRepositoryApi.setSettings(ApplicationSettings.DEFAULT) }
-                    .onFailure {
-                        delay(1.seconds)
-                        intentListener.emit(ApplicationSetupScreenIntent.SaveDefaultSettings)
-                    }
+
+        var settingsChecked = false
+        while (!settingsChecked) {
+            runCatching {
+                settingsRepositoryApi.setSettings(ApplicationSettings.DEFAULT)
+                settingsRepositoryApi.getSettings() ?: throw IllegalStateException("Application settings can't be null.")
+            }.onSuccess { applicationSettings ->
+                settingsChecked = true
+                updateCurrentUiState { ApplicationSetupScreenUiState.SelectingTheme(applicationSettings.systemSettings.themeState) }
+            }.onFailure {
+                delay(1_000)
             }
-            settingsRepositoryApi.getSettings() ?: throw IllegalStateException("Application settings must be initialize.")
-        }.onSuccess { applicationSettings ->
-            updateCurrentUiState { ApplicationSetupScreenUiState.SelectingTheme(applicationSettings.systemSettings.themeState) }
-        }.onFailure {
-            intentListener.emit(ApplicationSetupScreenIntent.GetCurrentThemeState)
         }
 
         intentListener.collect { intent ->
             when (intent) {
-                ApplicationSetupScreenIntent.Skip -> updateCurrentUiState { ApplicationSetupScreenUiState.ApplicationSetupCompleted }
-
-                ApplicationSetupScreenIntent.Done -> updateCurrentUiState { ApplicationSetupScreenUiState.ApplicationSetupCompleted }
-
-                ApplicationSetupScreenIntent.SaveDefaultSettings -> {
-                    runCatching { settingsRepositoryApi.setSettings(ApplicationSettings.DEFAULT) }
-                        .onSuccess { intentListener.emit(ApplicationSetupScreenIntent.GetCurrentThemeState) }
-                        .onFailure {
-                            delay(1.seconds)
-                            intentListener.emit(ApplicationSetupScreenIntent.SaveDefaultSettings)
-                        }
+                is ApplicationSetupScreenIntent.SaveDefaultSetting -> {
+                    updateSettings(
+                        settingsMapping = { it },
+                        completed = { intent.completed.invoke() }
+                    )
                 }
 
-                ApplicationSetupScreenIntent.GetCurrentThemeState -> {
-                    runCatching { settingsRepositoryApi.getSettings() ?: throw IllegalStateException("ApplicationSettings can't be null.") }
-                        .onSuccess { updateCurrentUiState { ApplicationSetupScreenUiState.SelectingTheme(it.systemSettings.themeState) } }
-                        .onFailure { intentListener.emit(ApplicationSetupScreenIntent.GetCurrentThemeState) }
-                }
-
-                is ApplicationSetupScreenIntent.ThemeSelected -> {
+                is ApplicationSetupScreenIntent.SaveThemeSetting -> {
                     updateSettings(
                         settingsMapping = { it.copy(systemSettings = it.systemSettings.copy(themeState = intent.newThemeState)) },
-                        completed = {}
+                        completed = { intent.completed.invoke() }
                     )
                 }
             }
         }
-    }.flowOn(Dispatchers.IO)
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(stopTimeoutMillis = 5_000),
-            initialValue = currentUiState,
-        )
+    }.flowOn(Dispatchers.IO).stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(stopTimeoutMillis = 5_000),
+        initialValue = currentUiState,
+    )
 
     internal fun setIntent(intent: ApplicationSetupScreenIntent) {
         viewModelScope.launch { intentListener.emit(intent) }

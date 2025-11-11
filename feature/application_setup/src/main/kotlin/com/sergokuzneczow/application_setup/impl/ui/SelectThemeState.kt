@@ -46,7 +46,7 @@ private val THEME_PREVIEW_HEIGHT: Dp = 192.dp
 @Composable
 internal fun BoxScope.SelectThemeState(
     themeState: ApplicationSettings.SystemSettings.ThemeState,
-    selectedThemeState: (themeState: ApplicationSettings.SystemSettings.ThemeState) -> Unit,
+    onThemeItemClick: (themeState: ApplicationSettings.SystemSettings.ThemeState) -> Unit,
     onDoneClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -68,7 +68,7 @@ internal fun BoxScope.SelectThemeState(
         Spacer(modifier = Modifier.height(Dimensions.LargePadding))
         ThemeStatesChoice(
             startValue = themeState,
-            onSelectValue = selectedThemeState,
+            onSelectValue = onThemeItemClick,
         )
         Spacer(modifier = Modifier.height(Dimensions.LargePadding))
         Box(
@@ -183,7 +183,7 @@ private fun SelectThemeStatePreview() {
             Box(modifier = Modifier.fillMaxWidth()) {
                 SelectThemeState(
                     themeState = ApplicationSettings.SystemSettings.ThemeState.SYSTEM,
-                    selectedThemeState = {},
+                    onThemeItemClick = {},
                     onDoneClick = {},
                     modifier = Modifier.fillMaxWidth()
                 )

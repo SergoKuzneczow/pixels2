@@ -10,26 +10,20 @@ import com.sergokuzneczow.models.ApplicationSettings
 @Composable
 internal fun ApplicationSetupScreen(
     uiState: ApplicationSetupScreenUiState,
-    onChangeThemeStateClick: (themeState: ApplicationSettings.SystemSettings.ThemeState) -> Unit,
     onChangeProgressBar: (isVisible: Boolean) -> Unit,
-    navigateToMainMenu: () -> Unit,
-    onDoneClick: () -> Unit,
+    onChangeThemeState: (themeState: ApplicationSettings.SystemSettings.ThemeState) -> Unit,
+    onDone: () -> Unit,
 ) {
     Box(modifier = Modifier.fillMaxSize()) {
         when (uiState) {
             ApplicationSetupScreenUiState.Loading -> onChangeProgressBar.invoke(true)
 
-            ApplicationSetupScreenUiState.ApplicationSetupCompleted -> {
-                onChangeProgressBar.invoke(false) // change when global progress bar will be using in all features
-                navigateToMainMenu.invoke()
-            }
-
             is ApplicationSetupScreenUiState.SelectingTheme -> {
                 onChangeProgressBar.invoke(false)
                 SelectThemeState(
                     themeState = uiState.themeState,
-                    selectedThemeState = onChangeThemeStateClick,
-                    onDoneClick = onDoneClick,
+                    onThemeItemClick = onChangeThemeState,
+                    onDoneClick = onDone,
                 )
             }
         }

@@ -1,7 +1,5 @@
 package com.sergokuzneczow.application_setup.impl
 
-import android.net.http.SslCertificate.restoreState
-import android.net.http.SslCertificate.saveState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalContext
@@ -24,10 +22,16 @@ internal fun ApplicationSetupRootScreen(
 
     ApplicationSetupScreen(
         uiState = uiState,
-        onChangeThemeStateClick = { vm.setIntent(ApplicationSetupScreenIntent.ThemeSelected(newThemeState = it)) },
+        onChangeThemeState = {
+            vm.setIntent(
+                ApplicationSetupScreenIntent.SaveThemeSetting(
+                    newThemeState = it,
+                    completed = {},
+                )
+            )
+        },
         onChangeProgressBar = onChangeProgressBar,
-        onDoneClick = { vm.setIntent(ApplicationSetupScreenIntent.Done) },
-        navigateToMainMenu = {
+        onDone = {
             val navOptions: NavOptions = navOptions {
                 popUpTo<ApplicationSetupScreenRoute> {
                     saveState = true
