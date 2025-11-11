@@ -18,6 +18,7 @@ private const val ANIMATION_DURATION: Int = 900
 
 @Composable
 internal fun MainMenuNavHost(
+    onChangeProgressBar: (isVisible: Boolean) -> Unit,
     onShowSnackbar: suspend (message: String, actionOrNull: String?) -> Unit,
     rootScreenState: MainMenuRootScreenState,
     titleTextState: MutableState<String>,
@@ -50,6 +51,7 @@ internal fun MainMenuNavHost(
         },
     ) {
         this.mainMenuGraph(
+            onChangeProgressBar = onChangeProgressBar,
             onShowSnackbar = onShowSnackbar,
             navigateToSuitablePicturesDestination = navigateToSuitablePicturesDestination,
             titleTextState = titleTextState,

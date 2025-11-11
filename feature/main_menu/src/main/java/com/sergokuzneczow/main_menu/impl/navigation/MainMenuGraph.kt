@@ -7,11 +7,13 @@ import com.sergokuzneczow.search_suitable_pictures.api.composableSearchSuitableP
 import com.sergokuzneczow.settings.api.composableSettingsScreenDestination
 
 internal fun NavGraphBuilder.mainMenuGraph(
+    onChangeProgressBar: (isVisible: Boolean) -> Unit,
     onShowSnackbar: suspend (message: String, actionOrNull: String?) -> Unit,
     titleTextState: MutableState<String>,
     navigateToSuitablePicturesDestination: (pageKey: Long) -> Unit,
 ) {
     composableHomeDestination(
+        onChangeProgressBar = onChangeProgressBar,
         onShowSnackbar = onShowSnackbar,
         navigateToSuitablePicturesDestination = navigateToSuitablePicturesDestination,
         titleTextState = titleTextState,
