@@ -10,7 +10,6 @@ import com.sergokuzneczow.utilities.logger.log
 import jakarta.inject.Inject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.SharedFlow
 
 public class GetHomeScreenPager4UseCase @Inject constructor(
     private val pageRepositoryApi: PageRepositoryApi,
@@ -39,7 +38,7 @@ public class GetHomeScreenPager4UseCase @Inject constructor(
 
     public fun execute(
         coroutineScope: CoroutineScope,
-    ): SharedFlow<IPixelsPager4.Answer<PictureWithRelations?>> {
+    ): Flow<IPixelsPager4.Answer<PictureWithRelations?>> {
         pixelsPager = IPixelsPager4.Builder(
             coroutineScope = coroutineScope,
             sourceDataBlock = { pageNumber, _ -> dataSource(pageNumber) },
