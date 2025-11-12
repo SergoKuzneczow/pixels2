@@ -2,7 +2,7 @@
 <h2 align="left">О проекте</h2>
   <body>
     <p align="left">Привет <img src="https://github.com/blackcater/blackcater/raw/main/images/Hi.gif" height="24"/>.
-    <br>Проект Pixels2 был создан с целью исследования возможностей Jetpack Compose. Это приложение использует открытый API сервиса <a href="https://wallhaven.cc/help/api">"wallhaven"</a> и позволяет пользователю просматривать графические ресурсы, размещённые на этом сервисе.
+    <br>Проект Pixels2 был создан с целью исследования возможностей Jetpack Compose. Это приложение использует открытый API сервиса <a href="https://wallhaven.cc/help/api">"wallhaven"</a> и позволяет пользователю просматривать графические ресурсы, предоставляемые данным сервисом.
     <br>Скачать apk файл проекта можно по <a href="https://github.com/SergoKuzneczow/pixels2/raw/refs/heads/main/app/release/app-release.apk">ссылке.</a></p>
   </body>
 <h2 align="left">Технологический стек</h2>
