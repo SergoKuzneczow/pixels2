@@ -19,16 +19,16 @@ internal data class SuggestedQueriesPage(
 }
 
 internal fun IPixelsPager4.Answer<PictureWithRelations?>.toSuggestedQueriesPages(): List<SuggestedQueriesPage> {
-    return this.pages.entries.map { SuggestedQueriesPage(it.value.data.toSuggestedQueriesNew()) }
+    return this.pages.entries.map { SuggestedQueriesPage(it.value.data.toSuggestedQueries()) }
 }
 
-internal fun List<PictureWithRelations?>.toSuggestedQueriesNew(): List<SuggestedQueriesPage.SuggestedQuery?> {
+internal fun List<PictureWithRelations?>.toSuggestedQueries(): List<SuggestedQueriesPage.SuggestedQuery?> {
     var typePosition = 0
     return this.mapIndexed { _, picture ->
         when (typePosition) {
             2 -> {
                 typePosition++
-                val colorName: String? = picture?.let { if (it.colors.isNotEmpty()) it.colors[0].name else null }
+                val colorName: String? = picture?.let { if (it.colors.size >= 4) it.colors[3].name else if (it.colors.isNotEmpty()) it.colors[0].name else null }
                 if (colorName != null) {
                     SuggestedQueriesPage.SuggestedQuery(
                         description = "Color $colorName",
@@ -43,7 +43,7 @@ internal fun List<PictureWithRelations?>.toSuggestedQueriesNew(): List<Suggested
                 /**
                  * Обнуление типа специального Item для зацикливания.*/
                 typePosition = 0
-                val tag: Tag? = picture?.let { if (it.tags.isNotEmpty() && it.tags.size > 5) it.tags[4] else if (it.tags.isNotEmpty()) it.tags[0] else null }
+                val tag: Tag? = picture?.let { if (it.tags.isNotEmpty() && it.tags.size >= 5) it.tags[4] else if (it.tags.isNotEmpty()) it.tags[0] else null }
                 if (tag != null) {
                     SuggestedQueriesPage.SuggestedQuery(
                         description = "#${tag.name}",

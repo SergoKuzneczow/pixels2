@@ -1,5 +1,6 @@
 package com.sergokuzneczow.home.impl.ui
 
+import android.R.attr.text
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -38,6 +39,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.core.graphics.toColorInt
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.window.core.layout.WindowSizeClass.Companion.WIDTH_DP_EXPANDED_LOWER_BOUND
 import androidx.window.core.layout.WindowSizeClass.Companion.WIDTH_DP_MEDIUM_LOWER_BOUND
@@ -162,7 +164,11 @@ private fun SuggestedQueriesPage(
                         .background(MaterialTheme.colorScheme.surfaceContainer)
                         .clickable(onClick = { if (item != null) itemClick.invoke(item.pageQuery, item.pageFilter) })
                 ) {
-                    if (item != null) PictureItem(item.previewPath, item.description, onPictureLoaded = { progressIndicatorVisible = it })
+                    item?.let {
+                        if (item.pageFilter.pictureColor != PageFilter.PictureColor.ANY)
+                            ColorItem(item.pageFilter.pictureColor.colorName, item.description, onPictureLoaded = { progressIndicatorVisible = it })
+                        else PictureItem(item.previewPath, item.description, onPictureLoaded = { progressIndicatorVisible = it })
+                    }
                     PixelsProgressAnimatedVisibilityIndicator(
                         progressIndicatorVisible,
                         Dimensions.SmallProgressBarSize,
@@ -215,6 +221,36 @@ private fun BoxScope.PictureItem(
 
         false -> onPictureLoaded.invoke(true)
     }
+}
+
+@Composable
+private fun BoxScope.ColorItem(
+    colorName: String,
+    description: String,
+    onPictureLoaded: (isLoaded: Boolean) -> Unit,
+) {
+    val itemColor = Color(colorName.toColorInt())
+    onPictureLoaded.invoke(false)
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(color = itemColor)
+    )
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .alpha(0.3f)
+            .background(Color.Black)
+    )
+    Text(
+        text = description,
+        style = MaterialTheme.typography.titleMedium,
+        color = Color(245, 244, 244, 255),
+        textAlign = TextAlign.Center,
+        modifier = Modifier
+            .align(Alignment.Center)
+            .padding(Dimensions.Padding)
+    )
 }
 
 @Composable
