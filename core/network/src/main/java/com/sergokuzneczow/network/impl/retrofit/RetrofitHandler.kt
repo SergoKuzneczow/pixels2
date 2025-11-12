@@ -9,6 +9,16 @@ import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
+/**
+ * Для получения API_KEY необходимо:
+ * 1) зарегестрироваться или авторизироваться на [wallhawent](https://wallhaven.cc/login).
+ * 2) перейти на страницу пользователя (нажав на логин аккаунта в правом верхнем углу);
+ * 3) перейти на страницу настроек аккаунта пользователя (нажав на иконку шестеренки в правом верхнем углу);
+ * 4) скопировать содержимое строки API Key и вставить в значение свойства API_KEY*/
+
+// public const val AUTH_NAME: String = "X-API-Key"
+// public const val API_KEY: String = "your api key"
+
 internal object RetrofitHandler {
 
     private const val BASE_URL = "https://wallhaven.cc/api/"
