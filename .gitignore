@@ -1,6 +1,7 @@
 *.iml
 .gradle
 /local.properties
+/.idea
 /.idea/caches
 /.idea/libraries
 /.idea/modules.xml
@@ -14,3 +15,6 @@
 .cxx
 local.properties
 core/network/src/main/java/com/sergokuzneczow/network/impl/retrofit/api/RetrofitApiSettings.kt
+/.kotlin
+app/release/baselineProfiles
+app/release/output-metadata.json
