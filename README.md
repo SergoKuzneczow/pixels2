@@ -3,7 +3,7 @@
   <body>
     <p align="left">Привет <img src="https://github.com/blackcater/blackcater/raw/main/images/Hi.gif" height="24"/>.
     <br>Проект Pixels2 был создан с целью исследования возможностей Jetpack Compose. Это приложение использует открытый API сервиса <a href="https://wallhaven.cc/help/api">"wallhaven"</a> и позволяет пользователю просматривать графические ресурсы, предоставляемые данным сервисом.
-    <br>Скачать apk файл проекта можно по <a href="https://github.com/SergoKuzneczow/pixels2/raw/refs/heads/main/app/release/app-release.apk">ссылке.</a></p>
+    <br>Скачать apk файл проекта можно по <a href="https://github.com/SergoKuzneczow/pixels2/raw/refs/heads/main/app/release/pixels2.apk">ссылке.</a></p>
   </body>
 <h2 align="left">Технологический стек</h2>
   <body>
@@ -46,7 +46,7 @@
   <body>
     <p align="left">Hi there <img src="https://github.com/blackcater/blackcater/raw/main/images/Hi.gif" height="24"/>.
     <br>The project Pixels2 was created with the aim of exploring the capabilities of Jetpack Compose. This application uses the open API of the <a href="https://wallhaven.cc/help/api">"wallhaven"</a> service and allows the user to view graphic resources hosted on this service.
-    <br>You can download the project's apk file from <a href="https://github.com/SergoKuzneczow/pixels2/raw/refs/heads/main/app/release/app-release.apk">the link.</a></p>
+    <br>You can download the project's apk file from <a href="https://github.com/SergoKuzneczow/pixels2/raw/refs/heads/main/app/release/pixels2.apk">the link.</a></p>
   </body>
 <h2 align="left">Tech stack</h2>
   <body>
