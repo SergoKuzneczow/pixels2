@@ -10,8 +10,10 @@ import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresPermission
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.Surface
@@ -24,9 +26,11 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.sergokuzneczow.core.ui.PixelsTheme
 import com.sergokuzneczow.core.ui.R
 import com.sergokuzneczow.pixels2.ui.PixelsScreen
+import com.sergokuzneczow.pixels2.utilities.PermissionRequest
+import com.sergokuzneczow.pixels2.utilities.PermissionRequest.Companion.isGranted
+import com.sergokuzneczow.pixels2.utilities.PermissionRequest.Companion.isNotGranted
 import com.sergokuzneczow.pixels2.view_model.MainActivityViewModel
 import com.sergokuzneczow.pixels2.view_model.MainActivityViewModelFactory
-
 
 internal class MainActivity : ComponentActivity() {
 
@@ -37,6 +41,12 @@ internal class MainActivity : ComponentActivity() {
 
         setContent {
             val vm: MainActivityViewModel = viewModel(factory = MainActivityViewModelFactory(LocalContext.current))
+
+            val permissionRequest = PermissionRequest(
+                permissionLauncher = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) {
+                    if (it) isGranted?.invoke() else isNotGranted?.invoke()
+                }
+            )
 
             val applicationState: PixelsState = rememberPixelsState(
                 applicationNotificationChanelId = createApplicationNotificationChannel(),
@@ -52,13 +62,23 @@ internal class MainActivity : ComponentActivity() {
                     Surface {
                         PixelsScreen(
                             applicationState = applicationState,
-                            onShowNotification = { chanelId, intent, title, message ->
+                            onShowNotification = { _, intent, title, message ->
                                 if (ActivityCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED)
                                     showNotification(chanelId = applicationState.applicationNotificationChanelId, intent, title, message)
                                 else vm.setToast("$title: $message")
                             },
                             onChangeProgressBar = { isVisible: Boolean -> vm.setProgress(isVisible) },
-                            onSavePicture = vm::loadAndSavePicture,
+                            onSavePicture = { picturePath, block ->
+                                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q
+                                    && ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
+                                ) {
+                                    permissionRequest.launch(
+                                        permission = Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                                        isPermissionGranted = { vm.loadAndSavePicture(picturePath, block) },
+                                        isPermissionNotGranter = {},
+                                    )
+                                } else vm.loadAndSavePicture(picturePath, block)
+                            },
                         )
                     }
                 }
@@ -90,7 +110,7 @@ internal class MainActivity : ComponentActivity() {
         val notification: Notification = NotificationCompat.Builder(this, chanelId)
             .setContentTitle(title)
             .setContentText(message)
-            .setSmallIcon(R.drawable.ic_selector)
+            .setSmallIcon(R.drawable.ic_floppy)
             .setContentIntent(pendingIntent)
             .build()
         NotificationManagerCompat.from(this).notify(intent.hashCode(), notification)

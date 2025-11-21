@@ -1,5 +1,6 @@
 package com.sergokuzneczow.pixels2
 
+import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.State
