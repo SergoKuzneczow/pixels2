@@ -11,6 +11,7 @@ import com.sergokuzneczow.core.ui.icons.Download
 import com.sergokuzneczow.core.ui.icons.FailureVariant
 import com.sergokuzneczow.core.ui.icons.Favorites
 import com.sergokuzneczow.core.ui.icons.Filter
+import com.sergokuzneczow.core.ui.icons.Floppy
 import com.sergokuzneczow.core.ui.icons.Home
 import com.sergokuzneczow.core.ui.icons.Information
 import com.sergokuzneczow.core.ui.icons.New
@@ -40,6 +41,7 @@ public object PixelsIcons {
     public val information: ImageVector = PixelsIcons.Information
     public val selector: ImageVector = PixelsIcons.Selector
     public val download: ImageVector = PixelsIcons.Download
+    public val floppy: ImageVector = PixelsIcons.Floppy
     public val successVariant: ImageVector = PixelsIcons.SuccessVariant
     public val failureVariant: ImageVector = PixelsIcons.FailureVariant
     public val pixels: ImageVector = PixelsIcons.Pixels
@@ -166,6 +168,16 @@ private fun Selector() {
 private fun Download() {
     Image(
         imageVector = PixelsIcons.download,
+        contentDescription = null,
+        modifier = Modifier.size(64.dp)
+    )
+}
+
+@ThemePreviews
+@Composable
+private fun Floppy() {
+    Image(
+        imageVector = PixelsIcons.floppy,
         contentDescription = null,
         modifier = Modifier.size(64.dp)
     )
