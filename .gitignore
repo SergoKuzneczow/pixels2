@@ -16,5 +16,4 @@
 local.properties
 core/network/src/main/java/com/sergokuzneczow/network/impl/retrofit/api/RetrofitApiSettings.kt
 /.kotlin
-app/release/baselineProfiles
-app/release/output-metadata.json
+app/release
