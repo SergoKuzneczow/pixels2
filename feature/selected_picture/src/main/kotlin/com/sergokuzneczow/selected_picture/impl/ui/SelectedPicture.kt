@@ -26,18 +26,18 @@ internal fun BoxScope.SelectedPicture(
     onPictureClick: () -> Unit,
 ) {
     var pictureVisible: Boolean by rememberSaveable { mutableStateOf(false) }
-    var success: Boolean by rememberSaveable { mutableStateOf(false) }
+    var loadSuccess: Boolean by rememberSaveable { mutableStateOf(false) }
     val painter: AsyncImagePainter = rememberAsyncImagePainter(picturePath)
     val state: AsyncImagePainter.State by painter.state.collectAsStateWithLifecycle()
 
     when (state) {
-        is AsyncImagePainter.State.Empty -> success = false
-        is AsyncImagePainter.State.Loading -> success = false
-        is AsyncImagePainter.State.Success -> success = true
+        is AsyncImagePainter.State.Empty -> loadSuccess = false
+        is AsyncImagePainter.State.Loading -> loadSuccess = false
+        is AsyncImagePainter.State.Success -> loadSuccess = true
         is AsyncImagePainter.State.Error -> painter.restart()
     }
 
-    when (success) {
+    when (loadSuccess) {
         true -> {
             AnimatedVisibility(
                 visible = pictureVisible,

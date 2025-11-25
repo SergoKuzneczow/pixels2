@@ -1,6 +1,8 @@
 package com.sergokuzneczow.selected_picture.impl.ui
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
@@ -14,8 +16,8 @@ import androidx.compose.ui.graphics.Color
 internal fun Curtain(curtainVisible: Boolean) {
     AnimatedVisibility(
         visible = curtainVisible,
-        enter = fadeIn(),
-        exit = fadeOut(),
+        enter = fadeIn(animationSpec = tween(durationMillis = 500, easing = LinearEasing)),
+        exit = fadeOut(animationSpec = tween(durationMillis = 500, easing = LinearEasing)),
         modifier = Modifier.fillMaxSize()
     ) {
         Box(

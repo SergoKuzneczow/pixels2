@@ -5,13 +5,14 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.sergokuzneczow.core.system_components.progress_indicators.PixelsProgressIndicator
-import com.sergokuzneczow.core.ui.Dimensions
 import com.sergokuzneczow.selected_picture.impl.SelectedPictureUiState
+import kotlinx.coroutines.CoroutineScope
 
 @Composable
 internal fun SelectedPictureScreen(
+    coroutineScope: CoroutineScope,
     uiState: SelectedPictureUiState,
-    changeCurtainVisible: () -> Unit,
+    changeCurtainVisible: (isVisible: Boolean?) -> Unit,
     navigateToBottomSheetPictureInfoDestination: (String) -> Unit,
 ) {
     Box(modifier = Modifier.fillMaxSize()) {
@@ -20,9 +21,11 @@ internal fun SelectedPictureScreen(
 
             is SelectedPictureUiState.Success -> {
                 Curtain(curtainVisible = uiState.curtainVisible)
-                SelectedPicture(
+                PictureContainer(
+                    coroutineScope = coroutineScope,
                     picturePath = uiState.picturePath,
-                    onPictureClick = { changeCurtainVisible.invoke() },
+                    onPictureClick = { changeCurtainVisible.invoke(null) },
+                    onPictureZoomClick = { isZoomed -> changeCurtainVisible.invoke(isZoomed) }
                 )
                 PictureInformationFloatingActionButton(
                     fabVisible = uiState.infoFabVisible,

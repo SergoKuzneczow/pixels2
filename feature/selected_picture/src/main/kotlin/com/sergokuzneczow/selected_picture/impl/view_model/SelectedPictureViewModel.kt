@@ -77,8 +77,12 @@ internal class SelectedPictureViewModel(
     private fun SelectedPictureUiState.changeUiState(intent: SelectedPictureIntent): SelectedPictureUiState {
         return when (intent) {
             SelectedPictureIntent.CHANGE_VISIBLE_CURTAIN -> {
-                if (this is SelectedPictureUiState.Success) this.copy(curtainVisible = !this.curtainVisible, infoFabVisible = this.curtainVisible) else currentUiState
+                if (this is SelectedPictureUiState.Success) this.copy(curtainVisible = !this.curtainVisible, infoFabVisible = this.curtainVisible)
+                else currentUiState
             }
+
+            SelectedPictureIntent.VISIBLE_CURTAIN -> if (this is SelectedPictureUiState.Success) this.copy(curtainVisible = true, infoFabVisible = false) else currentUiState
+            SelectedPictureIntent.HIDE_CURTAIN -> if (this is SelectedPictureUiState.Success) this.copy(curtainVisible = false, infoFabVisible = true) else currentUiState
         }
     }
 }
