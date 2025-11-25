@@ -11,7 +11,6 @@ import android.provider.MediaStore
 import com.sergokuzneczow.datastore_picture.api.StoragePictureApi
 import jakarta.inject.Inject
 import java.io.ByteArrayOutputStream
-import java.io.File
 import java.io.OutputStream
 import java.util.UUID
 
@@ -43,7 +42,7 @@ public class StoragePictureImpl @Inject constructor(
         val contentValues: ContentValues = ContentValues().apply {
             put(MediaStore.MediaColumns.DISPLAY_NAME, UUID.randomUUID().toString())
             put(MediaStore.MediaColumns.MIME_TYPE, "image/jpeg")
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) put(MediaStore.MediaColumns.RELATIVE_PATH, "${Environment.DIRECTORY_PICTURES}${File.pathSeparator}${APPLICATION_FOLDER_NAME}")
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) put(MediaStore.MediaColumns.RELATIVE_PATH, "${Environment.DIRECTORY_PICTURES}/${APPLICATION_FOLDER_NAME}")
         }
         val resolver: ContentResolver = context.contentResolver
         val uri: Uri? = resolver.insert(collectionUri, contentValues)
