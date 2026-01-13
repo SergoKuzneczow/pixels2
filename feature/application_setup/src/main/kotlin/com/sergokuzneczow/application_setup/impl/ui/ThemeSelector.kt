@@ -44,7 +44,7 @@ import com.sergokuzneczow.models.ApplicationSettings
 private val THEME_PREVIEW_HEIGHT: Dp = 192.dp
 
 @Composable
-internal fun BoxScope.SelectThemeState(
+internal fun BoxScope.ThemeSelector(
     themeState: ApplicationSettings.SystemSettings.ThemeState,
     onThemeItemClick: (themeState: ApplicationSettings.SystemSettings.ThemeState) -> Unit,
     onDoneClick: () -> Unit,
@@ -177,11 +177,11 @@ private object ThemeItemColors {
 
 @ThemeUiPreviews
 @Composable
-private fun SelectThemeStatePreview() {
+private fun ThemeSelectorPreview() {
     PixelsTheme {
         Surface {
             Box(modifier = Modifier.fillMaxWidth()) {
-                SelectThemeState(
+                ThemeSelector(
                     themeState = ApplicationSettings.SystemSettings.ThemeState.SYSTEM,
                     onThemeItemClick = {},
                     onDoneClick = {},

@@ -1,95 +1,66 @@
 package com.sergokuzneczow.application_setup.impl.view_model
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.ViewModelProvider
+import com.sergokuzneczow.application_setup.impl.ApplicationSetupScreenAction
 import com.sergokuzneczow.application_setup.impl.ApplicationSetupScreenIntent
-import com.sergokuzneczow.application_setup.impl.ApplicationSetupScreenUiState
+import com.sergokuzneczow.application_setup.impl.ApplicationSetupScreenIntent.*
+import com.sergokuzneczow.application_setup.impl.ApplicationSetupScreenState
+import com.sergokuzneczow.application_setup.impl.ApplicationSetupScreenState.ShowSelectedTheme
+import com.sergokuzneczow.base.MviViewModel
+import com.sergokuzneczow.base.StateCollector
+import com.sergokuzneczow.base.copyState
 import com.sergokuzneczow.models.ApplicationSettings
 import com.sergokuzneczow.repository.api.SettingsRepositoryApi
-import kotlinx.coroutines.Dispatchers
+import com.sergokuzneczow.utilities.DispatchersApi
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.FlowCollector
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.sync.withLock
 
 internal class ApplicationSetupScreenViewModel(
+    dispatchersApi: DispatchersApi,
     private val settingsRepositoryApi: SettingsRepositoryApi,
-) : ViewModel() {
+) : MviViewModel<ApplicationSetupScreenState, ApplicationSetupScreenIntent, ApplicationSetupScreenAction>(
+    startState = ApplicationSetupScreenState.Loading,
+    stateDispatcher = dispatchersApi.default,
+) {
 
-    private var currentUiState: ApplicationSetupScreenUiState = ApplicationSetupScreenUiState.Loading
-
-    private var currentUiStateMutex: Mutex = Mutex()
-
-    private val intentListener: MutableSharedFlow<ApplicationSetupScreenIntent> = MutableSharedFlow()
-
-    val uiState: StateFlow<ApplicationSetupScreenUiState> = flow {
-
-        var settingsChecked = false
-        while (!settingsChecked) {
+    override suspend fun actionStartState(): ApplicationSetupScreenState {
+        while (true) {
             runCatching {
                 settingsRepositoryApi.setSettings(ApplicationSettings.DEFAULT)
                 settingsRepositoryApi.getSettings() ?: throw IllegalStateException("Application settings can't be null.")
             }.onSuccess { applicationSettings ->
-                settingsChecked = true
-                updateCurrentUiState { ApplicationSetupScreenUiState.SelectingTheme(applicationSettings.systemSettings.themeState) }
+                return ShowSelectedTheme(applicationSettings.systemSettings.themeState)
             }.onFailure {
                 delay(1_000)
             }
         }
+    }
 
-        intentListener.collect { intent ->
-            when (intent) {
-                is ApplicationSetupScreenIntent.SaveDefaultSetting -> {
-                    updateSettings(
-                        settingsMapping = { it },
-                        completed = { intent.completed.invoke() }
-                    )
-                }
-
-                is ApplicationSetupScreenIntent.SaveThemeSetting -> {
-                    updateSettings(
-                        settingsMapping = { it.copy(systemSettings = it.systemSettings.copy(themeState = intent.newThemeState)) },
-                        completed = { intent.completed.invoke() }
-                    )
-                }
+    override suspend fun StateCollector<ApplicationSetupScreenState>.intentListener(intent: ApplicationSetupScreenIntent) {
+        when (intent) {
+            is ChangeTheme -> copyState<_, ShowSelectedTheme> {
+                val newSettings = updateSettings { it.copy(systemSettings = it.systemSettings.copy(themeState = intent.newThemeState)) }
+                ShowSelectedTheme(newSettings.systemSettings.themeState)
             }
-        }
-    }.flowOn(Dispatchers.IO).stateIn(
-        scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(stopTimeoutMillis = 5_000),
-        initialValue = currentUiState,
-    )
 
-    internal fun setIntent(intent: ApplicationSetupScreenIntent) {
-        viewModelScope.launch { intentListener.emit(intent) }
-    }
-
-    private suspend fun FlowCollector<ApplicationSetupScreenUiState>.updateCurrentUiState(block: () -> ApplicationSetupScreenUiState) {
-        currentUiStateMutex.withLock {
-            currentUiState = block.invoke()
-            emit(currentUiState)
+            is Done -> updateAction { ApplicationSetupScreenAction.Completed }
         }
     }
 
-    private suspend fun updateSettings(
-        settingsMapping: suspend (applicationSettings: ApplicationSettings) -> ApplicationSettings,
-        completed: suspend () -> Unit,
-    ) {
+    private suspend fun updateSettings(settingsMapping: suspend (applicationSettings: ApplicationSettings) -> ApplicationSettings): ApplicationSettings {
         val currentSettings: ApplicationSettings? = settingsRepositoryApi.getSettings()
-        currentSettings?.let {
-            runCatching { settingsRepositoryApi.setSettings(settingsMapping.invoke(it)) }
-                .onSuccess { completed.invoke() }
-                .onFailure {
-                    delay(3_000)
-                    updateSettings(settingsMapping, completed)
-                }
+        if (currentSettings != null) settingsRepositoryApi.setSettings(settingsMapping.invoke(currentSettings))
+        else settingsRepositoryApi.setSettings(settingsMapping.invoke(ApplicationSettings.DEFAULT))
+        return settingsRepositoryApi.getSettings() ?: throw IllegalStateException("Application settings can't be null.")
+    }
+
+    internal class Factory(
+        private val dispatchersApi: DispatchersApi,
+        private val settingsRepositoryApi: SettingsRepositoryApi,
+    ) : ViewModelProvider.Factory {
+        override fun <T : ViewModel> create(modelClass: Class<T>): T {
+            return if (modelClass.isAssignableFrom(ApplicationSetupScreenViewModel::class.java)) ApplicationSetupScreenViewModel(dispatchersApi, settingsRepositoryApi) as T
+            else throw IllegalArgumentException("Unknown ViewModel class")
         }
     }
 }

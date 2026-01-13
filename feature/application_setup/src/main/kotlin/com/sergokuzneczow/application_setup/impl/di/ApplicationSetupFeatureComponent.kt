@@ -1,36 +1,37 @@
 package com.sergokuzneczow.application_setup.impl.di
 
-import com.sergokuzneczow.application_setup.impl.view_model.ApplicationSetupScreenViewModelFactory
+import android.app.Application
+import android.content.Context
+import com.sergokuzneczow.application_setup.impl.view_model.ApplicationSetupScreenComponentViewModel
+import com.sergokuzneczow.repository.api.SettingsRepositoryApi
+import com.sergokuzneczow.utilities.DispatchersApi
 import dagger.Component
 
 @Component(
     dependencies = [ApplicationSetupFeatureDependencies::class]
 )
 internal interface ApplicationSetupFeatureComponent {
-
-    fun inject(destination: ApplicationSetupScreenViewModelFactory)
+    fun inject(d: ApplicationSetupScreenComponentViewModel)
 
     @Component.Builder
     interface Builder {
         fun setDependencies(d: ApplicationSetupFeatureDependencies): Builder
         fun build(): ApplicationSetupFeatureComponent
     }
+}
 
-    object Instance {
+public interface ApplicationSetupFeatureDependencies {
+    public val dispatchersApi: DispatchersApi
+    public val settingsRepositoryApi: SettingsRepositoryApi
 
-        private var component: ApplicationSetupFeatureComponent? = null
-
-        internal fun get(d: ApplicationSetupFeatureDependencies): ApplicationSetupFeatureComponent {
-            if (component == null) {
-                component = DaggerApplicationSetupFeatureComponent.builder()
-                    .setDependencies(d)
-                    .build()
-            }
-            return component ?: throw IllegalStateException("DaggerSplashFeatureComponent must be initialize.")
-        }
-
-        internal fun clear() {
-            component = null
-        }
+    public interface Contract {
+        public fun applicationSetupFeatureDependencies(): ApplicationSetupFeatureDependencies
     }
 }
+
+internal val Context.dependencies: ApplicationSetupFeatureDependencies
+    get() = when (this) {
+        is ApplicationSetupFeatureDependencies.Contract -> this.applicationSetupFeatureDependencies()
+        is Application -> throw IllegalArgumentException("Application must implement ApplicationSetupFeatureDependencies.Contract.")
+        else -> this.applicationContext.dependencies
+    }
