@@ -1,32 +1,35 @@
 [versions]
-agp = "8.13.1"
+agp = "8.13.2"
 #Android
 annotationJvm = "1.9.1"
+coreKtx = "1.17.0"
+appcompat = "1.7.1"
+material = "1.13.0"
 #Android compose
-activityCompose = "1.11.0"
-foundationLayout = "1.9.2"
+activityCompose = "1.12.2"
+foundationLayout = "1.10.0"
 constraintlayoutCompose = "1.1.1"
-adaptive = "1.1.0"
+adaptive = "1.2.0"
 material3AdaptiveNavigationSuite = "1.4.0"
-composeBom = "2025.09.01"
-lifecycleRuntimeKtx = "2.9.4"
-lifecycleViewmodelCompose = "2.9.4"
-runtimeLivedata = "1.9.2"
-navigationCompose = "2.9.5"
-uiTooling = "1.9.2"
+composeBom = "2025.12.01"
+lifecycleRuntimeKtx = "2.10.0"
+lifecycleViewmodelCompose = "2.10.0"
+runtimeLivedata = "1.10.0"
+navigationCompose = "2.9.6"
+uiTooling = "1.10.0"
 #Kotlin
-kotlin = "2.2.21"
-jetbrainsKotlinJvm = "2.2.20"
-kotlinParcelize = "2.2.20"
+kotlin = "2.3.0"
+jetbrainsKotlinJvm = "2.3.0"
+kotlinParcelize = "2.3.0"
 ksp = "2.3.2"
 kotlinxCoroutinesCore = "1.10.2"
-kotlinSerialization = "2.2.20"
+kotlinSerialization = "2.3.0"
 kotlinxSerializationJson = "1.9.0"
-activityKtx = "1.11.0"
+activityKtx = "1.12.2"
 fragmentKtx = "1.8.9"
 #Frameworks
 dagger = "2.57.2"
-room = "2.8.1"
+room = "2.8.4"
 retrofit = "3.0.0"
 coil = "3.3.0"
 #JUnit
@@ -38,7 +41,7 @@ espressoCore = "3.7.0"
 coreTesting = "2.2.0"
 kotlinxCoroutinesTest = "1.10.2"
 #Mockito
-mockitoCore = "5.20.0"
+mockitoCore = "5.21.0"
 mockitoKotlin = "6.1.0"
 #Truth
 truth = "1.4.5"
@@ -48,6 +51,9 @@ turbine = "1.2.1"
 [libraries]
 #Android
 androidx-annotation-jvm = { group = "androidx.annotation", name = "annotation-jvm", version.ref = "annotationJvm" }
+androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
+material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 #Android compose
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
 androidx-foundation-layout = { group = "androidx.compose.foundation", name = "foundation-layout", version.ref = "foundationLayout" }
