@@ -14,8 +14,8 @@ import com.sergokuzneczow.models.PageQuery
 import com.sergokuzneczow.suitable_pictures.impl.di.DaggerSuitablePicturesFeatureComponent
 import com.sergokuzneczow.suitable_pictures.impl.di.SuitablePicturesFeatureComponent
 import com.sergokuzneczow.suitable_pictures.impl.di.dependenciesProvider
-import com.sergokuzneczow.utilities.logger.Level
-import com.sergokuzneczow.utilities.logger.log
+import com.sergokuzneczow.utilities.Level
+import com.sergokuzneczow.utilities.log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

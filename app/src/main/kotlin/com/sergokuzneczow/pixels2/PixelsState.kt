@@ -1,6 +1,5 @@
 package com.sergokuzneczow.pixels2
 
-import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.State
@@ -15,7 +14,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.savedstate.SavedState
 import com.sergokuzneczow.main_menu.api.MainMenuRoute
 import com.sergokuzneczow.splash.api.SplashScreenRoute
-import com.sergokuzneczow.utilities.logger.log
+import com.sergokuzneczow.utilities.log
 import kotlinx.coroutines.CoroutineScope
 import kotlin.reflect.KClass
 

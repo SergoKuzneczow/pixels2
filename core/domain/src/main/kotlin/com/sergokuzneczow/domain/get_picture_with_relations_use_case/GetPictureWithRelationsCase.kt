@@ -2,8 +2,8 @@ package com.sergokuzneczow.domain.get_picture_with_relations_use_case
 
 import com.sergokuzneczow.models.PictureWithRelations
 import com.sergokuzneczow.repository.api.PictureRepositoryApi
-import com.sergokuzneczow.utilities.logger.Level
-import com.sergokuzneczow.utilities.logger.log
+import com.sergokuzneczow.utilities.Level
+import com.sergokuzneczow.utilities.log
 import jakarta.inject.Inject
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope

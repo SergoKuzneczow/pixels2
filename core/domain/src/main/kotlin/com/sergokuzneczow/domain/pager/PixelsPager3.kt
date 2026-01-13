@@ -1,8 +1,8 @@
 package com.sergokuzneczow.domain.pager
 
 import com.sergokuzneczow.domain.pager.PixelsPager.Companion.UNREACHABLE_PAGE
-import com.sergokuzneczow.utilities.logger.Level
-import com.sergokuzneczow.utilities.logger.log
+import com.sergokuzneczow.utilities.Level
+import com.sergokuzneczow.utilities.log
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job

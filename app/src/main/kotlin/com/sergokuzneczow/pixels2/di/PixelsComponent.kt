@@ -24,6 +24,7 @@ import com.sergokuzneczow.service_save_picture.impl.di.ServiceSavePictureFeature
 import com.sergokuzneczow.settings.impl.di.SettingsFeatureDependencies
 import com.sergokuzneczow.splash.impl.di.SplashFeatureDependencies
 import com.sergokuzneczow.suitable_pictures.impl.di.SuitablePicturesFeatureDependencies
+import com.sergokuzneczow.utilities.DispatchersApi
 import dagger.BindsInstance
 import dagger.Component
 import jakarta.inject.Singleton
@@ -55,6 +56,7 @@ internal interface PixelsComponent :
     override val pageRepositoryApi: PageRepositoryApi
     override val getPictureWithRelations2UseCase: GetPictureWithRelations2UseCase
     override val settingsRepositoryApi: SettingsRepositoryApi
+    override val dispatchersApi: DispatchersApi
 
     fun inject(destination: MainActivityViewModelFactory)
 

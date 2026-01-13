@@ -5,7 +5,7 @@ import com.sergokuzneczow.models.PageFilter
 import com.sergokuzneczow.models.PageQuery
 import com.sergokuzneczow.models.PictureWithRelations
 import com.sergokuzneczow.repository.api.PageRepositoryApi
-import com.sergokuzneczow.utilities.logger.log
+import com.sergokuzneczow.utilities.log
 import jakarta.inject.Inject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow

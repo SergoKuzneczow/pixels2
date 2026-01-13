@@ -1,8 +1,5 @@
 package com.sergokuzneczow.bottom_sheet_picture_info.impl.ui
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -42,7 +39,6 @@ import com.sergokuzneczow.core.system_components.chip_segments.SuggestionChipCol
 import com.sergokuzneczow.core.system_components.progress_indicators.PixelsProgressIndicator
 import com.sergokuzneczow.core.ui.Dimensions
 import com.sergokuzneczow.models.Tag
-import com.sergokuzneczow.utilities.logger.log
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 

@@ -11,12 +11,11 @@ import androidx.compose.ui.res.stringResource
 import com.sergokuzneczow.core.system_components.PixelsPrimaryFloatingActionButton
 import com.sergokuzneczow.core.system_components.PixelsTopBar
 import com.sergokuzneczow.core.system_components.progress_indicators.PixelsProgressIndicator
-import com.sergokuzneczow.core.ui.Dimensions
 import com.sergokuzneczow.core.ui.PixelsIcons
 import com.sergokuzneczow.suitable_pictures.R.string.empty_collection
 import com.sergokuzneczow.suitable_pictures.impl.SuitablePicturesUiState
 import com.sergokuzneczow.suitable_pictures.impl.TitleUiState
-import com.sergokuzneczow.utilities.logger.log
+import com.sergokuzneczow.utilities.log
 
 @Composable
 internal fun SuitablePicturesScreen(

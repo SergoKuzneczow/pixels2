@@ -5,12 +5,9 @@ import com.sergokuzneczow.models.PageFilter
 import com.sergokuzneczow.models.PageQuery
 import com.sergokuzneczow.models.Picture
 import com.sergokuzneczow.repository.api.PageRepositoryApi
-import com.sergokuzneczow.utilities.logger.Level
-import com.sergokuzneczow.utilities.logger.log
 import jakarta.inject.Inject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.onEach
 
 public class GetSuitablePicturesScreenPager4UseCase @Inject constructor(

@@ -13,7 +13,7 @@ import com.sergokuzneczow.domain.get_first_page_key_use_case.GetFirstPageKeyUseC
 import com.sergokuzneczow.models.Page
 import com.sergokuzneczow.models.PageFilter
 import com.sergokuzneczow.models.PageQuery
-import com.sergokuzneczow.utilities.logger.log
+import com.sergokuzneczow.utilities.log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
