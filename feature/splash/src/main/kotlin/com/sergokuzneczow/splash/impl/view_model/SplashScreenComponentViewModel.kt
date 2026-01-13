@@ -4,7 +4,6 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import com.sergokuzneczow.repository.api.SettingsRepositoryApi
 import com.sergokuzneczow.splash.impl.di.DaggerSplashFeatureComponent
-import com.sergokuzneczow.splash.impl.di.SplashFeatureComponent
 import com.sergokuzneczow.splash.impl.di.dependencies
 import com.sergokuzneczow.utilities.DispatchersApi
 import jakarta.inject.Inject
@@ -18,9 +17,9 @@ internal class SplashScreenComponentViewModel(application: Application) : Androi
     lateinit var dispatchersApi: DispatchersApi
 
     init {
-        val component: SplashFeatureComponent = DaggerSplashFeatureComponent.builder()
+        DaggerSplashFeatureComponent.builder()
             .setDependencies(application.applicationContext.dependencies)
             .build()
-        component.inject(this)
+            .inject(this)
     }
 }
