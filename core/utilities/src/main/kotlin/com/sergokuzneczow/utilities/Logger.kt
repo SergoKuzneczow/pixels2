@@ -1,7 +1,6 @@
-package com.sergokuzneczow.utilities.logger
+package com.sergokuzneczow.utilities
 
 import android.util.Log
-import com.sergokuzneczow.utilities.BuildConfig
 
 public val loggingEnabled: Boolean = BuildConfig.DEBUG
 
