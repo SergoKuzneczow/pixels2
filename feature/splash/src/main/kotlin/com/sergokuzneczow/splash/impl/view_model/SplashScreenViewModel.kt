@@ -1,47 +1,47 @@
 package com.sergokuzneczow.splash.impl.view_model
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.ViewModelProvider
+import com.sergokuzneczow.base.MviViewModel
+import com.sergokuzneczow.models.ApplicationSettings
 import com.sergokuzneczow.repository.api.SettingsRepositoryApi
-import com.sergokuzneczow.splash.SplashScreenIntent
-import com.sergokuzneczow.splash.impl.SplashScreenUiState
+import com.sergokuzneczow.splash.impl.SplashScreenAction
+import com.sergokuzneczow.splash.impl.SplashScreenIntent
+import com.sergokuzneczow.splash.impl.SplashScreenState
+import com.sergokuzneczow.utilities.DispatchersApi
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.stateIn
 
 internal class SplashScreenViewModel(
+    dispatchersApi: DispatchersApi,
     private val settingsRepositoryApi: SettingsRepositoryApi,
-) : ViewModel() {
+) : MviViewModel<SplashScreenState, SplashScreenIntent, SplashScreenAction>(
+    startState = SplashScreenState.CheckingFirstLaunch,
+    stateDispatcher = dispatchersApi.default,
+) {
 
-    private var currentUiState: SplashScreenUiState = SplashScreenUiState.Loading
-
-    private val intentListener: MutableSharedFlow<SplashScreenIntent> = MutableSharedFlow()
-
-    val uiState: StateFlow<SplashScreenUiState> = flow {
-        delay(1_500)
-
+    override suspend fun actionStartState(): SplashScreenState? {
         var settingsChecked = false
         while (!settingsChecked) {
             runCatching { settingsRepositoryApi.getSettings() }
-                .onSuccess { value ->
+                .onSuccess { settings: ApplicationSettings? ->
                     settingsChecked = true
-                    if (value == null) emit(SplashScreenUiState.Success(hasSettings = false))
-                    else emit(SplashScreenUiState.Success(hasSettings = true))
+                    if (settings == null) updateAction { SplashScreenAction.IsFirstLaunch }
+                    else updateAction { SplashScreenAction.IsNotFirstLaunch(settings) }
                 }
                 .onFailure { delay(1_000) }
         }
+        return null
+    }
 
-        intentListener.collect { intent ->
-//            when (intent) {
-//                is SplashScreenIntent.CheckApplicationSettings -> {}
-//            }
+    internal class Factory(
+        private val dispatchersApi: DispatchersApi,
+        private val settingsRepositoryApi: SettingsRepositoryApi,
+    ) : ViewModelProvider.Factory {
+
+        override fun <T : ViewModel> create(modelClass: Class<T>): T {
+            return if (modelClass.isAssignableFrom(SplashScreenViewModel::class.java))
+                SplashScreenViewModel(dispatchersApi, settingsRepositoryApi) as T
+            else throw IllegalArgumentException("Unknown ViewModel class")
         }
-    }.stateIn(
-        scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(stopTimeoutMillis = 3_000),
-        initialValue = currentUiState,
-    )
+    }
 }

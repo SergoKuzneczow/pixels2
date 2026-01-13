@@ -5,10 +5,13 @@ import com.google.common.truth.Truth.assertThat
 import com.sergokuzneczow.models.ApplicationSettings
 import com.sergokuzneczow.repository.api.SettingsRepositoryApi
 import com.sergokuzneczow.repository.impl.settings_repository_impl.SettingsRepositoryFakeImpl
-import com.sergokuzneczow.splash.impl.SplashScreenUiState
+import com.sergokuzneczow.splash.impl.SplashScreenAction
+import com.sergokuzneczow.splash.impl.SplashScreenState
 import com.sergokuzneczow.splash.impl.view_model.SplashScreenViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.TestResult
 import kotlinx.coroutines.test.resetMain
@@ -36,41 +39,44 @@ class SplashScreenViewModelTest {
     }
 
     @Test
-    fun `start state must be Loading`(): TestResult = runTest {
+    fun `start state must be CheckingFirstLaunch`(): TestResult = runTest {
         settingsRepositoryFakeApi = SettingsRepositoryFakeImpl(getSettingsReturn = { null })
         splashScreenViewModel = SplashScreenViewModel(settingsRepositoryApi = settingsRepositoryFakeApi)
 
-        splashScreenViewModel.uiState.test {
-            val loadingState: SplashScreenUiState = awaitItem()
-            assertThat(loadingState).isInstanceOf(SplashScreenUiState.Loading::class.java)
+        splashScreenViewModel.onState().test {
+            val loadingState: SplashScreenState = awaitItem()
+            assertThat(loadingState).isInstanceOf(SplashScreenState.CheckingFirstLaunch::class.java)
         }
     }
 
     @Test
-    fun `must return Success with hasSettings=true, when application has settings`(): TestResult = runTest {
+    fun `must return action IsFirstLaunch if the user has not previously opened the application`(): TestResult = runTest {
+        settingsRepositoryFakeApi = SettingsRepositoryFakeImpl(getSettingsReturn = { null })
+        splashScreenViewModel = SplashScreenViewModel(settingsRepositoryApi = settingsRepositoryFakeApi)
+
+        splashScreenViewModel.onState().test {
+            splashScreenViewModel.onAction().test {
+                val action: SplashScreenAction = awaitItem()
+                assertThat(action).isInstanceOf(SplashScreenAction.IsFirstLaunch::class.java)
+            }
+
+            skipItems(1) // skip start state CheckingFirstLaunch
+        }
+    }
+
+    @Test
+    fun `must return action IsNotFirstLaunch if the user not previously opened the application`(): TestResult = runTest {
         settingsRepositoryFakeApi = SettingsRepositoryFakeImpl(getSettingsReturn = { ApplicationSettings.DEFAULT })
         splashScreenViewModel = SplashScreenViewModel(settingsRepositoryApi = settingsRepositoryFakeApi)
 
-        splashScreenViewModel.uiState.test {
-            skipItems(1) // skip LoadingState
+        splashScreenViewModel.onState().test {
+            splashScreenViewModel.onAction().test {
+                val action: SplashScreenAction = awaitItem()
+                assertThat(action).isInstanceOf(SplashScreenAction.IsNotFirstLaunch::class.java)
+                assertThat((action as SplashScreenAction.IsNotFirstLaunch).settings).isEqualTo(ApplicationSettings.DEFAULT)
+            }
 
-            val success: SplashScreenUiState = awaitItem()
-            assertThat(success).isInstanceOf(SplashScreenUiState.Success::class.java)
-            assertThat((success as SplashScreenUiState.Success).hasSettings).isEqualTo(true)
-        }
-    }
-
-    @Test
-    fun `must return Success with hasSettings=false, when application hasn't settings`(): TestResult = runTest {
-        settingsRepositoryFakeApi = SettingsRepositoryFakeImpl(getSettingsReturn = { null })
-        splashScreenViewModel = SplashScreenViewModel(settingsRepositoryApi = settingsRepositoryFakeApi)
-
-        splashScreenViewModel.uiState.test {
-            skipItems(1) // skip LoadingState
-
-            val success: SplashScreenUiState = awaitItem()
-            assertThat(success).isInstanceOf(SplashScreenUiState.Success::class.java)
-            assertThat((success as SplashScreenUiState.Success).hasSettings).isEqualTo(false)
+            skipItems(1) // skip start state CheckingFirstLaunch
         }
     }
 }

@@ -1,4 +1,5 @@
 import org.jetbrains.kotlin.gradle.dsl.ExplicitApiMode
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     alias(libs.plugins.android.library)
@@ -26,17 +27,18 @@ android {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
-    kotlinOptions {
-        jvmTarget = "11"
-    }
 }
 
 kotlin {
     explicitApi = ExplicitApiMode.Strict
+    compilerOptions {
+        jvmTarget = JvmTarget.JVM_11
+    }
 }
 
 dependencies {
     // Dependencies
+    implementation(project(":feature:base"))
     implementation(project(":core:ui"))
     implementation(project(":core:utilities"))
     implementation(project(":core:models"))

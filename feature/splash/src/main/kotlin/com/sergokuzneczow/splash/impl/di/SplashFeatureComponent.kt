@@ -1,6 +1,10 @@
 package com.sergokuzneczow.splash.impl.di
 
-import com.sergokuzneczow.splash.impl.view_model.SplashScreenViewModelFactory
+import android.app.Application
+import android.content.Context
+import com.sergokuzneczow.repository.api.SettingsRepositoryApi
+import com.sergokuzneczow.splash.impl.view_model.SplashScreenComponentViewModel
+import com.sergokuzneczow.utilities.DispatchersApi
 import dagger.Component
 
 @Component(
@@ -8,29 +12,26 @@ import dagger.Component
 )
 internal interface SplashFeatureComponent {
 
-    fun inject(destination: SplashScreenViewModelFactory)
+    fun inject(destination: SplashScreenComponentViewModel)
 
     @Component.Builder
     interface Builder {
         fun setDependencies(d: SplashFeatureDependencies): Builder
         fun build(): SplashFeatureComponent
     }
+}
 
-    object Instance {
-
-        private var component: SplashFeatureComponent? = null
-
-        internal fun get(d: SplashFeatureDependencies): SplashFeatureComponent {
-            if (component == null) {
-                component = DaggerSplashFeatureComponent.builder()
-                    .setDependencies(d)
-                    .build()
-            }
-            return component ?: throw IllegalStateException("DaggerSplashFeatureComponent must be initialize.")
-        }
-
-        internal fun clear() {
-            component = null
-        }
+public interface SplashFeatureDependencies {
+    public val dispatchersApi: DispatchersApi
+    public val settingsRepositoryApi: SettingsRepositoryApi
+    public interface Contract {
+        public fun splashFeatureDependenciesProvide(): SplashFeatureDependencies
     }
 }
+
+internal val Context.dependencies: SplashFeatureDependencies
+    get() = when (this) {
+        is SplashFeatureDependencies.Contract -> this.splashFeatureDependenciesProvide()
+        is Application -> throw IllegalArgumentException("Application must implement SplashFeatureDependencies.Contract.")
+        else -> this.applicationContext.dependencies
+    }
