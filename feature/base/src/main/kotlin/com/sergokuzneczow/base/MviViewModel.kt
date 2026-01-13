@@ -21,6 +21,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
@@ -51,10 +52,17 @@ public abstract class MviViewModel<STATE : BaseState, INTENT : BaseIntent, ACTIO
                 emit(currentState)
             }
         }
+
         intentListener.collect { intent ->
             currentStateMutex.withLock {
-                currentState = intentListener(intent)
-                emit(currentState)
+                object : StateCollector<STATE> {
+                    override val current: STATE
+                        get() = currentState
+
+                    override suspend fun updateState(block: (old: STATE) -> STATE) {
+                        this@flow.emit(block.invoke(current))
+                    }
+                }.intentListener(intent)
             }
         }
     }
@@ -67,8 +75,7 @@ public abstract class MviViewModel<STATE : BaseState, INTENT : BaseIntent, ACTIO
 
     public open suspend fun actionStartState(): STATE? = null
 
-    public open fun intentListener(intent: INTENT): STATE {
-        return currentState
+    public open suspend fun StateCollector<STATE>.intentListener(intent: INTENT) {
     }
 
     public fun onState(): StateFlow<STATE> = stateListener
@@ -77,6 +84,10 @@ public abstract class MviViewModel<STATE : BaseState, INTENT : BaseIntent, ACTIO
 
     public suspend fun updateAction(block: () -> ACTION) {
         actionListener.emit(block.invoke())
+    }
+
+    public fun updateIntent(intent: INTENT) {
+        viewModelScope.launch { intentListener.emit(intent) }
     }
 }
 
@@ -97,3 +108,15 @@ public fun <STATE : BaseState, INTENT : BaseIntent, ACTION : BaseAction> MviView
 
 public val <STATE : BaseState, INTENT : BaseIntent, ACTION : BaseAction> MviViewModel<STATE, INTENT, ACTION>.state: STATE
     @Composable get() = this.onState().collectAsStateWithLifecycle().value
+
+public interface StateCollector<STATE> {
+    public val current: STATE
+    public suspend fun updateState(block: (STATE) -> STATE)
+}
+
+public suspend inline fun <reified STATE, reified ITEM : STATE> StateCollector<STATE>.copyState(block: (old: ITEM) -> STATE) {
+    if (current is ITEM) {
+        val new: STATE = block.invoke(current as ITEM)
+        this.updateState { new }
+    }
+}
