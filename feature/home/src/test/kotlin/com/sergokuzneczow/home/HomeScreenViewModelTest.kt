@@ -1,16 +1,18 @@
 package com.sergokuzneczow.home
 
-import app.cash.turbine.test
 import com.google.common.truth.Truth.assertThat
 import com.sergokuzneczow.domain.get_first_page_key_use_case.GetFirstPageKeyFakeUseCase
 import com.sergokuzneczow.domain.get_home_screen_pager4_use_case.GetHomeScreenPager4FakeUseCase
 import com.sergokuzneczow.domain.pager4.IPixelsPager4
 import com.sergokuzneczow.domain.pager4.IPixelsPager4.Answer.Meta
 import com.sergokuzneczow.domain.pager4.IPixelsPager4.Answer.Page
-import com.sergokuzneczow.home.impl.HomeListUiState
+import com.sergokuzneczow.home.impl.HomeScreenIntent
+import com.sergokuzneczow.home.impl.HomeScreenSideEffect
+import com.sergokuzneczow.home.impl.HomeScreenState
 import com.sergokuzneczow.home.impl.models.StandardQuery
 import com.sergokuzneczow.home.impl.models.SuggestedQueriesPage
 import com.sergokuzneczow.home.impl.models.SuggestedQueriesPage.SuggestedQuery
+import com.sergokuzneczow.home.impl.models.toSuggestedQueriesPages
 import com.sergokuzneczow.home.impl.view_model.HomeScreenViewModel
 import com.sergokuzneczow.models.Color
 import com.sergokuzneczow.models.PageFilter
@@ -18,6 +20,8 @@ import com.sergokuzneczow.models.PageQuery
 import com.sergokuzneczow.models.Picture
 import com.sergokuzneczow.models.PictureWithRelations
 import com.sergokuzneczow.models.Tag
+import com.sergokuzneczow.utilities.DispatchersApi
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher
@@ -28,6 +32,7 @@ import kotlinx.coroutines.test.setMain
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
+import org.orbitmvi.orbit.test.test
 import java.util.TreeMap
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -39,15 +44,18 @@ internal class HomeScreenViewModelTest() {
 
     private lateinit var getFirstPageKeyFakeUseCase: GetFirstPageKeyFakeUseCase
 
+    private val dispatchersApi: DispatchersApi = object : DispatchersApi {
+        override val io: CoroutineDispatcher
+            get() = StandardTestDispatcher()
+        override val default: CoroutineDispatcher
+            get() = StandardTestDispatcher()
+        override val main: CoroutineDispatcher
+            get() = StandardTestDispatcher()
+    }
+
     @Before
     fun beforeTest() {
         Dispatchers.setMain(StandardTestDispatcher())
-        getHomeScreenPager4FakeUseCase = GetHomeScreenPager4FakeUseCase()
-        getFirstPageKeyFakeUseCase = GetFirstPageKeyFakeUseCase()
-        homeScreenViewModel = HomeScreenViewModel(
-            getHomeScreenPager4UseCase = getHomeScreenPager4FakeUseCase,
-            getFirstPageKeyUseCase = getFirstPageKeyFakeUseCase,
-        )
     }
 
     @After
@@ -56,91 +64,57 @@ internal class HomeScreenViewModelTest() {
     }
 
     @Test
-    fun `start state must be Loading`(): TestResult = runTest {
-        homeScreenViewModel.uiState.test {
-            val loading: HomeListUiState = awaitItem()
-            assertThat(loading).isInstanceOf(HomeListUiState.Loading::class.java)
-        }
-    }
+    fun `the initial state should be Loading`(): TestResult = runTest {
+        getHomeScreenPager4FakeUseCase = GetHomeScreenPager4FakeUseCase()
+        getFirstPageKeyFakeUseCase = GetFirstPageKeyFakeUseCase()
+        homeScreenViewModel = HomeScreenViewModel(
+            dispatchersApi = dispatchersApi,
+            getHomeScreenPager4UseCase = getHomeScreenPager4FakeUseCase,
+            getFirstPageKeyUseCase = getFirstPageKeyFakeUseCase,
+        )
 
-    @Test
-    fun `must return Success state with standardQuery has list and suggestedQueriesPages equals null`(): TestResult = runTest {
-        homeScreenViewModel.uiState.test {
-            skipItems(1) // skip Loading state
-
-            val successWithoutSuggestedQueriesPages: HomeListUiState = awaitItem()
-            assertThat(successWithoutSuggestedQueriesPages).isInstanceOf(HomeListUiState.Success::class.java)
-            assertThat((successWithoutSuggestedQueriesPages as HomeListUiState.Success).standardQuery).isEqualTo(StandardQuery.standardQueries)
-            assertThat((successWithoutSuggestedQueriesPages as HomeListUiState.Success).suggestedQueriesPages).isEqualTo(null)
+        homeScreenViewModel.test(this) {
+            val initialState: HomeScreenState = awaitState()
+            assertThat(initialState).isInstanceOf(HomeScreenState.Loading::class.java)
+            assertThat((initialState as HomeScreenState.Loading).standardQuery).isEqualTo(StandardQuery.standardQueries)
         }
     }
 
     @Test
     fun `must return Success state with suggestedQueriesPages equals notnull`(): TestResult = runTest {
-        homeScreenViewModel.uiState.test {
+        getHomeScreenPager4FakeUseCase = GetHomeScreenPager4FakeUseCase()
+        getFirstPageKeyFakeUseCase = GetFirstPageKeyFakeUseCase()
+        homeScreenViewModel = HomeScreenViewModel(
+            dispatchersApi = dispatchersApi,
+            getHomeScreenPager4UseCase = getHomeScreenPager4FakeUseCase,
+            getFirstPageKeyUseCase = getFirstPageKeyFakeUseCase,
+        )
+
+        homeScreenViewModel.test(this) {
             skipItems(1) // skip Loading state
-            skipItems(1) // skip Success state with suggestedQueriesPages equals null
+            containerHost.dispatch(HomeScreenIntent.UpdatePages(answer.toSuggestedQueriesPages()))
+            expectState(HomeScreenState.Success(answerAfterMapping))
+        }
+    }
 
-            getHomeScreenPager4FakeUseCase.emitAnswer(answer)
+    @Test
+    fun `must return ShowSelectedQuery side effect after sent SelectQuery intent`(): TestResult = runTest {
+        getHomeScreenPager4FakeUseCase = GetHomeScreenPager4FakeUseCase()
+        val fakePageKey = 0L
+        getFirstPageKeyFakeUseCase = GetFirstPageKeyFakeUseCase().apply { returnFake(fakePageKey) }
+        homeScreenViewModel = HomeScreenViewModel(
+            dispatchersApi = dispatchersApi,
+            getHomeScreenPager4UseCase = getHomeScreenPager4FakeUseCase,
+            getFirstPageKeyUseCase = getFirstPageKeyFakeUseCase,
+        )
 
-            val successWithoutSuggestedQueriesPages: HomeListUiState = awaitItem()
-            assertThat(successWithoutSuggestedQueriesPages).isInstanceOf(HomeListUiState.Success::class.java)
-            assertThat((successWithoutSuggestedQueriesPages as HomeListUiState.Success).suggestedQueriesPages).isNotEqualTo(null)
-            assertThat(successWithoutSuggestedQueriesPages.suggestedQueriesPages?.get(0)?.items?.get(0)).isEqualTo(answerAfterMapping.get(0).items.get(0))
-            assertThat(successWithoutSuggestedQueriesPages.suggestedQueriesPages?.get(0)?.items?.get(1)).isEqualTo(answerAfterMapping.get(0).items.get(1))
-            assertThat(successWithoutSuggestedQueriesPages.suggestedQueriesPages?.get(0)?.items?.get(2)).isEqualTo(answerAfterMapping.get(0).items.get(2))
-            assertThat(successWithoutSuggestedQueriesPages.suggestedQueriesPages?.get(0)?.items?.get(3)).isEqualTo(answerAfterMapping.get(0).items.get(3))
-            assertThat(successWithoutSuggestedQueriesPages.suggestedQueriesPages?.get(0)?.items?.get(4)).isEqualTo(answerAfterMapping.get(0).items.get(4))
-            assertThat(successWithoutSuggestedQueriesPages.suggestedQueriesPages?.get(0)?.items?.get(5)).isEqualTo(answerAfterMapping.get(0).items.get(5))
+        homeScreenViewModel.test(this) {
+            skipItems(1) // skip Loading state
+            containerHost.dispatch(HomeScreenIntent.SelectQuery(PageQuery.DEFAULT, PageFilter.DEFAULT))
+            expectSideEffect(HomeScreenSideEffect.ShowPages(pageKey = fakePageKey))
         }
     }
 }
-
-private val answerAfterMapping :List<SuggestedQueriesPage> = listOf(
-    SuggestedQueriesPage(
-        items = listOf(
-            SuggestedQuery(
-                description = "Tag name",
-                previewPath = "",
-                pageQuery = PageQuery.KeyWord(word = "tag name"),
-                pageFilter = PageFilter.DEFAULT,
-            ),
-            SuggestedQuery(
-                description = "Tag name",
-                previewPath = "",
-                pageQuery = PageQuery.KeyWord(word = "tag name"),
-                pageFilter = PageFilter.DEFAULT,
-            ),
-            SuggestedQuery(
-                description = "Color color name",
-                previewPath = "",
-                pageQuery = PageQuery.Empty,
-                pageFilter = PageFilter.DEFAULT.copy(pictureColor = PageFilter.PictureColor("color name")),
-            ),
-            SuggestedQuery(
-                description = "Tag name",
-                previewPath = "",
-                pageQuery = PageQuery.KeyWord(word = "tag name"),
-                pageFilter = PageFilter.DEFAULT,
-            ),
-            SuggestedQuery(
-                description = "Tag name",
-                previewPath = "",
-                pageQuery = PageQuery.KeyWord(word = "tag name"),
-                pageFilter = PageFilter.DEFAULT,
-            ),
-            SuggestedQuery(
-                description = "#tag name",
-                previewPath = "",
-                pageQuery = PageQuery.Tag(
-                    tagKey = 1,
-                    description = "tag name"
-                ),
-                pageFilter = PageFilter.DEFAULT,
-            ),
-        )
-    )
-)
 
 private val answer: IPixelsPager4.Answer<PictureWithRelations?> = IPixelsPager4.Answer(
     pages = TreeMap(
@@ -162,24 +136,9 @@ private val answer: IPixelsPager4.Answer<PictureWithRelations?> = IPixelsPager4.
                         tags = listOf(tag(1), tag(2), tag(3)),
                         colors = listOf(color("1"), color("2"), color("3"))
                     ),
-                    PictureWithRelations(
-                        picture = picture("4"),
-                        tags = listOf(tag(1), tag(2), tag(3)),
-                        colors = listOf(color("1"), color("2"), color("3"))
-                    ),
-                    PictureWithRelations(
-                        picture = picture("5"),
-                        tags = listOf(tag(1), tag(2), tag(3)),
-                        colors = listOf(color("1"), color("2"), color("3"))
-                    ),
-                    PictureWithRelations(
-                        picture = picture("6"),
-                        tags = listOf(tag(1), tag(2), tag(3)),
-                        colors = listOf(color("1"), color("2"), color("3"))
-                    ),
                 ),
                 pageState = Page.PageState.Cached,
-            )
+            ),
         )
     ),
     meta = Meta(
@@ -190,6 +149,31 @@ private val answer: IPixelsPager4.Answer<PictureWithRelations?> = IPixelsPager4.
         empty = false,
         nextEnd = false,
         prevEnd = true,
+    )
+)
+
+private val answerAfterMapping: List<SuggestedQueriesPage> = listOf(
+    SuggestedQueriesPage(
+        items = listOf(
+            SuggestedQuery(
+                description = "Tag name",
+                previewPath = "",
+                pageQuery = PageQuery.KeyWord(word = "tag name"),
+                pageFilter = PageFilter.DEFAULT,
+            ),
+            SuggestedQuery(
+                description = "Tag name",
+                previewPath = "",
+                pageQuery = PageQuery.KeyWord(word = "tag name"),
+                pageFilter = PageFilter.DEFAULT,
+            ),
+            SuggestedQuery(
+                description = "Color color name",
+                previewPath = "",
+                pageQuery = PageQuery.Empty,
+                pageFilter = PageFilter.DEFAULT.copy(pictureColor = PageFilter.PictureColor("color name")),
+            ),
+        )
     )
 )
 

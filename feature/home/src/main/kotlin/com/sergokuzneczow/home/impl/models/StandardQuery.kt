@@ -7,34 +7,33 @@ import com.sergokuzneczow.models.PageQuery
 
 internal data class StandardQuery(
     val description: String,
-    val vectorIcon: ImageVector,
+    val icon: ImageVector,
     val pageQuery: PageQuery,
     val pageFilter: PageFilter,
 ) {
-
     internal companion object {
         internal val standardQueries: List<StandardQuery> = listOf(
             StandardQuery(
                 description = "New",
-                vectorIcon = PixelsIcons.new,
+                icon = PixelsIcons.new,
                 pageQuery = PageQuery.DEFAULT,
                 pageFilter = PageFilter.DEFAULT.copy(pictureSorting = PageFilter.PictureSorting.DATE_ADDED)
             ),
             StandardQuery(
                 description = "Bests",
-                vectorIcon = PixelsIcons.topList,
+                icon = PixelsIcons.topList,
                 pageQuery = PageQuery.DEFAULT,
                 pageFilter = PageFilter.DEFAULT.copy(pictureSorting = PageFilter.PictureSorting.TOP_LIST)
             ),
             StandardQuery(
                 description = "Loved",
-                vectorIcon = PixelsIcons.favorites,
+                icon = PixelsIcons.favorites,
                 pageQuery = PageQuery.DEFAULT,
                 pageFilter = PageFilter.DEFAULT.copy(pictureSorting = PageFilter.PictureSorting.FAVORITES)
             ),
             StandardQuery(
                 description = "Views",
-                vectorIcon = PixelsIcons.views,
+                icon = PixelsIcons.views,
                 pageQuery = PageQuery.DEFAULT,
                 pageFilter = PageFilter.DEFAULT.copy(pictureSorting = PageFilter.PictureSorting.VIEWS)
             ),

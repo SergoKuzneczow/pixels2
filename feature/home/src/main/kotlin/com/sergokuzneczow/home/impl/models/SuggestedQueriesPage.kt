@@ -9,7 +9,6 @@ import com.sergokuzneczow.models.Tag
 internal data class SuggestedQueriesPage(
     val items: List<SuggestedQuery?>,
 ) {
-
     data class SuggestedQuery(
         val description: String,
         val previewPath: String,

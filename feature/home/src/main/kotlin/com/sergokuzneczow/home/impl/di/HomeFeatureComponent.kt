@@ -1,36 +1,41 @@
 package com.sergokuzneczow.home.impl.di
 
-import com.sergokuzneczow.home.impl.view_model.HomeScreenViewModel
-import com.sergokuzneczow.home.impl.view_model.HomeScreenViewModelFactory
+import android.app.Application
+import android.content.Context
+import com.sergokuzneczow.domain.get_first_page_key_use_case.GetFirstPageKeyUseCase
+import com.sergokuzneczow.domain.get_home_screen_pager4_use_case.GetHomeScreenPager4UseCase
+import com.sergokuzneczow.home.impl.view_model.HomeScreenDependenciesViewModel
+import com.sergokuzneczow.repository.api.ImageLoaderApi
+import com.sergokuzneczow.utilities.DispatchersApi
 import dagger.Component
 
 @Component(
     dependencies = [HomeFeatureDependencies::class]
 )
 internal interface HomeFeatureComponent {
-    fun inject(destination: HomeScreenViewModelFactory)
+    fun inject(d: HomeScreenDependenciesViewModel)
 
     @Component.Builder
     interface Builder {
         fun setDependencies(d: HomeFeatureDependencies): Builder
         fun build(): HomeFeatureComponent
     }
+}
 
-    object Instance {
+public interface HomeFeatureDependencies {
+    public val dispatchersApi: DispatchersApi
+    public val getHomeScreenPager4UseCase: GetHomeScreenPager4UseCase
+    public val getFirstPageKeyUseCase: GetFirstPageKeyUseCase
+    public val imageLoaderApi: ImageLoaderApi
 
-        private var component: HomeFeatureComponent? = null
-
-        internal fun get(d: HomeFeatureDependencies): HomeFeatureComponent {
-            if (component == null) {
-                component = DaggerHomeFeatureComponent.builder()
-                    .setDependencies(d)
-                    .build()
-            }
-            return component ?: throw IllegalStateException("DaggerHomeScreenComponent must be initialize.")
-        }
-
-        internal fun clear() {
-            component = null
-        }
+    public interface Contract {
+        public fun homeFeatureDependenciesProvide(): HomeFeatureDependencies
     }
 }
+
+internal val Context.dependenciesProvider: HomeFeatureDependencies
+    get() = when (this) {
+        is HomeFeatureDependencies.Contract -> this.homeFeatureDependenciesProvide()
+        is Application -> throw IllegalArgumentException("Application must implement HomeScreenDependencies.Contract.")
+        else -> this.applicationContext.dependenciesProvider
+    }

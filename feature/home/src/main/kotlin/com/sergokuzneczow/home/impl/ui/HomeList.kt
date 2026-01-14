@@ -1,6 +1,5 @@
 package com.sergokuzneczow.home.impl.ui
 
-import android.R.attr.text
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -36,6 +35,7 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -43,6 +43,7 @@ import androidx.core.graphics.toColorInt
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.window.core.layout.WindowSizeClass.Companion.WIDTH_DP_EXPANDED_LOWER_BOUND
 import androidx.window.core.layout.WindowSizeClass.Companion.WIDTH_DP_MEDIUM_LOWER_BOUND
+import coil3.ImageLoader
 import coil3.compose.AsyncImagePainter
 import coil3.compose.rememberAsyncImagePainter
 import com.sergokuzneczow.core.system_components.progress_indicators.PixelsProgressAnimatedVisibilityIndicator
@@ -50,7 +51,7 @@ import com.sergokuzneczow.core.system_components.progress_indicators.PixelsProgr
 import com.sergokuzneczow.core.ui.Dimensions
 import com.sergokuzneczow.core.ui.PixelsTheme
 import com.sergokuzneczow.core.utilites.ThemePreviews
-import com.sergokuzneczow.home.impl.HomeListUiState
+import com.sergokuzneczow.home.impl.HomeScreenState
 import com.sergokuzneczow.home.impl.models.StandardQuery
 import com.sergokuzneczow.home.impl.models.SuggestedQueriesPage
 import com.sergokuzneczow.home.impl.models.SuggestedQueriesPage.SuggestedQuery
@@ -62,10 +63,12 @@ private val ITEM_PADDINGS: Dp = 4.dp
 
 @Composable
 internal fun HomeList(
-    standardQuery: List<StandardQuery>?,
+    imageLoader: ImageLoader,
+    standardQuery: List<StandardQuery>,
     suggestedQueriesPages: List<SuggestedQueriesPage>?,
     onItemClick: (PageQuery, PageFilter) -> Unit,
-    nextPage: () -> Unit,
+    onNextPage: () -> Unit,
+    isLoadingNextPage: Boolean,
 ) {
     LazyColumn(
         contentPadding = PaddingValues(
@@ -76,27 +79,30 @@ internal fun HomeList(
         ),
         modifier = Modifier.fillMaxSize()
     ) {
-
-        standardQuery?.let { queries ->
-            item {
-                StandardQueries(
-                    standardQueries = queries,
-                    itemClick = onItemClick,
-                )
-            }
+        item {
+            StandardQueries(
+                standardQueries = standardQuery,
+                itemClick = onItemClick,
+            )
         }
 
-        if (suggestedQueriesPages == null) {
-            item { Spacer(modifier = Modifier.height(PADDING_BETWEEN_BLOCKS)) }
-            item { Box(modifier = Modifier.fillMaxWidth()) { PixelsProgressIndicator() } }
-        } else {
-            item { Spacer(modifier = Modifier.height(PADDING_BETWEEN_BLOCKS)) }
-            itemsIndexed(suggestedQueriesPages) { position, page ->
-                SuggestedQueriesPage(
-                    suggestedQueriesPage = page,
-                    itemClick = onItemClick,
-                )
-                if (suggestedQueriesPages.size - 2 < position) nextPage.invoke()
+        when {
+            suggestedQueriesPages == null -> {
+                item { Spacer(modifier = Modifier.height(PADDING_BETWEEN_BLOCKS)) }
+                item { PixelsProgressIndicator(size = Dimensions.SmallProgressBarSize) }
+            }
+
+            else -> {
+                item { Spacer(modifier = Modifier.height(PADDING_BETWEEN_BLOCKS)) }
+                itemsIndexed(suggestedQueriesPages) { position, page ->
+                    SuggestedQueriesPage(
+                        imageLoader = imageLoader,
+                        suggestedQueriesPage = page,
+                        onItemClick = onItemClick,
+                    )
+                    if (suggestedQueriesPages.size - 2 < position) onNextPage.invoke()
+                }
+                if (isLoadingNextPage) item { PixelsProgressIndicator(size = Dimensions.SmallProgressBarSize) }
             }
         }
     }
@@ -120,7 +126,7 @@ private fun StandardQueries(
                     .clickable(onClick = { itemClick.invoke(standardQuery.pageQuery, standardQuery.pageFilter) })
             ) {
                 Image(
-                    imageVector = standardQuery.vectorIcon,
+                    imageVector = standardQuery.icon,
                     contentDescription = standardQuery.description,
                     contentScale = ContentScale.Inside,
                     modifier = Modifier
@@ -143,8 +149,9 @@ private fun StandardQueries(
 
 @Composable
 private fun SuggestedQueriesPage(
+    imageLoader: ImageLoader,
     suggestedQueriesPage: SuggestedQueriesPage,
-    itemClick: (PageQuery, PageFilter) -> Unit,
+    onItemClick: (PageQuery, PageFilter) -> Unit,
 ) {
     val pageItems: List<SuggestedQuery?> = suggestedQueriesPage.items
     val rowSize: Int = calculateRowSize(totalSize = pageItems.size)
@@ -162,12 +169,12 @@ private fun SuggestedQueriesPage(
                         .size(164.dp)
                         .clip(RoundedCornerShape(12.dp))
                         .background(MaterialTheme.colorScheme.surfaceContainer)
-                        .clickable(onClick = { if (item != null) itemClick.invoke(item.pageQuery, item.pageFilter) })
+                        .clickable(onClick = { if (item != null) onItemClick.invoke(item.pageQuery, item.pageFilter) })
                 ) {
                     item?.let {
                         if (item.pageFilter.pictureColor != PageFilter.PictureColor.ANY)
                             ColorItem(item.pageFilter.pictureColor.colorName, item.description, onPictureLoaded = { progressIndicatorVisible = it })
-                        else PictureItem(item.previewPath, item.description, onPictureLoaded = { progressIndicatorVisible = it })
+                        else PictureItem(imageLoader, item.previewPath, item.description, onPictureLoaded = { progressIndicatorVisible = it })
                     }
                     PixelsProgressAnimatedVisibilityIndicator(
                         progressIndicatorVisible,
@@ -181,19 +188,22 @@ private fun SuggestedQueriesPage(
 
 @Composable
 private fun BoxScope.PictureItem(
+    imageLoader: ImageLoader,
     previewPath: String,
     description: String,
     onPictureLoaded: (isLoaded: Boolean) -> Unit,
 ) {
-    val painter: AsyncImagePainter = rememberAsyncImagePainter(previewPath)
+    val painter: AsyncImagePainter = rememberAsyncImagePainter(previewPath, imageLoader)
     val state: AsyncImagePainter.State by painter.state.collectAsStateWithLifecycle()
     var success: Boolean by remember { mutableStateOf(false) }
+
     when (state) {
         is AsyncImagePainter.State.Empty -> success = false
         is AsyncImagePainter.State.Loading -> success = false
         is AsyncImagePainter.State.Success -> success = true
         is AsyncImagePainter.State.Error -> painter.restart()
     }
+
     when (success) {
         true -> {
             onPictureLoaded.invoke(false)
@@ -294,7 +304,7 @@ private fun StandardQueriesPreview() {
     PixelsTheme {
         Surface {
             StandardQueries(
-                standardQueries = HomeListUiState.Success(null).standardQuery,
+                standardQueries = HomeScreenState.Success(null, false).standardQuery,
                 itemClick = { _, _ -> }
             )
         }
@@ -328,7 +338,8 @@ private fun SuggestedQueriesPagePreview() {
         Surface {
             SuggestedQueriesPage(
                 suggestedQueriesPage = SuggestedQueriesPage(items = suggestedQueries),
-                itemClick = { _, _ -> }
+                onItemClick = { _, _ -> },
+                imageLoader = ImageLoader(LocalContext.current)
             )
         }
     }
@@ -354,7 +365,9 @@ private fun HomeListSuccess() {
                     )
                 ),
                 onItemClick = { _, _ -> },
-                nextPage = {}
+                onNextPage = {},
+                isLoadingNextPage = true,
+                imageLoader = ImageLoader(LocalContext.current)
             )
         }
     }

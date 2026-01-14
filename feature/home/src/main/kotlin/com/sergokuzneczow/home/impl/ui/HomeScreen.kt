@@ -1,27 +1,41 @@
 package com.sergokuzneczow.home.impl.ui
 
 import androidx.compose.runtime.Composable
-import com.sergokuzneczow.home.impl.HomeListUiState
+import coil3.ImageLoader
+import com.sergokuzneczow.home.impl.HomeScreenState
 import com.sergokuzneczow.models.PageFilter
 import com.sergokuzneczow.models.PageQuery
 
 @Composable
 internal fun HomeScreen(
-    uiState: HomeListUiState,
+    state: HomeScreenState,
+    imageLoader: ImageLoader,
     onChangeProgressBar: (isVisible: Boolean) -> Unit,
-    onSelectQuery: (PageQuery, PageFilter) -> Unit,
-    nextPage: () -> Unit,
+    onSelectPage: (PageQuery, PageFilter) -> Unit,
+    onNextPage: () -> Unit,
 ) {
-    when (uiState) {
-        is HomeListUiState.Loading -> onChangeProgressBar.invoke(true)
+    onChangeProgressBar.invoke(false)
 
-        is HomeListUiState.Success -> {
-            onChangeProgressBar.invoke(false)
+    when (state) {
+        is HomeScreenState.Loading -> {
             HomeList(
-                standardQuery = uiState.standardQuery,
-                suggestedQueriesPages = uiState.suggestedQueriesPages,
-                onItemClick = onSelectQuery,
-                nextPage = nextPage
+                imageLoader = imageLoader,
+                standardQuery = state.standardQuery,
+                suggestedQueriesPages = null,
+                isLoadingNextPage = true,
+                onItemClick = onSelectPage,
+                onNextPage = onNextPage,
+            )
+        }
+
+        is HomeScreenState.Success -> {
+            HomeList(
+                imageLoader = imageLoader,
+                standardQuery = state.standardQuery,
+                suggestedQueriesPages = state.suggestedQueriesPages,
+                isLoadingNextPage = true,
+                onItemClick = onSelectPage,
+                onNextPage = onNextPage,
             )
         }
     }
