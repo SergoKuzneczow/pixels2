@@ -8,10 +8,10 @@ import com.sergokuzneczow.repository.impl.settings_repository_impl.SettingsRepos
 import com.sergokuzneczow.splash.impl.SplashScreenAction
 import com.sergokuzneczow.splash.impl.SplashScreenState
 import com.sergokuzneczow.splash.impl.view_model.SplashScreenViewModel
+import com.sergokuzneczow.utilities.DispatchersApi
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.TestResult
 import kotlinx.coroutines.test.resetMain
@@ -28,6 +28,15 @@ class SplashScreenViewModelTest {
 
     private lateinit var settingsRepositoryFakeApi: SettingsRepositoryApi
 
+    private val dispatchersApi: DispatchersApi = object : DispatchersApi {
+        override val io: CoroutineDispatcher
+            get() = StandardTestDispatcher()
+        override val default: CoroutineDispatcher
+            get() = StandardTestDispatcher()
+        override val main: CoroutineDispatcher
+            get() = StandardTestDispatcher()
+    }
+
     @Before
     fun beforeTest() {
         Dispatchers.setMain(StandardTestDispatcher())
@@ -41,7 +50,7 @@ class SplashScreenViewModelTest {
     @Test
     fun `start state must be CheckingFirstLaunch`(): TestResult = runTest {
         settingsRepositoryFakeApi = SettingsRepositoryFakeImpl(getSettingsReturn = { null })
-        splashScreenViewModel = SplashScreenViewModel(settingsRepositoryApi = settingsRepositoryFakeApi)
+        splashScreenViewModel = SplashScreenViewModel(dispatchersApi, settingsRepositoryFakeApi)
 
         splashScreenViewModel.onState().test {
             val loadingState: SplashScreenState = awaitItem()
@@ -52,7 +61,7 @@ class SplashScreenViewModelTest {
     @Test
     fun `must return action IsFirstLaunch if the user has not previously opened the application`(): TestResult = runTest {
         settingsRepositoryFakeApi = SettingsRepositoryFakeImpl(getSettingsReturn = { null })
-        splashScreenViewModel = SplashScreenViewModel(settingsRepositoryApi = settingsRepositoryFakeApi)
+        splashScreenViewModel = SplashScreenViewModel(dispatchersApi, settingsRepositoryFakeApi)
 
         splashScreenViewModel.onState().test {
             splashScreenViewModel.onAction().test {
@@ -67,7 +76,7 @@ class SplashScreenViewModelTest {
     @Test
     fun `must return action IsNotFirstLaunch if the user not previously opened the application`(): TestResult = runTest {
         settingsRepositoryFakeApi = SettingsRepositoryFakeImpl(getSettingsReturn = { ApplicationSettings.DEFAULT })
-        splashScreenViewModel = SplashScreenViewModel(settingsRepositoryApi = settingsRepositoryFakeApi)
+        splashScreenViewModel = SplashScreenViewModel(dispatchersApi, settingsRepositoryFakeApi)
 
         splashScreenViewModel.onState().test {
             splashScreenViewModel.onAction().test {
