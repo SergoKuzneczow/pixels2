@@ -13,14 +13,14 @@ public class GetFirstPageKeyFakeUseCase @Inject constructor(
     pageRepositoryApi: PageRepositoryApi = MockPageRepositoryApi,
 ) : GetFirstPageKeyUseCase(pageRepositoryApi) {
 
-    private var returnValue: Long? = null
+    private var fakeSource: Long? = null
 
     override suspend fun execute(pageQuery: PageQuery, pageFilter: PageFilter): Long? {
-        return returnValue
+        return fakeSource
     }
 
-    public fun setReturnValue(value: Long?) {
-        returnValue = value
+    public fun returnFake(value: Long?) {
+        fakeSource = value
     }
 }
 
