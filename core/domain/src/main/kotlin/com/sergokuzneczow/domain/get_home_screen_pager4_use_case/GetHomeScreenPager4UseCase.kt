@@ -47,7 +47,7 @@ public open class GetHomeScreenPager4UseCase @Inject constructor(
         )
             .setPageSize(12)
             .setStartStrategy(IPixelsPager4.StartStrategy.INSTANTLY)
-            .setPlaceholderStrategy(IPixelsPager4.PlaceholdersStrategy.WITH)
+            .setPlaceholderStrategy(IPixelsPager4.PlaceholdersStrategy.WITHOUT)
             .setLoadStrategy(IPixelsPager4.LoadStrategy.SEQUENTIALLY)
             .build()
         return pixelsPager?.getPages() ?: throw IllegalStateException("Property pixelsPager must initialize.")

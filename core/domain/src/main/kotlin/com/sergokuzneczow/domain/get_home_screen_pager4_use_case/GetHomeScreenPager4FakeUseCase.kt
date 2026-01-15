@@ -13,15 +13,15 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 
 public class GetHomeScreenPager4FakeUseCase() : GetHomeScreenPager4UseCase(pageRepositoryApi = pageRepositoryApiMock) {
 
-    private val pagesSource: MutableSharedFlow<IPixelsPager4.Answer<PictureWithRelations?>> = MutableSharedFlow()
+    private val fakeSource: MutableSharedFlow<IPixelsPager4.Answer<PictureWithRelations?>> = MutableSharedFlow()
 
-    override fun execute(coroutineScope: CoroutineScope): Flow<IPixelsPager4.Answer<PictureWithRelations?>> = pagesSource
+    override fun execute(coroutineScope: CoroutineScope): Flow<IPixelsPager4.Answer<PictureWithRelations?>> = fakeSource
 
     override fun nextPage() {
     }
 
-    public suspend fun emitAnswer(answer: IPixelsPager4.Answer<PictureWithRelations?>) {
-        pagesSource.emit(answer)
+    public suspend fun emitFake(answer: IPixelsPager4.Answer<PictureWithRelations?>) {
+        fakeSource.emit(answer)
     }
 }
 
