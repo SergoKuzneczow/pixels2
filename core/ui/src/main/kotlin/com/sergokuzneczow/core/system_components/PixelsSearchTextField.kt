@@ -44,7 +44,7 @@ private val TOP_BAR_HEIGHT: Dp = 56.dp
 
 @Composable
 public fun BoxScope.PixelsSearchTextField(
-    done: (text: String) -> Unit,
+    onDone: (text: String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     var rememberedText: String by rememberSaveable { mutableStateOf("") }
@@ -64,7 +64,39 @@ public fun BoxScope.PixelsSearchTextField(
             )
         },
         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-        keyboardActions = KeyboardActions(onDone = { done.invoke(rememberedText) }),
+        keyboardActions = KeyboardActions(onDone = { onDone.invoke(rememberedText) }),
+        colors = colors(),
+        modifier = modifier
+            .height(TOP_BAR_HEIGHT)
+            .fillMaxWidth()
+            .align(Alignment.Center)
+            .clearFocusOnKeyboardDismiss()
+    )
+}
+
+@Composable
+public fun BoxScope.PixelsSearchTextField(
+    value: String,
+    onValueChange: (String) -> Unit,
+    modifier: Modifier = Modifier,
+    onDone: (text: String) -> Unit = {},
+) {
+    OutlinedTextField(
+        value = value,
+        onValueChange = onValueChange,
+        placeholder = { Text(text = "Search") },
+        maxLines = 1,
+        singleLine = true,
+        shape = RoundedCornerShape(20.dp),
+        textStyle = MaterialTheme.typography.bodyLarge,
+        leadingIcon = {
+            Icon(
+                imageVector = PixelsIcons.search, contentDescription = null,
+                modifier = Modifier.size(24.dp)
+            )
+        },
+        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+        keyboardActions = KeyboardActions(onDone = { onDone.invoke(value) }),
         colors = colors(),
         modifier = modifier
             .height(TOP_BAR_HEIGHT)
@@ -105,7 +137,7 @@ private fun PixelsOutlinedTextFieldPreview() {
         PixelsTheme {
             Surface {
                 PixelsSearchTextField(
-                    done = {},
+                    onDone = {},
                     modifier = Modifier.padding(Dimensions.Padding)
                 )
             }
