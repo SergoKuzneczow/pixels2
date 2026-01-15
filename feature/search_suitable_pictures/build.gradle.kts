@@ -51,7 +51,6 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.compose.adaptive)
     implementation(libs.androidx.ui.tooling.preview)
-    implementation(libs.androidx.constraintlayout.compose)
     implementation(libs.androidx.material3)
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.androidx.runtime.livedata)
@@ -67,7 +66,8 @@ dependencies {
     // Dagger
     implementation(libs.google.dagger)
     ksp(libs.google.dagger.compiler)
-    // Coil
-    implementation(libs.coil.compose)
-    implementation(libs.coil.network.okhttp)
+    // Orbit
+    implementation(libs.orbit.core)
+    implementation(libs.orbit.compose)
+    testImplementation(libs.orbit.test)
 }
