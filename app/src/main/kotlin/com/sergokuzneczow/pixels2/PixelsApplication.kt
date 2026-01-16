@@ -9,7 +9,7 @@ import com.sergokuzneczow.home.impl.di.HomeFeatureDependencies
 import com.sergokuzneczow.pixels2.di.DaggerPixelsComponent
 import com.sergokuzneczow.pixels2.di.PixelsComponent
 import com.sergokuzneczow.pixels2.di.applicationComponent
-import com.sergokuzneczow.search_suitable_pictures.impl.di.SearchSuitablePicturesDependencies
+import com.sergokuzneczow.search_suitable_pictures.impl.di.SearchSuitablePicturesFeatureDependencies
 import com.sergokuzneczow.selected_picture.impl.di.SelectedPictureFeatureDependencies
 import com.sergokuzneczow.service_save_picture.impl.di.ServiceSavePictureFeatureDependencies
 import com.sergokuzneczow.settings.impl.di.SettingsFeatureDependencies
@@ -22,7 +22,7 @@ public class PixelsApplication : Application(),
     SuitablePicturesFeatureDependencies.Contract,
     DialogPageFilterDependencies.Contract,
     BottomSheetPageFilterDependencies.Contract,
-    SearchSuitablePicturesDependencies.Contract,
+    SearchSuitablePicturesFeatureDependencies.Contract,
     SelectedPictureFeatureDependencies.Contract,
     BottomSheetPictureInformationFeatureDependencies.Contract,
     SplashFeatureDependencies.Contract,
@@ -50,7 +50,7 @@ public class PixelsApplication : Application(),
 
     override fun bottomSheetPageFilterDependenciesProvider(): BottomSheetPageFilterDependencies = pixelsComponent
 
-    override fun searchSuitablePicturesDependenciesProvider(): SearchSuitablePicturesDependencies = pixelsComponent
+    override fun searchSuitablePicturesDependenciesProvider(): SearchSuitablePicturesFeatureDependencies = pixelsComponent
 
     override fun selectedPictureFeatureDependenciesProvider(): SelectedPictureFeatureDependencies = pixelsComponent
 

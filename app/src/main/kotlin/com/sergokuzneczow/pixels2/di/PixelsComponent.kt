@@ -18,7 +18,7 @@ import com.sergokuzneczow.repository.api.ImageLoaderApi
 import com.sergokuzneczow.repository.api.PageRepositoryApi
 import com.sergokuzneczow.repository.api.SettingsRepositoryApi
 import com.sergokuzneczow.repository.api.StorageRepositoryApi
-import com.sergokuzneczow.search_suitable_pictures.impl.di.SearchSuitablePicturesDependencies
+import com.sergokuzneczow.search_suitable_pictures.impl.di.SearchSuitablePicturesFeatureDependencies
 import com.sergokuzneczow.selected_picture.impl.di.SelectedPictureFeatureDependencies
 import com.sergokuzneczow.service_save_picture.impl.di.ServiceSavePictureFeatureDependencies
 import com.sergokuzneczow.settings.impl.di.SettingsFeatureDependencies
@@ -41,7 +41,7 @@ internal interface PixelsComponent :
     SuitablePicturesFeatureDependencies,
     DialogPageFilterDependencies,
     BottomSheetPageFilterDependencies,
-    SearchSuitablePicturesDependencies,
+    SearchSuitablePicturesFeatureDependencies,
     SelectedPictureFeatureDependencies,
     BottomSheetPictureInformationFeatureDependencies,
     SplashFeatureDependencies,
