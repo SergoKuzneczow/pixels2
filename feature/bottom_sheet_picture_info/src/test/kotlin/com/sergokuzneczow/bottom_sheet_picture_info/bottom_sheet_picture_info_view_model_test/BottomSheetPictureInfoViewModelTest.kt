@@ -137,7 +137,7 @@ internal class BottomSheetPictureInfoViewModelTest {
             getPictureWithRelations2FakeUseCase.emitSuccess(pictureKey = "picture_key", answerState = UPDATED)
             skipItems(1) // skip PictureInformationUiState.Success
 
-            getFirstPageKeyFakeUseCase.setReturnValue(0)
+            getFirstPageKeyFakeUseCase.returnFake(0)
             bottomSheetPictureInfoViewModel.setIntent(
                 PictureInformationIntent.SearchPageKey(
                     pageQuery = PageQuery.DEFAULT,
