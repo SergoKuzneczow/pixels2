@@ -66,6 +66,10 @@ dependencies {
     // Dagger
     implementation(libs.google.dagger)
     ksp(libs.google.dagger.compiler)
+    // Orbit
+    implementation(libs.orbit.core)
+    implementation(libs.orbit.compose)
+    testImplementation(libs.orbit.test)
     // Tests
     testImplementation(libs.kotlinx.coroutines.test)
     testImplementation(libs.androidx.core.testing)
