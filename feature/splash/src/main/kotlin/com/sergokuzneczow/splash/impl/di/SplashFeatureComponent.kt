@@ -3,7 +3,7 @@ package com.sergokuzneczow.splash.impl.di
 import android.app.Application
 import android.content.Context
 import com.sergokuzneczow.repository.api.SettingsRepositoryApi
-import com.sergokuzneczow.splash.impl.view_model.SplashScreenComponentViewModel
+import com.sergokuzneczow.splash.impl.view_model.SplashScreenDependenciesViewModel
 import com.sergokuzneczow.utilities.DispatchersApi
 import dagger.Component
 
@@ -12,7 +12,7 @@ import dagger.Component
 )
 internal interface SplashFeatureComponent {
 
-    fun inject(destination: SplashScreenComponentViewModel)
+    fun inject(destination: SplashScreenDependenciesViewModel)
 
     @Component.Builder
     interface Builder {

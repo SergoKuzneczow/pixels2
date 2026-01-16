@@ -2,7 +2,7 @@ package com.sergokuzneczow.application_setup.impl.di
 
 import android.app.Application
 import android.content.Context
-import com.sergokuzneczow.application_setup.impl.view_model.ApplicationSetupScreenComponentViewModel
+import com.sergokuzneczow.application_setup.impl.view_model.ApplicationSetupScreenDependenciesViewModel
 import com.sergokuzneczow.repository.api.SettingsRepositoryApi
 import com.sergokuzneczow.utilities.DispatchersApi
 import dagger.Component
@@ -11,7 +11,7 @@ import dagger.Component
     dependencies = [ApplicationSetupFeatureDependencies::class]
 )
 internal interface ApplicationSetupFeatureComponent {
-    fun inject(d: ApplicationSetupScreenComponentViewModel)
+    fun inject(d: ApplicationSetupScreenDependenciesViewModel)
 
     @Component.Builder
     interface Builder {

@@ -40,7 +40,6 @@ kotlin {
 
 dependencies {
     // Dependencies
-    implementation(project(":feature:base"))
     implementation(project(":core:ui"))
     implementation(project(":core:utilities"))
     implementation(project(":core:models"))

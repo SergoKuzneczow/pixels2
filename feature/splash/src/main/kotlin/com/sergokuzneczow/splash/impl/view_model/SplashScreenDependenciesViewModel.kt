@@ -8,7 +8,7 @@ import com.sergokuzneczow.splash.impl.di.dependencies
 import com.sergokuzneczow.utilities.DispatchersApi
 import jakarta.inject.Inject
 
-internal class SplashScreenComponentViewModel(application: Application) : AndroidViewModel(application) {
+internal class SplashScreenDependenciesViewModel(application: Application) : AndroidViewModel(application) {
 
     @Inject
     lateinit var settingsRepositoryApi: SettingsRepositoryApi

@@ -8,7 +8,7 @@ import com.sergokuzneczow.repository.api.SettingsRepositoryApi
 import com.sergokuzneczow.utilities.DispatchersApi
 import jakarta.inject.Inject
 
-internal class ApplicationSetupScreenComponentViewModel(application: Application) : AndroidViewModel(application) {
+internal class ApplicationSetupScreenDependenciesViewModel(application: Application) : AndroidViewModel(application) {
 
     @Inject
     lateinit var settingsRepositoryApi: SettingsRepositoryApi

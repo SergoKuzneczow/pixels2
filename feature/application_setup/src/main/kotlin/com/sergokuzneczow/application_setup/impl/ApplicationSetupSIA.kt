@@ -1,9 +1,9 @@
 package com.sergokuzneczow.application_setup.impl
 
-import com.sergokuzneczow.base.BaseAction
-import com.sergokuzneczow.base.BaseIntent
-import com.sergokuzneczow.base.BaseState
 import com.sergokuzneczow.models.ApplicationSettings
+import com.sergokuzneczow.utilities.BaseAction
+import com.sergokuzneczow.utilities.BaseIntent
+import com.sergokuzneczow.utilities.BaseState
 
 internal sealed interface ApplicationSetupScreenState : BaseState {
     data object Loading : ApplicationSetupScreenState

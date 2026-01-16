@@ -7,12 +7,12 @@ import com.sergokuzneczow.application_setup.impl.ApplicationSetupScreenIntent
 import com.sergokuzneczow.application_setup.impl.ApplicationSetupScreenIntent.*
 import com.sergokuzneczow.application_setup.impl.ApplicationSetupScreenState
 import com.sergokuzneczow.application_setup.impl.ApplicationSetupScreenState.ShowSelectedTheme
-import com.sergokuzneczow.base.MviViewModel
-import com.sergokuzneczow.base.StateCollector
-import com.sergokuzneczow.base.copyState
 import com.sergokuzneczow.models.ApplicationSettings
 import com.sergokuzneczow.repository.api.SettingsRepositoryApi
 import com.sergokuzneczow.utilities.DispatchersApi
+import com.sergokuzneczow.utilities.MviViewModel
+import com.sergokuzneczow.utilities.StateCollector
+import com.sergokuzneczow.utilities.copyState
 import kotlinx.coroutines.delay
 
 internal class ApplicationSetupScreenViewModel(

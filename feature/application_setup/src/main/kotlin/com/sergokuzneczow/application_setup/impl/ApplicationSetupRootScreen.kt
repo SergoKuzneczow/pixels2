@@ -5,18 +5,18 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavOptions
 import com.sergokuzneczow.application_setup.api.ApplicationSetupScreenRoute
 import com.sergokuzneczow.application_setup.impl.ui.ApplicationSetupScreen
-import com.sergokuzneczow.application_setup.impl.view_model.ApplicationSetupScreenComponentViewModel
+import com.sergokuzneczow.application_setup.impl.view_model.ApplicationSetupScreenDependenciesViewModel
 import com.sergokuzneczow.application_setup.impl.view_model.ApplicationSetupScreenViewModel
-import com.sergokuzneczow.base.collectAction
-import com.sergokuzneczow.base.state
+import com.sergokuzneczow.utilities.collectAction
 import com.sergokuzneczow.utilities.excludeBackstack
+import com.sergokuzneczow.utilities.state
 
 @Composable
 internal fun ApplicationSetupRootScreen(
     onChangeProgressBar: (isVisible: Boolean) -> Unit,
     navigateToMainMenu: (NavOptions?) -> Unit,
 ) {
-    val cvm: ApplicationSetupScreenComponentViewModel = viewModel()
+    val cvm: ApplicationSetupScreenDependenciesViewModel = viewModel()
     val svm: ApplicationSetupScreenViewModel = viewModel(factory = ApplicationSetupScreenViewModel.Factory(cvm.dispatchersApi, cvm.settingsRepositoryApi))
 
     svm.collectAction({

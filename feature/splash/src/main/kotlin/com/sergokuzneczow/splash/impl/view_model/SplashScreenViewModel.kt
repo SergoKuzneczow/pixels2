@@ -2,13 +2,13 @@ package com.sergokuzneczow.splash.impl.view_model
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.sergokuzneczow.base.MviViewModel
 import com.sergokuzneczow.models.ApplicationSettings
 import com.sergokuzneczow.repository.api.SettingsRepositoryApi
 import com.sergokuzneczow.splash.impl.SplashScreenAction
 import com.sergokuzneczow.splash.impl.SplashScreenIntent
 import com.sergokuzneczow.splash.impl.SplashScreenState
 import com.sergokuzneczow.utilities.DispatchersApi
+import com.sergokuzneczow.utilities.MviViewModel
 import kotlinx.coroutines.delay
 
 internal class SplashScreenViewModel(
@@ -16,7 +16,7 @@ internal class SplashScreenViewModel(
     private val settingsRepositoryApi: SettingsRepositoryApi,
 ) : MviViewModel<SplashScreenState, SplashScreenIntent, SplashScreenAction>(
     startState = SplashScreenState.CheckingFirstLaunch,
-    stateDispatcher = dispatchersApi.default,
+    stateDispatcher = dispatchersApi.io,
 ) {
 
     override suspend fun actionStartState(): SplashScreenState? {
