@@ -15,15 +15,20 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.sergokuzneczow.core.ui.Dimensions
 import com.sergokuzneczow.core.ui.PixelsTheme
+import com.sergokuzneczow.core.ui.pixelsContainerShadow
 import com.sergokuzneczow.core.utilites.ThemePreviews
 
 @Composable
@@ -60,8 +65,38 @@ public fun PixelsProgressAnimatedVisibilityIndicator(
 }
 
 @Composable
+public fun BoxScope.StandardPixelsProgressIndicator(
+    indicatorSize: Dp = Dimensions.ProgressBarSize,
+) {
+    Box(
+        modifier = Modifier
+            .clip(Dimensions.ContainerCornerShape)
+            .pixelsContainerShadow()
+            .background(color = MaterialTheme.colorScheme.surfaceContainer)
+            .padding(Dimensions.Padding)
+            .align(Alignment.Center),
+        content = { PixelsProgressIndicator(indicatorSize) }
+    )
+}
+
+@Composable
 public fun PixelsProgressIndicator(size: Dp = Dimensions.ProgressBarSize) {
-    Box { PixelsProgressIndicator(size) }
+    Box(
+        modifier = Modifier.fillMaxWidth(),
+        content = {
+            Box(
+                modifier = Modifier
+                    .clip(Dimensions.ContainerCornerShape)
+                    .pixelsContainerShadow()
+                    .background(color = MaterialTheme.colorScheme.surfaceContainer)
+                    .padding(Dimensions.Padding)
+                    .align(Alignment.Center),
+                content = {
+                    PixelsProgressIndicator(size)
+                }
+            )
+        }
+    )
 }
 
 @Composable
@@ -72,7 +107,7 @@ public fun BoxScope.PixelsProgressIndicator(size: Dp = Dimensions.ProgressBarSiz
         targetValue = size / 2,
         typeConverter = Dp.VectorConverter,
         animationSpec = infiniteRepeatable(
-            animation = tween(durationMillis = 800, delayMillis = 100, easing = LinearEasing),
+            animation = tween(durationMillis = 800, delayMillis = 0, easing = LinearEasing),
             repeatMode = RepeatMode.Reverse,
         ),
     )
@@ -81,7 +116,7 @@ public fun BoxScope.PixelsProgressIndicator(size: Dp = Dimensions.ProgressBarSiz
         targetValue = size / 2,
         typeConverter = Dp.VectorConverter,
         animationSpec = infiniteRepeatable(
-            animation = tween(durationMillis = 800, delayMillis = 200, easing = LinearEasing),
+            animation = tween(durationMillis = 800, delayMillis = 50, easing = LinearEasing),
             repeatMode = RepeatMode.Reverse,
         ),
     )
@@ -90,7 +125,7 @@ public fun BoxScope.PixelsProgressIndicator(size: Dp = Dimensions.ProgressBarSiz
         targetValue = size / 2,
         typeConverter = Dp.VectorConverter,
         animationSpec = infiniteRepeatable(
-            animation = tween(durationMillis = 800, delayMillis = 300, easing = LinearEasing),
+            animation = tween(durationMillis = 800, delayMillis = 100, easing = LinearEasing),
             repeatMode = RepeatMode.Reverse,
         ),
     )
@@ -99,7 +134,7 @@ public fun BoxScope.PixelsProgressIndicator(size: Dp = Dimensions.ProgressBarSiz
         targetValue = size / 2,
         typeConverter = Dp.VectorConverter,
         animationSpec = infiniteRepeatable(
-            animation = tween(durationMillis = 800, delayMillis = 400, easing = LinearEasing),
+            animation = tween(durationMillis = 800, delayMillis = 150, easing = LinearEasing),
             repeatMode = RepeatMode.Reverse,
         ),
     )
