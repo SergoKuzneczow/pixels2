@@ -13,6 +13,7 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -100,11 +101,15 @@ public fun PixelsProgressIndicator(size: Dp = Dimensions.ProgressBarSize) {
 }
 
 @Composable
-public fun BoxScope.PixelsProgressIndicator(size: Dp = Dimensions.ProgressBarSize) {
+public fun BoxScope.PixelsProgressIndicator(
+    elementSize: Dp = Dimensions.ProgressBarSize,
+    indicatorAlign: Alignment = Alignment.Center,
+    indicatorPaddings: PaddingValues = PaddingValues(0.dp),
+) {
     val infiniteTransition = rememberInfiniteTransition()
     val a1 = infiniteTransition.animateValue(
         initialValue = 0.dp,
-        targetValue = size / 2,
+        targetValue = elementSize / 2,
         typeConverter = Dp.VectorConverter,
         animationSpec = infiniteRepeatable(
             animation = tween(durationMillis = 800, delayMillis = 0, easing = LinearEasing),
@@ -113,7 +118,7 @@ public fun BoxScope.PixelsProgressIndicator(size: Dp = Dimensions.ProgressBarSiz
     )
     val a2 = infiniteTransition.animateValue(
         initialValue = 0.dp,
-        targetValue = size / 2,
+        targetValue = elementSize / 2,
         typeConverter = Dp.VectorConverter,
         animationSpec = infiniteRepeatable(
             animation = tween(durationMillis = 800, delayMillis = 50, easing = LinearEasing),
@@ -122,7 +127,7 @@ public fun BoxScope.PixelsProgressIndicator(size: Dp = Dimensions.ProgressBarSiz
     )
     val a3 = infiniteTransition.animateValue(
         initialValue = 0.dp,
-        targetValue = size / 2,
+        targetValue = elementSize / 2,
         typeConverter = Dp.VectorConverter,
         animationSpec = infiniteRepeatable(
             animation = tween(durationMillis = 800, delayMillis = 100, easing = LinearEasing),
@@ -131,7 +136,7 @@ public fun BoxScope.PixelsProgressIndicator(size: Dp = Dimensions.ProgressBarSiz
     )
     val a4 = infiniteTransition.animateValue(
         initialValue = 0.dp,
-        targetValue = size / 2,
+        targetValue = elementSize / 2,
         typeConverter = Dp.VectorConverter,
         animationSpec = infiniteRepeatable(
             animation = tween(durationMillis = 800, delayMillis = 150, easing = LinearEasing),
@@ -140,13 +145,14 @@ public fun BoxScope.PixelsProgressIndicator(size: Dp = Dimensions.ProgressBarSiz
     )
     Box(
         modifier = Modifier
-            .size(size)
-            .align(Alignment.Center)
+            .padding(indicatorPaddings)
+            .size(elementSize)
+            .align(indicatorAlign)
     ) {
-        ItemProgressIndicator(Color(2, 15, 248, 255), a1.value, size / 2, Alignment.TopStart)
-        ItemProgressIndicator(Color(184, 4, 4, 255), a2.value, size / 2, Alignment.TopEnd)
-        ItemProgressIndicator(Color(31, 154, 6, 255), a3.value, size / 2, Alignment.BottomStart)
-        ItemProgressIndicator(Color(220, 192, 3, 255), a4.value, size / 2, Alignment.BottomEnd)
+        ItemProgressIndicator(Color(2, 15, 248, 255), a1.value, elementSize / 2, Alignment.TopStart)
+        ItemProgressIndicator(Color(184, 4, 4, 255), a2.value, elementSize / 2, Alignment.TopEnd)
+        ItemProgressIndicator(Color(31, 154, 6, 255), a3.value, elementSize / 2, Alignment.BottomStart)
+        ItemProgressIndicator(Color(220, 192, 3, 255), a4.value, elementSize / 2, Alignment.BottomEnd)
     }
 }
 
