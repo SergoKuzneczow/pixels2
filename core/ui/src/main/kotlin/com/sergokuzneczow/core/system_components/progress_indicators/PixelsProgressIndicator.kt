@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -146,13 +147,21 @@ public fun BoxScope.PixelsProgressIndicator(
     Box(
         modifier = Modifier
             .padding(indicatorPaddings)
-            .size(elementSize)
+            .clip(RoundedCornerShape(6.dp))
+            .background(MaterialTheme.colorScheme.surfaceContainer.copy(alpha = 0.5f))
             .align(indicatorAlign)
     ) {
-        ItemProgressIndicator(Color(2, 15, 248, 255), a1.value, elementSize / 2, Alignment.TopStart)
-        ItemProgressIndicator(Color(184, 4, 4, 255), a2.value, elementSize / 2, Alignment.TopEnd)
-        ItemProgressIndicator(Color(31, 154, 6, 255), a3.value, elementSize / 2, Alignment.BottomStart)
-        ItemProgressIndicator(Color(220, 192, 3, 255), a4.value, elementSize / 2, Alignment.BottomEnd)
+        Box(
+            modifier = Modifier
+                .padding(2.dp)
+                .size(elementSize)
+                .align(Alignment.Center)
+        ) {
+            ItemProgressIndicator(Color(2, 15, 248, 255), a1.value, elementSize / 2, Alignment.TopStart)
+            ItemProgressIndicator(Color(184, 4, 4, 255), a2.value, elementSize / 2, Alignment.TopEnd)
+            ItemProgressIndicator(Color(31, 154, 6, 255), a3.value, elementSize / 2, Alignment.BottomStart)
+            ItemProgressIndicator(Color(220, 192, 3, 255), a4.value, elementSize / 2, Alignment.BottomEnd)
+        }
     }
 }
 

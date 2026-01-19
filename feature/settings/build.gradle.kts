@@ -56,8 +56,8 @@ dependencies {
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.compose.adaptive)
-    debugImplementation(libs.androidx.ui.tooling)
-    debugImplementation(libs.androidx.ui.test.manifest)
+//    debugImplementation(libs.androidx.ui.tooling)
+//    debugImplementation(libs.androidx.ui.test.manifest)
     // Kotlin
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.kotlinx.serialization.json)
@@ -66,11 +66,8 @@ dependencies {
     // Dagger
     implementation(libs.google.dagger)
     ksp(libs.google.dagger.compiler)
-    // Tests
-    testImplementation(libs.kotlinx.coroutines.test)
-    testImplementation(libs.androidx.core.testing)
-    testImplementation(libs.mockito.core)
-    testImplementation(libs.mockito.kotlin)
-    testImplementation(libs.turbine)
-    testImplementation(libs.truth)
+    // Orbit
+    implementation(libs.orbit.core)
+    implementation(libs.orbit.compose)
+    testImplementation(libs.orbit.test)
 }

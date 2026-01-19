@@ -1,64 +1,62 @@
 package com.sergokuzneczow.settings.impl.view_model
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.sergokuzneczow.models.ApplicationSettings
 import com.sergokuzneczow.repository.api.SettingsRepositoryApi
 import com.sergokuzneczow.settings.impl.SettingsScreenIntent
-import com.sergokuzneczow.settings.impl.SettingsScreenUiState
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.merge
-import kotlinx.coroutines.flow.stateIn
+import com.sergokuzneczow.settings.impl.SettingsScreenIntent.ChangeThemeState
+import com.sergokuzneczow.settings.impl.SettingsScreenIntent.SetSettings
+import com.sergokuzneczow.settings.impl.SettingsScreenSideEffect
+import com.sergokuzneczow.settings.impl.SettingsScreenState
+import com.sergokuzneczow.settings.impl.SettingsScreenState.Success
+import com.sergokuzneczow.utilities.DispatchersApi
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.sync.withLock
+import kotlinx.coroutines.plus
+import org.orbitmvi.orbit.Container
+import org.orbitmvi.orbit.ContainerHost
+import org.orbitmvi.orbit.annotation.OrbitExperimental
+import org.orbitmvi.orbit.container
+import kotlin.time.Duration.Companion.seconds
 
 internal class SettingsScreenViewModel(
+    dispatchersApi: DispatchersApi,
     private val settingsRepositoryApi: SettingsRepositoryApi,
-) : ViewModel() {
+) : ViewModel(), ContainerHost<SettingsScreenState, SettingsScreenSideEffect> {
 
-    private var currentUiState: SettingsScreenUiState = SettingsScreenUiState.Loading()
+    override val container: Container<SettingsScreenState, SettingsScreenSideEffect> = (viewModelScope + dispatchersApi.default).container(SettingsScreenState.Loading)
 
-    private var currentUiStateMutex: Mutex = Mutex()
+    init {
+        viewModelScope.launch(dispatchersApi.io) {
+            settingsRepositoryApi.getSettings()?.let { dispatch(SetSettings(it.systemSettings.themeState)) }
+        }
+    }
 
-    private val dataSourceFlow: Flow<SettingsScreenUiState> =
-        settingsRepositoryApi.getSettingsAsFlow()
-            .map { settings ->
-                currentUiStateMutex.withLock {
-                    currentUiState = settings?.let { SettingsScreenUiState.Success(settings = it, isChanging = false) } ?: currentUiState
-                    return@map currentUiState
-                }
+    @OptIn(OrbitExperimental::class)
+    fun dispatch(intent: SettingsScreenIntent) {
+        when (intent) {
+            is SetSettings -> intent {
+                reduce { Success(intent.themeState, changingThemeState = false) }
             }
 
-    private val intentListener: MutableSharedFlow<SettingsScreenIntent> = MutableSharedFlow()
-
-    private val intentFlow: Flow<SettingsScreenUiState> = flow {
-        intentListener.collect { intent ->
-            currentUiStateMutex.withLock {
-                when (intent) {
-                    is SettingsScreenIntent.ChangeSettingsIntent -> {
-                        currentUiState.isChanging = true
-                        settingsRepositoryApi.setSettings(intent.newApplicationSettings)
-                    }
-                }
+            is ChangeThemeState -> intent {
+                runOn<Success> { reduce { state.copy(changingThemeState = true) } }
+                val new: ApplicationSettings = settingsRepositoryApi.changeThemeState(intent.themeState)
+                runOn<Success> { reduce { state.copy(themeState = new.systemSettings.themeState, changingThemeState = false) } }
             }
         }
     }
 
-    internal val uiState: StateFlow<SettingsScreenUiState> =
-        merge(dataSourceFlow, intentFlow).flowOn(Dispatchers.IO).stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(stopTimeoutMillis = 5_000),
-            initialValue = currentUiState,
-        )
 
-    internal fun setIntent(intent: SettingsScreenIntent) {
-        viewModelScope.launch { intentListener.emit(intent) }
+    internal class Factory(
+        private val dispatchersApi: DispatchersApi,
+        private val settingsRepositoryApi: SettingsRepositoryApi,
+    ) : ViewModelProvider.Factory {
+        override fun <T : ViewModel> create(modelClass: Class<T>): T {
+            return if (modelClass.isAssignableFrom(SettingsScreenViewModel::class.java)) SettingsScreenViewModel(dispatchersApi, settingsRepositoryApi) as T
+            else throw IllegalArgumentException("Unknown ViewModel class")
+        }
     }
 }
