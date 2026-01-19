@@ -23,12 +23,12 @@ import com.sergokuzneczow.database.impl.framework.models.toPageFilterPictureOrde
 import com.sergokuzneczow.database.impl.framework.models.toPageFilterPictureSorting
 import com.sergokuzneczow.database.impl.framework.models.toPageQuery
 import com.sergokuzneczow.database.impl.framework.models.toPicturePuritiesLocalModel
+import com.sergokuzneczow.models.ApplicationSettings
 import com.sergokuzneczow.models.Page
 import com.sergokuzneczow.models.PageFilter
 import com.sergokuzneczow.models.PageQuery
 import com.sergokuzneczow.models.Picture
 import com.sergokuzneczow.models.PictureWithRelations
-import com.sergokuzneczow.models.ApplicationSettings
 import jakarta.inject.Inject
 import jakarta.inject.Singleton
 import kotlinx.coroutines.flow.Flow
@@ -52,7 +52,7 @@ public class PixelsDatabaseDataSourceImpl private constructor(
     override suspend fun setPageGetKey(
         pageNumber: Int,
         pageQuery: PageQuery,
-        pageFilter: PageFilter
+        pageFilter: PageFilter,
     ): Long? {
         return pageLocalSource.setPageGetKey(pageNumber, pageQuery, pageFilter)
     }
@@ -80,7 +80,7 @@ public class PixelsDatabaseDataSourceImpl private constructor(
     override suspend fun getPageLoadTimeOrNull(
         pageNumber: Int,
         pageQuery: PageQuery,
-        pageFilter: PageFilter
+        pageFilter: PageFilter,
     ): Long? {
         return pageLocalSource.getPageLoadTimeOrNull(pageNumber, pageQuery, pageFilter)
     }
@@ -88,7 +88,7 @@ public class PixelsDatabaseDataSourceImpl private constructor(
     override fun getPicturesPage(
         pageNumber: Int,
         pageQuery: PageQuery,
-        pageFilter: PageFilter
+        pageFilter: PageFilter,
     ): Flow<List<Picture>> {
         return pageLocalSource.getPicturesPage(pageNumber, pageQuery, pageFilter)
             .map { list -> list.map { item -> item.toPicture() } }
@@ -97,7 +97,7 @@ public class PixelsDatabaseDataSourceImpl private constructor(
     override fun getPicturesWithRelationsPage(
         pageNumber: Int,
         pageQuery: PageQuery,
-        pageFilter: PageFilter
+        pageFilter: PageFilter,
     ): Flow<List<PictureWithRelations>> {
         return pageLocalSource.getPicturesWithRelationsPage(pageNumber, pageQuery, pageFilter)
             .map { list -> list.map { item -> item.toPictureWithRelations() } }
@@ -111,7 +111,7 @@ public class PixelsDatabaseDataSourceImpl private constructor(
         pictures: List<Picture>,
         pageNumber: Int,
         pageQuery: PageQuery,
-        pageFilter: PageFilter
+        pageFilter: PageFilter,
     ) {
         return pageLocalSource.clearAndInsertPictures(
             pictures = pictures.map { it.toPictureLocalModel() },
@@ -125,7 +125,7 @@ public class PixelsDatabaseDataSourceImpl private constructor(
         pictureWithRelations: List<PictureWithRelations>,
         pageNumber: Int,
         pageQuery: PageQuery,
-        pageFilter: PageFilter
+        pageFilter: PageFilter,
     ) {
         return pageLocalSource.clearAndInsertPicturesWithRelations(
             pictureWithRelations = pictureWithRelations.map { it.toPictureLocalModelPictureWithRelations() },
@@ -164,4 +164,6 @@ public class PixelsDatabaseDataSourceImpl private constructor(
     override suspend fun setSettings(applicationSettings: ApplicationSettings) {
         settingsLocalSource.setSettings(applicationSettings)
     }
+
+    override suspend fun changeThemeState(themeState: ApplicationSettings.SystemSettings.ThemeState): ApplicationSettings = settingsLocalSource.changeThemeState(themeState)
 }

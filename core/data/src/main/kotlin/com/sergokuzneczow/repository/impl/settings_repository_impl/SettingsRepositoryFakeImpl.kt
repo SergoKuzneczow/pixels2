@@ -22,4 +22,8 @@ public class SettingsRepositoryFakeImpl @Inject constructor(
         getSettingsReturn = { applicationSettings }
         getSettingsAsFlowReturn?.invoke()?.emit(applicationSettings)
     }
+
+    override suspend fun changeThemeState(themeState: ApplicationSettings.SystemSettings.ThemeState): ApplicationSettings {
+        TODO("Not yet implemented")
+    }
 }

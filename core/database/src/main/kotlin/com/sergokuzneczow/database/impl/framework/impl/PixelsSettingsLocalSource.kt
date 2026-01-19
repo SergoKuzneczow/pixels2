@@ -5,9 +5,11 @@ import com.sergokuzneczow.database.impl.framework.dao.PixelsSettingsDao
 import com.sergokuzneczow.database.impl.framework.entities.SettingsLocalModel
 import com.sergokuzneczow.database.impl.framework.entities.toPixelsSettings
 import com.sergokuzneczow.database.impl.framework.entities.toPixelsSettingsLocalModel
+import com.sergokuzneczow.database.impl.framework.models.toSystemSettingsLocalModelThemeState
 import com.sergokuzneczow.models.ApplicationSettings
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import kotlinx.serialization.json.Json
 
 internal class PixelsSettingsLocalSource private constructor(val settingsDao: PixelsSettingsDao) {
 
@@ -28,5 +30,9 @@ internal class PixelsSettingsLocalSource private constructor(val settingsDao: Pi
 
     internal fun getSettingsAsFlow(): Flow<ApplicationSettings?> {
         return settingsDao.getAsFlow(DEFAULT_SETTINGS_KEY).map { it?.toPixelsSettings() }
+    }
+
+    internal suspend fun changeThemeState(themeState: ApplicationSettings.SystemSettings.ThemeState): ApplicationSettings {
+        return settingsDao.changeThemeState(DEFAULT_SETTINGS_KEY, Json.encodeToString(themeState.toSystemSettingsLocalModelThemeState())).toPixelsSettings()
     }
 }

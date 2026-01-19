@@ -10,4 +10,6 @@ public interface SettingsRepositoryApi {
     public fun getSettingsAsFlow(): Flow<ApplicationSettings?>
 
     public suspend fun setSettings(applicationSettings: ApplicationSettings)
+
+    public suspend fun changeThemeState(themeState: ApplicationSettings.SystemSettings.ThemeState): ApplicationSettings
 }

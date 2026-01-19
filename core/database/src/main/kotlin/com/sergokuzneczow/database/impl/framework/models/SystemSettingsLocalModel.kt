@@ -31,7 +31,7 @@ internal fun SystemSettingsLocalModel.toPixelsSettingsSystemSettings(): Applicat
     )
 }
 
-private fun ThemeState.toSystemSettingsLocalModelThemeState(): SystemSettingsLocalModel.ThemeState {
+internal fun ThemeState.toSystemSettingsLocalModelThemeState(): SystemSettingsLocalModel.ThemeState {
     return when (this) {
         ThemeState.LIGHT -> SystemSettingsLocalModel.ThemeState.LIGHT
         ThemeState.DARK -> SystemSettingsLocalModel.ThemeState.DARK
@@ -39,7 +39,7 @@ private fun ThemeState.toSystemSettingsLocalModelThemeState(): SystemSettingsLoc
     }
 }
 
-private fun SystemSettingsLocalModel.ThemeState.toPixelsSettingsSystemSettingsThemeState(): ThemeState {
+internal fun SystemSettingsLocalModel.ThemeState.toPixelsSettingsSystemSettingsThemeState(): ThemeState {
     return when (this) {
         SystemSettingsLocalModel.ThemeState.LIGHT -> ThemeState.LIGHT
         SystemSettingsLocalModel.ThemeState.DARK -> ThemeState.DARK

@@ -17,4 +17,6 @@ public class SettingsRepositoryImpl @Inject constructor(
     override suspend fun setSettings(applicationSettings: ApplicationSettings) {
         databaseApi.setSettings(applicationSettings)
     }
+
+    override suspend fun changeThemeState(themeState: ApplicationSettings.SystemSettings.ThemeState): ApplicationSettings = databaseApi.changeThemeState(themeState)
 }
