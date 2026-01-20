@@ -1,17 +1,8 @@
-package com.sergokuzneczow.suitable_pictures.impl
+package com.sergokuzneczow.suitable_pictures.impl.model
 
 import com.sergokuzneczow.domain.pager4.IPixelsPager4
 import com.sergokuzneczow.models.Picture
 import java.util.TreeMap
-
-internal sealed interface SuitablePicturesUiState {
-
-    data object Empty : SuitablePicturesUiState
-
-    data object Loading : SuitablePicturesUiState
-
-    data class Success(val suitablePicturesPages: List<SuitablePicturesPage>) : SuitablePicturesUiState
-}
 
 internal data class SuitablePicturesPage(
     val items: List<SuitablePicture?>,
@@ -35,4 +26,8 @@ internal fun List<Picture?>.toSuitablePictures(): List<SuitablePicturesPage.Suit
 
 internal fun TreeMap<Int, IPixelsPager4.Answer.Page<Picture?>>.toSuitablePicturesPages(): List<SuitablePicturesPage> {
     return this.entries.map { SuitablePicturesPage(it.value.data.toSuitablePictures()) }
+}
+
+internal fun List<SuitablePicturesPage>.hasPages(): Boolean {
+    return this.firstOrNull(predicate = { it.items.isNotEmpty() }) != null
 }

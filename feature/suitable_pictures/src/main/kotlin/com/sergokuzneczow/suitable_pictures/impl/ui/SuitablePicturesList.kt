@@ -24,26 +24,31 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.window.core.layout.WindowWidthSizeClass
+import androidx.window.core.layout.WindowSizeClass.Companion.WIDTH_DP_EXPANDED_LOWER_BOUND
+import androidx.window.core.layout.WindowSizeClass.Companion.WIDTH_DP_LARGE_LOWER_BOUND
+import androidx.window.core.layout.WindowSizeClass.Companion.WIDTH_DP_MEDIUM_LOWER_BOUND
+import coil3.ImageLoader
 import coil3.compose.AsyncImagePainter
 import coil3.compose.rememberAsyncImagePainter
 import com.sergokuzneczow.core.system_components.progress_indicators.PixelsProgressIndicator
 import com.sergokuzneczow.core.ui.Dimensions
 import com.sergokuzneczow.core.ui.PixelsTheme
 import com.sergokuzneczow.core.utilites.ThemePreviews
-import com.sergokuzneczow.suitable_pictures.impl.SuitablePicturesPage
-import com.sergokuzneczow.suitable_pictures.impl.SuitablePicturesUiState
+import com.sergokuzneczow.suitable_pictures.impl.SuitablePicturesState
+import com.sergokuzneczow.suitable_pictures.impl.model.SuitablePicturesPage
 
 private val ITEM_PADDINGS: Dp = 4.dp
 private val BOX_CONTENT_SIZE: Dp = 164.dp
 
 @Composable
 internal fun SuitablePicturesList(
-    uiStateSuccess: SuitablePicturesUiState.Success,
-    onItemClick: (pictureKey: String) -> Unit,
+    stateSuccess: SuitablePicturesState.Success,
+    imageLoader: ImageLoader,
+    onPictureClick: (pictureKey: String) -> Unit,
     nextPage: () -> Unit,
 ) {
     LazyColumn(
@@ -55,11 +60,12 @@ internal fun SuitablePicturesList(
         ),
         modifier = Modifier.fillMaxSize()
     ) {
-        val pages: List<SuitablePicturesPage> = uiStateSuccess.suitablePicturesPages
+        val pages: List<SuitablePicturesPage> = stateSuccess.suitablePicturesPages
         itemsIndexed(pages) { position: Int, page: SuitablePicturesPage ->
-            SuggestedQueriesPage(
+            SuitablePicturesPage(
                 pageItems = page.items,
-                onItemClick = onItemClick,
+                imageLoader = imageLoader,
+                onItemClick = onPictureClick,
             )
             if (pages.size - 2 < position) nextPage.invoke()
         }
@@ -67,17 +73,15 @@ internal fun SuitablePicturesList(
 }
 
 @Composable
-private fun SuggestedQueriesPage(
+private fun SuitablePicturesPage(
     pageItems: List<SuitablePicturesPage.SuitablePicture?>,
+    imageLoader: ImageLoader,
     onItemClick: (pictureKey: String) -> Unit,
-    windowAdaptiveInfo: WindowAdaptiveInfo = currentWindowAdaptiveInfo(),
 ) {
-    val itemsForRow: List<List<SuitablePictureListItem>> = pageItems.toRows(windowWidthSizeClass = windowAdaptiveInfo.windowSizeClass.windowWidthSizeClass)
+    val itemsForRow: List<List<SuitablePictureListItem>> = pageItems.toRows()
 
     itemsForRow.forEach { rowItems: List<SuitablePictureListItem> ->
-        Row(
-            modifier = Modifier.fillMaxWidth()
-        ) {
+        Row(modifier = Modifier.fillMaxWidth()) {
             rowItems.forEach { item: SuitablePictureListItem ->
                 when (item) {
                     is SuitablePictureListItem.Picture -> {
@@ -90,10 +94,9 @@ private fun SuggestedQueriesPage(
                                         .size(BOX_CONTENT_SIZE)
                                         .clip(Dimensions.PixelsShape)
                                         .background(MaterialTheme.colorScheme.surfaceContainer)
-                                        .clickable(onClick = { onItemClick.invoke(item.picture.pictureKey) })
-                                ) {
-                                    PictureItem(item.picture.previewPath)
-                                }
+                                        .clickable(onClick = { onItemClick.invoke(item.picture.pictureKey) }),
+                                    content = { PictureItem(item.picture.previewPath, imageLoader) }
+                                )
                             }
 
                             else -> {
@@ -103,10 +106,9 @@ private fun SuggestedQueriesPage(
                                         .weight(1f)
                                         .size(BOX_CONTENT_SIZE)
                                         .clip(Dimensions.PixelsShape)
-                                        .background(MaterialTheme.colorScheme.surfaceContainer)
-                                ) {
-                                    PixelsProgressIndicator(Dimensions.SmallProgressBarSize)
-                                }
+                                        .background(MaterialTheme.colorScheme.surfaceContainer),
+                                    content = { PixelsProgressIndicator(Dimensions.SmallProgressBarSize) }
+                                )
                             }
                         }
                     }
@@ -126,8 +128,8 @@ private fun SuggestedQueriesPage(
 }
 
 @Composable
-private fun BoxScope.PictureItem(previewPath: String) {
-    val painter: AsyncImagePainter = rememberAsyncImagePainter(previewPath)
+private fun BoxScope.PictureItem(previewPath: String, imageLoader: ImageLoader) {
+    val painter: AsyncImagePainter = rememberAsyncImagePainter(previewPath, imageLoader)
     val state: AsyncImagePainter.State by painter.state.collectAsStateWithLifecycle()
     var success: Boolean by rememberSaveable { mutableStateOf(false) }
     when (state) {
@@ -150,70 +152,66 @@ private fun BoxScope.PictureItem(previewPath: String) {
     }
 }
 
-private fun List<SuitablePicturesPage.SuitablePicture?>.toRows(windowWidthSizeClass: WindowWidthSizeClass): List<List<SuitablePictureListItem>> {
-    var res: List<SuitablePictureListItem> = this.map { SuitablePictureListItem.Picture(picture = it) }
-    val rowSizeWithoutPlaceholders: Int? = res.tryCalculateRowSizeWithoutPlaceholders(windowWidthSizeClass = windowWidthSizeClass)
-    if (rowSizeWithoutPlaceholders != null) {
-        return res.chunked(rowSizeWithoutPlaceholders)
-    } else {
-        return when (windowWidthSizeClass) {
-            WindowWidthSizeClass.COMPACT -> {
-                val rowSize = 3
-                while (res.size % rowSize != 0) {
-                    res = res + SuitablePictureListItem.Placeholder
-                }
-                res.chunked(rowSize)
-            }
+@Composable
+private fun List<SuitablePicturesPage.SuitablePicture?>.toRows(windowAdaptiveInfo: WindowAdaptiveInfo = currentWindowAdaptiveInfo()): List<List<SuitablePictureListItem>> {
+    val res: List<SuitablePictureListItem> = this.map { SuitablePictureListItem.Picture(picture = it) }
+    val rowSizeWithoutPlaceholders: Int? = res.tryCalculateRowSizeWithoutPlaceholders(windowAdaptiveInfo)
+    return if (rowSizeWithoutPlaceholders != null) res.chunked(rowSizeWithoutPlaceholders)
+    else res.calculateRowSizeWithPlaceholders(windowAdaptiveInfo)
+}
 
-            WindowWidthSizeClass.MEDIUM -> {
-                val rowSize = 4
-                while (res.size % rowSize != 0) {
-                    res = res + SuitablePictureListItem.Placeholder
-                }
-                res.chunked(rowSize)
+private fun List<SuitablePictureListItem>.calculateRowSizeWithPlaceholders(windowAdaptiveInfo: WindowAdaptiveInfo): List<List<SuitablePictureListItem>> {
+    var res: List<SuitablePictureListItem> = this
+    return when {
+        windowAdaptiveInfo.windowSizeClass.isWidthAtLeastBreakpoint(WIDTH_DP_EXPANDED_LOWER_BOUND) -> {
+            val rowSize = 6
+            while (res.size % rowSize != 0) {
+                res = res + SuitablePictureListItem.Placeholder
             }
+            res.chunked(rowSize)
+        }
 
-            WindowWidthSizeClass.EXPANDED -> {
-                val rowSize = 4
-                while (res.size % rowSize != 0) {
-                    res = res + SuitablePictureListItem.Placeholder
-                }
-                res.chunked(rowSize)
+        windowAdaptiveInfo.windowSizeClass.isWidthAtLeastBreakpoint(WIDTH_DP_MEDIUM_LOWER_BOUND) -> {
+            val rowSize = 4
+            while (res.size % rowSize != 0) {
+                res = res + SuitablePictureListItem.Placeholder
             }
+            res.chunked(rowSize)
+        }
 
-            else -> res.chunked(1)
+        else -> {
+            val rowSize = 3
+            while (res.size % rowSize != 0) {
+                res = res + SuitablePictureListItem.Placeholder
+            }
+            res.chunked(rowSize)
         }
     }
 }
 
-private fun List<SuitablePictureListItem>.tryCalculateRowSizeWithoutPlaceholders(windowWidthSizeClass: WindowWidthSizeClass): Int? {
-    return when (windowWidthSizeClass) {
-        WindowWidthSizeClass.COMPACT -> {
+private fun List<SuitablePictureListItem>.tryCalculateRowSizeWithoutPlaceholders(windowAdaptiveInfo: WindowAdaptiveInfo): Int? {
+    return when {
+        windowAdaptiveInfo.windowSizeClass.isWidthAtLeastBreakpoint(WIDTH_DP_LARGE_LOWER_BOUND) -> {
             when {
-                this.size % 3 == 0 -> 3
-                else -> null
-            }
-        }
-
-        WindowWidthSizeClass.MEDIUM -> {
-            when {
+                this.size % 6 == 0 -> 6
                 this.size % 5 == 0 -> 5
-                this.size % 4 == 0 -> 4
-                this.size % 3 == 0 -> 3
                 else -> null
             }
         }
 
-        WindowWidthSizeClass.EXPANDED -> {
+        windowAdaptiveInfo.windowSizeClass.isWidthAtLeastBreakpoint(WIDTH_DP_MEDIUM_LOWER_BOUND) -> {
             when {
-                this.size % 5 == 0 -> 5
                 this.size % 4 == 0 -> 4
-                this.size % 3 == 0 -> 3
                 else -> null
             }
         }
 
-        else -> null
+        else -> {
+            when {
+                this.size % 3 == 0 -> 3
+                else -> null
+            }
+        }
     }
 }
 
@@ -230,14 +228,16 @@ private fun SuitablePicturesListPreview() {
             SuitablePicturesPage.SuitablePicture(pictureKey = "key", previewPath = "path"),
         )
     )
-    val suitablePicturesListUiState = SuitablePicturesUiState.Success(
-        suitablePicturesPages = listOf(page)
+    val suitablePicturesListUiState = SuitablePicturesState.Success(
+        title = "Default",
+        suitablePicturesPages = listOf(page),
     )
     PixelsTheme {
         SuitablePicturesList(
-            uiStateSuccess = suitablePicturesListUiState,
-            onItemClick = {},
-            nextPage = {}
+            stateSuccess = suitablePicturesListUiState,
+            imageLoader = ImageLoader(LocalContext.current),
+            onPictureClick = {},
+            nextPage = {},
         )
     }
 }
