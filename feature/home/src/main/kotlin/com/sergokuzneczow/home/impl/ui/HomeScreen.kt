@@ -10,12 +10,9 @@ import com.sergokuzneczow.models.PageQuery
 internal fun HomeScreen(
     state: HomeScreenState,
     imageLoader: ImageLoader,
-    onChangeProgressBar: (isVisible: Boolean) -> Unit,
     onSelectPage: (PageQuery, PageFilter) -> Unit,
     onNextPage: () -> Unit,
 ) {
-    onChangeProgressBar.invoke(false)
-
     when (state) {
         is HomeScreenState.Loading -> {
             HomeList(

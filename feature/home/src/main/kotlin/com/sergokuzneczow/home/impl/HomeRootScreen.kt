@@ -14,7 +14,6 @@ import org.orbitmvi.orbit.compose.collectSideEffect
 
 @Composable
 internal fun HomeScreenRoot(
-    onChangeProgressBar: (isVisible: Boolean) -> Unit,
     onShowSnackbar: suspend (message: String, actionOrNull: String?) -> Unit,
     titleTextState: MutableState<String>,
     navigateToSuitablePicturesDestination: (pageKey: Long) -> Unit,
@@ -40,7 +39,6 @@ internal fun HomeScreenRoot(
     HomeScreen(
         state = svm.collectAsState().value,
         imageLoader = dvm.imageLoaderApi.imageLoader,
-        onChangeProgressBar = onChangeProgressBar,
         onSelectPage = { pageQuery, pageFilter -> svm.dispatch(HomeScreenIntent.SelectQuery(pageQuery, pageFilter)) },
         onNextPage = { svm.dispatch(HomeScreenIntent.NextPage) },
     )

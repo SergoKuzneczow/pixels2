@@ -13,7 +13,6 @@ import com.sergokuzneczow.utilities.state
 
 @Composable
 internal fun ApplicationSetupRootScreen(
-    onChangeProgressBar: (isVisible: Boolean) -> Unit,
     navigateToMainMenu: (NavOptions?) -> Unit,
 ) {
     val cvm: ApplicationSetupScreenDependenciesViewModel = viewModel()
@@ -28,9 +27,6 @@ internal fun ApplicationSetupRootScreen(
     ApplicationSetupScreen(
         uiState = svm.state,
         onChangeThemeState = { themeState -> svm.updateIntent(ApplicationSetupScreenIntent.ChangeTheme(themeState)) },
-        onChangeProgressBar = onChangeProgressBar,
-        onDone = {
-            svm.updateIntent(ApplicationSetupScreenIntent.Done)
-        },
+        onDone = { svm.updateIntent(ApplicationSetupScreenIntent.Done) },
     )
 }

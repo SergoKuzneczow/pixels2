@@ -26,7 +26,6 @@ internal fun PixelsScreen(
     applicationState: PixelsState,
     onShowNotification: (chanelId: String, intent: Intent, title: String, message: String) -> Unit,
     onSavePicture: (picturePath: String, block: (result: Result<Uri>) -> Unit) -> Unit,
-    onChangeProgressBar: (isVisible: Boolean) -> Unit,
 ) {
     val snackbarHostState: SnackbarHostState = remember { SnackbarHostState() }
 
@@ -50,14 +49,8 @@ internal fun PixelsScreen(
                         )
                     },
                     onShowNotification = onShowNotification,
-                    onChangeProgressBar = onChangeProgressBar,
                     onSavePicture = onSavePicture,
                     modifier = Modifier.fillMaxSize()
-                )
-                AnimatedVisibility(
-                    visible = applicationState.isProgress.value,
-                    modifier = Modifier.align(Alignment.Center),
-                    content = { PixelsProgressIndicator() }
                 )
                 applicationState.toast.value?.let { message -> PixelsToast(message) }
             }

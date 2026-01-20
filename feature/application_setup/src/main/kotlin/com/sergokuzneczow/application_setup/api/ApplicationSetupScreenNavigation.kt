@@ -14,14 +14,8 @@ public fun NavHostController.navigateToApplicationSetupScreenDestination(navOpti
     this.navigate(route = ApplicationSetupScreenRoute, navOptions = navOptions)
 }
 
-public fun NavGraphBuilder.applicationSetupScreenDestination(
-    onChangeProgressBar: (isVisible: Boolean) -> Unit,
-    navigateToMainMenu: (NavOptions?) -> Unit,
-) {
+public fun NavGraphBuilder.applicationSetupScreenDestination(navigateToMainMenu: (NavOptions?) -> Unit, ) {
     composable<ApplicationSetupScreenRoute> {
-        ApplicationSetupRootScreen(
-            onChangeProgressBar = onChangeProgressBar,
-            navigateToMainMenu = navigateToMainMenu
-        )
+        ApplicationSetupRootScreen(navigateToMainMenu)
     }
 }

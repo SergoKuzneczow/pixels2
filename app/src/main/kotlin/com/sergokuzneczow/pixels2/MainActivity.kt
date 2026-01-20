@@ -53,7 +53,6 @@ internal class MainActivity : ComponentActivity() {
                 darkThemeMonitor = vm.themeState.collectAsStateWithLifecycle(),
                 networkMonitor = vm.networkState.collectAsStateWithLifecycle(),
                 toastMonitor = vm.toastState.collectAsStateWithLifecycle(),
-                progressMonitor = vm.progressState.collectAsStateWithLifecycle(),
             )
 
             PixelsTheme(
@@ -67,7 +66,6 @@ internal class MainActivity : ComponentActivity() {
                                     showNotification(chanelId = applicationState.applicationNotificationChanelId, intent, title, message)
                                 else vm.setToast("$title: $message")
                             },
-                            onChangeProgressBar = { isVisible: Boolean -> vm.setProgress(isVisible) },
                             onSavePicture = { picturePath, block ->
                                 if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q
                                     && ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED

@@ -14,12 +14,9 @@ import org.orbitmvi.orbit.compose.collectSideEffect
 
 @Composable
 internal fun SplashRootScreen(
-    onChangeProgressBar: (isVisible: Boolean) -> Unit,
     navigateToMainMenu: (NavOptions?) -> Unit,
     navigateToApplicationSetup: (NavOptions?) -> Unit,
 ) {
-    onChangeProgressBar.invoke(true)
-
     val cvm: SplashScreenDependenciesViewModel = viewModel()
     val svm: SplashScreenViewModel = viewModel(factory = SplashScreenViewModel.Factory(dispatchersApi = cvm.dispatchersApi, cvm.settingsRepositoryApi))
 

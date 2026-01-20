@@ -15,13 +15,11 @@ public fun NavHostController.navigateToMainMenuDestination(navOptions: NavOption
 }
 
 public fun NavGraphBuilder.mainMenuScreenDestination(
-    onChangeProgressBar: (isVisible: Boolean) -> Unit,
     onShowSnackbar: suspend (message: String, actionOrNull: String?) -> Unit,
     navigateToSuitablePicturesDestination: (pageKey: Long) -> Unit,
 ) {
     composable<MainMenuRoute> {
         MainMenuRootScreen(
-            onChangeProgressBar = onChangeProgressBar,
             onShowSnackbar = onShowSnackbar,
             navigateToSuitablePicturesDestination
         )

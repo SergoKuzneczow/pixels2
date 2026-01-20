@@ -5,21 +5,20 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.sergokuzneczow.application_setup.impl.ApplicationSetupScreenState
+import com.sergokuzneczow.core.system_components.progress_indicators.PixelsProgressIndicator
 import com.sergokuzneczow.models.ApplicationSettings
 
 @Composable
 internal fun ApplicationSetupScreen(
     uiState: ApplicationSetupScreenState,
-    onChangeProgressBar: (isVisible: Boolean) -> Unit,
     onChangeThemeState: (themeState: ApplicationSettings.SystemSettings.ThemeState) -> Unit,
     onDone: () -> Unit,
 ) {
     Box(modifier = Modifier.fillMaxSize()) {
         when (uiState) {
-            ApplicationSetupScreenState.Loading -> onChangeProgressBar.invoke(true)
+            ApplicationSetupScreenState.Loading -> PixelsProgressIndicator()
 
             is ApplicationSetupScreenState.ShowSelectedTheme -> {
-                onChangeProgressBar.invoke(false)
                 ThemeSelector(
                     themeState = uiState.themeState,
                     onThemeItemClick = onChangeThemeState,

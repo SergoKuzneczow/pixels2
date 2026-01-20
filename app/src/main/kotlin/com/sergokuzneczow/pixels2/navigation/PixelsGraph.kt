@@ -16,7 +16,6 @@ import com.sergokuzneczow.suitable_pictures.api.suitablePicturesScreenDestinatio
 internal fun NavGraphBuilder.pixelsGraph(
     onShowSnackbar: suspend (message: String, actionOrNull: String?) -> Unit,
     onShowNotification: (chanelId: String, intent: Intent, title: String, message: String) -> Unit,
-    onChangeProgressBar: (isVisible: Boolean) -> Unit,
     onSavePicture: (String, (Result<Uri>) -> Unit) -> Unit,
     popBackStack: () -> Unit,
     backMainMenu: () -> Unit,
@@ -28,21 +27,17 @@ internal fun NavGraphBuilder.pixelsGraph(
     navigateToBottomSheetPictureInfoDestination: (pictureKey: String, navOptions: NavOptions?) -> Unit,
 ) {
     splashScreenDestination(
-        onChangeProgressBar = onChangeProgressBar,
         navigateToMainMenu = navigateToMainMenuDestination,
         navigateToApplicationSetup = navigateToApplicationSetupDestination,
     )
     applicationSetupScreenDestination(
-        onChangeProgressBar = onChangeProgressBar,
         navigateToMainMenu = navigateToMainMenuDestination,
     )
     mainMenuScreenDestination(
-        onChangeProgressBar = onChangeProgressBar,
         onShowSnackbar = onShowSnackbar,
         navigateToSuitablePicturesDestination = navigateToSuitablePicturesDestination,
     )
     suitablePicturesScreenDestination(
-        onShowSnackbar = onShowSnackbar,
         navigateToDialogPageFilterDestination = navigateToBottomSheetPageFilterDestination,
         navigateToSelectedPictureDestination = navigateToSelectedPictureDestination,
         backMainMenu = backMainMenu,

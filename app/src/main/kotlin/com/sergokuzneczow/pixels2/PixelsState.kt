@@ -24,7 +24,6 @@ internal fun rememberPixelsState(
     darkThemeMonitor: State<Boolean?>,
     networkMonitor: State<Boolean>,
     toastMonitor: State<String?>,
-    progressMonitor: State<Boolean>,
     coroutineScope: CoroutineScope = rememberCoroutineScope(),
     navController: NavHostController = rememberNavController(),
 ): PixelsState {
@@ -35,7 +34,6 @@ internal fun rememberPixelsState(
         toastMonitor,
         applicationNotificationChanelId,
         darkThemeMonitor,
-        progressMonitor,
     ) {
         PixelsState(
             navController = navController,
@@ -44,7 +42,6 @@ internal fun rememberPixelsState(
             darkThemeMonitor = darkThemeMonitor,
             networkMonitor = networkMonitor,
             toastMonitor = toastMonitor,
-            progressMonitor = progressMonitor,
         )
     }
 }
@@ -55,20 +52,17 @@ internal class PixelsState(
     val coroutineScope: CoroutineScope,
     val applicationNotificationChanelId: String,
     darkThemeMonitor: State<Boolean?>,
-    progressMonitor: State<Boolean>,
     networkMonitor: State<Boolean>,
     toastMonitor: State<String?>,
 ) {
 
     init {
-        navController.addOnDestinationChangedListener(object : OnDestinationChangedListener {
-            override fun onDestinationChanged(controller: NavController, destination: NavDestination, arguments: SavedState?) {
-                if (destination.hasRoute(MainMenuRoute::class)) {
-                    log(tag = "PixelsState") { "addOnDestinationChangedListener(); destination=MainMenuRoute" }
-                    mainMenuDestination = destination
-                }
+        navController.addOnDestinationChangedListener { controller, destination, arguments ->
+            if (destination.hasRoute(MainMenuRoute::class)) {
+                log(tag = "PixelsState") { "addOnDestinationChangedListener(); destination=MainMenuRoute" }
+                mainMenuDestination = destination
             }
-        })
+        }
     }
 
     var mainMenuDestination: NavDestination? = null
@@ -79,8 +73,6 @@ internal class PixelsState(
     val isOnline: State<Boolean> = networkMonitor
 
     val isDark: State<Boolean?> = darkThemeMonitor
-
-    val isProgress: State<Boolean> = progressMonitor
 
     val toast: State<String?> = toastMonitor
 }

@@ -20,7 +20,6 @@ internal fun PixelsNavHost(
     applicationState: PixelsState,
     onShowSnackbar: suspend (message: String, actionOrNull: String?) -> Unit,
     onShowNotification: (chanelId: String, intent: Intent, title: String, message: String) -> Unit,
-    onChangeProgressBar: (isVisible: Boolean) -> Unit,
     onSavePicture: (String, (Result<Uri>) -> Unit) -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -32,7 +31,6 @@ internal fun PixelsNavHost(
         this.pixelsGraph(
             onShowSnackbar = onShowSnackbar,
             onShowNotification = onShowNotification,
-            onChangeProgressBar = onChangeProgressBar,
             onSavePicture = onSavePicture,
             popBackStack = { applicationState.navController.popBackStack() },
             backMainMenu = { applicationState.mainMenuDestination?.let { applicationState.navController.popBackStack(route = it.route!!, inclusive = false, saveState = true) } },
