@@ -17,7 +17,6 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresPermission
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.Surface
-import androidx.compose.ui.platform.LocalContext
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
@@ -29,8 +28,8 @@ import com.sergokuzneczow.pixels2.ui.PixelsScreen
 import com.sergokuzneczow.pixels2.utilities.PermissionRequest
 import com.sergokuzneczow.pixels2.utilities.PermissionRequest.Companion.isGranted
 import com.sergokuzneczow.pixels2.utilities.PermissionRequest.Companion.isNotGranted
-import com.sergokuzneczow.pixels2.view_model.MainActivityViewModel
-import com.sergokuzneczow.pixels2.view_model.MainActivityViewModelFactory
+import com.sergokuzneczow.pixels2.view_model.MainActivityDependenciesViewModel
+import com.sergokuzneczow.pixels2.view_model.MainActivityViewModelDeprecated
 
 internal class MainActivity : ComponentActivity() {
 
@@ -40,7 +39,15 @@ internal class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
 
         setContent {
-            val vm: MainActivityViewModel = viewModel(factory = MainActivityViewModelFactory(LocalContext.current))
+            val dvm: MainActivityDependenciesViewModel = viewModel()
+
+            val vm: MainActivityViewModelDeprecated = viewModel(
+                factory = MainActivityViewModelDeprecated.Factory(
+                    networkMonitorApi = dvm.networkMonitorApi.get(),
+                    settingsRepositoryApi = dvm.settingsRepositoryApi.get(),
+                    loadAndSavePictureUseCase = dvm.loadAndSavePictureUseCase.get(),
+                )
+            )
 
             val permissionRequest = PermissionRequest(
                 permissionLauncher = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) {

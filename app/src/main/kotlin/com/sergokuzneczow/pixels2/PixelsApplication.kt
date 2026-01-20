@@ -35,11 +35,6 @@ public class PixelsApplication : Application(),
             .build()
     }
 
-    override fun onCreate() {
-        super.onCreate()
-        pixelsComponent
-    }
-
     override fun homeFeatureDependenciesProvide(): HomeFeatureDependencies = pixelsComponent
 
     override fun settingsFeatureDependenciesProvide(): SettingsFeatureDependencies = pixelsComponent
