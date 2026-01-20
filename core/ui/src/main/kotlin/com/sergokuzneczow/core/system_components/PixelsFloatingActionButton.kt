@@ -26,11 +26,11 @@ private val IconSize: Dp = 24.dp
 @Composable
 public fun BoxScope.PixelsPrimaryFloatingActionButton(
     imageVector: ImageVector,
-    onCLick: () -> Unit,
+    onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     FloatingActionButton(
-        onClick = { onCLick.invoke() },
+        onClick = { onClick.invoke() },
         modifier = modifier
             .padding(FloatingActionButtonPadding)
             .size(FloatingActionButtonSize)
@@ -79,7 +79,7 @@ private fun FilterFabPreview() {
         Box {
             PixelsPrimaryFloatingActionButton(
                 imageVector = PixelsIcons.filter,
-                onCLick = {},
+                onClick = {},
             )
         }
     }
