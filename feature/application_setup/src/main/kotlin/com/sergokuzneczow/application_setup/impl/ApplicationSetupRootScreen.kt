@@ -8,7 +8,7 @@ import com.sergokuzneczow.application_setup.impl.ui.ApplicationSetupScreen
 import com.sergokuzneczow.application_setup.impl.view_model.ApplicationSetupScreenDependenciesViewModel
 import com.sergokuzneczow.application_setup.impl.view_model.ApplicationSetupScreenViewModel
 import com.sergokuzneczow.utilities.collectAction
-import com.sergokuzneczow.utilities.excludeBackstack
+import com.sergokuzneczow.utilities.lastItemInclusiveBackstack
 import com.sergokuzneczow.utilities.state
 
 @Composable
@@ -21,7 +21,7 @@ internal fun ApplicationSetupRootScreen(
 
     svm.collectAction({
         when (it) {
-            is ApplicationSetupScreenAction.Completed -> navigateToMainMenu.invoke(excludeBackstack<ApplicationSetupScreenRoute>())
+            is ApplicationSetupScreenAction.Completed -> navigateToMainMenu.invoke(lastItemInclusiveBackstack<ApplicationSetupScreenRoute>())
         }
     })
 

@@ -8,7 +8,7 @@ import com.sergokuzneczow.splash.api.SplashScreenRoute
 import com.sergokuzneczow.splash.impl.ui.SplashScreen
 import com.sergokuzneczow.splash.impl.view_model.SplashScreenDependenciesViewModel
 import com.sergokuzneczow.splash.impl.view_model.SplashScreenViewModel
-import com.sergokuzneczow.utilities.excludeBackstack
+import com.sergokuzneczow.utilities.lastItemInclusiveBackstack
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
 
@@ -25,8 +25,8 @@ internal fun SplashRootScreen(
 
     svm.collectSideEffect { action ->
         when (action) {
-            is SplashScreenAction.IsFirstLaunch -> navigateToApplicationSetup.invoke(excludeBackstack<SplashScreenRoute>())
-            is SplashScreenAction.IsNotFirstLaunch -> navigateToMainMenu.invoke(excludeBackstack<SplashScreenRoute>())
+            is SplashScreenAction.IsFirstLaunch -> navigateToApplicationSetup.invoke(lastItemInclusiveBackstack<SplashScreenRoute>())
+            is SplashScreenAction.IsNotFirstLaunch -> navigateToMainMenu.invoke(lastItemInclusiveBackstack<SplashScreenRoute>())
         }
     }
 
