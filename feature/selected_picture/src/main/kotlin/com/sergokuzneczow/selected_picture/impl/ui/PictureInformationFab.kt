@@ -24,7 +24,7 @@ internal fun BoxScope.PictureInformationFloatingActionButton(
     ) {
         PixelsPrimaryFloatingActionButton(
             imageVector = PixelsIcons.information,
-            onCLick = { onFabClick.invoke() }
+            onClick = { onFabClick.invoke() }
         )
     }
 }
