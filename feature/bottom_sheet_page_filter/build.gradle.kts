@@ -69,4 +69,8 @@ dependencies {
     // Coil
     implementation(libs.coil.compose)
     implementation(libs.coil.network.okhttp)
+    // Orbit
+    implementation(libs.orbit.core)
+    implementation(libs.orbit.compose)
+    testImplementation(libs.orbit.test)
 }

@@ -6,33 +6,23 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import com.sergokuzneczow.bottom_sheet_page_filter.R
+import com.sergokuzneczow.bottom_sheet_page_filter.impl.model.PageFilterItem
 import com.sergokuzneczow.core.system_components.choice_segments.MultiChoice
 import com.sergokuzneczow.core.system_components.choice_segments.PixelsMultiChoiceSegmentedButtonRow
 import com.sergokuzneczow.core.system_components.choice_segments.MultiChoiceStrategy
+import com.sergokuzneczow.core.system_components.choice_segments.PixelsOutlinedChoiceSegmentedButtonRow
 import com.sergokuzneczow.core.ui.Dimensions
+import com.sergokuzneczow.core.ui.PixelsIcons
 import com.sergokuzneczow.models.PageFilter
 
 @Composable
-internal fun CategoriesChips(
-    startValue: PageFilter.PictureCategories,
-    selectedValue: (value: PageFilter.PictureCategories) -> Unit,
+internal fun CategoriesChoice(
+    options: List<PageFilterItem<PageFilter.PictureCategories>>,
+    onSelect: (options: List<PageFilterItem<PageFilter.PictureCategories>>) -> Unit,
 ) {
-    val options: List<MultiChoice> = listOf(
-        MultiChoice(
-            label = "General",
-            selected = startValue.general,
-        ),
-        MultiChoice(
-            label = "Anime",
-            selected = startValue.anime,
-        ),
-        MultiChoice(
-            label = "People",
-            selected = startValue.people,
-        ),
-    )
     Text(
         text = stringResource(R.string.categories_chips),
         style = MaterialTheme.typography.titleSmall,
@@ -41,17 +31,21 @@ internal fun CategoriesChips(
             .fillMaxWidth()
             .padding(top = Dimensions.LargePadding, start = Dimensions.LargePadding)
     )
-    PixelsMultiChoiceSegmentedButtonRow(
-        options = options,
-        onCheckedChange = { selectedChips ->
-            val selectedCategories = PageFilter.PictureCategories(
-                general = selectedChips[0],
-                anime = selectedChips[1],
-                people = selectedChips[2],
-            )
-            selectedValue.invoke(selectedCategories)
+    PixelsOutlinedChoiceSegmentedButtonRow(
+        values = options,
+        isSelected = { _, itemValue -> itemValue.isSelected },
+        isTitle = { _, itemValue -> itemValue.title },
+        onSelect = { selectedIndex, _ ->
+            onSelect.invoke(options.mapIndexed { index, item ->
+                if (selectedIndex == index) {
+                    if (item.isSelected) {
+                        val counter = options.fold(0) { acc, item -> if (item.isSelected) acc + 1 else acc }
+                        if (counter > 1) item.copy(isSelected = false) else item
+                    } else item.copy(isSelected = true)
+                } else item
+            })
         },
         modifier = Modifier.padding(top = Dimensions.Padding, start = Dimensions.LargePadding, end = Dimensions.LargePadding),
-        multiChoiceStrategy = MultiChoiceStrategy.NOT_EMPTY,
+        isIcon = { _, itemValue -> if (itemValue.isSelected) PixelsIcons.selector else null },
     )
 }

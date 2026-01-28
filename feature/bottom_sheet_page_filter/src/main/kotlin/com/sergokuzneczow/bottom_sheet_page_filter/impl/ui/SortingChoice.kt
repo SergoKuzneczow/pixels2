@@ -8,35 +8,19 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.sergokuzneczow.bottom_sheet_page_filter.R
-import com.sergokuzneczow.core.system_components.choice_segments.SingleChoice
+import com.sergokuzneczow.bottom_sheet_page_filter.impl.model.PageFilterItem
+import com.sergokuzneczow.core.system_components.choice_segments.PixelsOutlinedChoiceSegmentedButtonRow
 import com.sergokuzneczow.core.system_components.choice_segments.PixelsSingleChoiceSegmentedButtonRow
+import com.sergokuzneczow.core.system_components.choice_segments.SingleChoice
 import com.sergokuzneczow.core.ui.Dimensions
+import com.sergokuzneczow.core.ui.PixelsIcons
 import com.sergokuzneczow.models.PageFilter
 
 @Composable
 internal fun SortingChoice(
-    startValue: PageFilter.PictureSorting,
-    selectedValue: (sorting: PageFilter.PictureSorting) -> Unit,
+    options: List<PageFilterItem<PageFilter.PictureSorting>>,
+    onSelect: (options: List<PageFilterItem<PageFilter.PictureSorting>>) -> Unit,
 ) {
-    val options: List<SingleChoice<PageFilter.PictureSorting>> = listOf(
-        SingleChoice(
-            label = "Views",
-            value = PageFilter.PictureSorting.VIEWS,
-        ),
-        SingleChoice(
-            label = "Loved",
-            value = PageFilter.PictureSorting.FAVORITES,
-        ),
-        SingleChoice(
-            label = "Bests",
-            value = PageFilter.PictureSorting.TOP_LIST,
-        ),
-        SingleChoice(
-            label = "Date",
-            value = PageFilter.PictureSorting.DATE_ADDED,
-        ),
-    )
-    val startSelector = options.indexOfFirst { it.value == startValue }
     Text(
         text = stringResource(R.string.sorting_chips),
         style = MaterialTheme.typography.titleSmall,
@@ -45,10 +29,17 @@ internal fun SortingChoice(
             .fillMaxWidth()
             .padding(top = Dimensions.LargePadding, start = Dimensions.LargePadding)
     )
-    PixelsSingleChoiceSegmentedButtonRow(
-        options = options,
-        onItemSelect = { index, value -> selectedValue.invoke(value) },
+    PixelsOutlinedChoiceSegmentedButtonRow(
+        values = options,
+        isSelected = { _, selectedValue -> selectedValue.isSelected },
+        isTitle = { _, selectedValue -> selectedValue.title },
+        onSelect = { selectedIndex, _ ->
+            onSelect.invoke(options.mapIndexed { index, item ->
+                if (selectedIndex == index) item.copy(isSelected = !item.isSelected)
+                else item.copy(isSelected = false)
+            })
+        },
         modifier = Modifier.padding(top = Dimensions.Padding, start = Dimensions.LargePadding, end = Dimensions.LargePadding),
-        startSelector = if (startSelector == -1) 0 else startSelector
+        isIcon = { _, selectedValue -> if (selectedValue.isSelected) PixelsIcons.selector else null }
     )
 }

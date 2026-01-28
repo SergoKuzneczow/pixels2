@@ -14,48 +14,45 @@ import androidx.compose.material3.SheetState
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.sergokuzneczow.bottom_sheet_page_filter.R
-import com.sergokuzneczow.bottom_sheet_page_filter.impl.PageUiState
+import com.sergokuzneczow.bottom_sheet_page_filter.impl.BottomSheetPageFilterScreenState
+import com.sergokuzneczow.bottom_sheet_page_filter.impl.model.PageFilterItem
 import com.sergokuzneczow.core.system_components.buttons.PixelsSurfaceButton
 import com.sergokuzneczow.core.system_components.progress_indicators.PixelsProgressIndicator
 import com.sergokuzneczow.core.ui.Dimensions
 import com.sergokuzneczow.models.PageFilter
-import com.sergokuzneczow.models.PageQuery
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun BottomSheetPageFilterScreen(
-    pageUiState: PageUiState,
-    doneNewPageFilter: (pageQuery: PageQuery, pageFilter: PageFilter) -> Unit,
-    closeDialog: () -> Unit,
+    state: BottomSheetPageFilterScreenState,
+    onSelectSorting: (options: List<PageFilterItem<PageFilter.PictureSorting>>) -> Unit,
+    onSelectOrder: (options: List<PageFilterItem<PageFilter.PictureOrder>>) -> Unit,
+    onSelectPurities: (options: List<PageFilterItem<PageFilter.PicturePurities>>) -> Unit,
+    onSelectCategories: (options: List<PageFilterItem<PageFilter.PictureCategories>>) -> Unit,
+    onDone: () -> Unit,
+    onClose: () -> Unit,
 ) {
     val coroutineScope: CoroutineScope = rememberCoroutineScope()
     val bottomSheetState: SheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    when (state) {
+        is BottomSheetPageFilterScreenState.Loading -> {
+            Box(modifier = Modifier.fillMaxSize()) { PixelsProgressIndicator(Dimensions.SmallProgressBarSize) }
+        }
 
-    Box(modifier = Modifier.fillMaxSize()) {
-        when (pageUiState) {
-            is PageUiState.Loading -> PixelsProgressIndicator(Dimensions.SmallProgressBarSize)
-
-            is PageUiState.Success -> {
-                val selectedSorting: MutableState<PageFilter.PictureSorting> = remember { mutableStateOf(pageUiState.pageFilter.pictureSorting) }
-                val selectedOrder: MutableState<PageFilter.PictureOrder> = remember { mutableStateOf(pageUiState.pageFilter.pictureOrder) }
-                val selectedPurities: MutableState<PageFilter.PicturePurities> = remember { mutableStateOf(pageUiState.pageFilter.picturePurities) }
-                val selectedCategories: MutableState<PageFilter.PictureCategories> = remember { mutableStateOf(pageUiState.pageFilter.pictureCategories) }
-
+        is BottomSheetPageFilterScreenState.Success -> {
+            Box(modifier = Modifier.fillMaxSize()) {
                 ModalBottomSheet(
                     onDismissRequest = {
                         coroutineScope.launch {
                             bottomSheetState.hide()
-                            closeDialog.invoke()
+                            onClose.invoke()
                         }
                     },
                     sheetState = bottomSheetState,
@@ -75,36 +72,25 @@ internal fun BottomSheetPageFilterScreen(
                                     .padding(top = Dimensions.LargePadding, start = Dimensions.LargePadding)
                             )
                             SortingChoice(
-                                startValue = pageUiState.pageFilter.pictureSorting,
-                                selectedValue = { selectedSorting.value = it },
+                                options = state.sorting,
+                                onSelect = onSelectSorting,
                             )
                             OrderChoice(
-                                startValue = pageUiState.pageFilter.pictureOrder,
-                                selectedValue = { selectedOrder.value = it },
+                                options = state.order,
+                                onSelect = onSelectOrder,
                             )
-                            PuritiesChips(
-                                startValue = pageUiState.pageFilter.picturePurities,
-                                selectedValue = { selectedPurities.value = it }
+                            PuritiesChoice(
+                                options = state.purities,
+                                onSelect = onSelectPurities,
                             )
-                            CategoriesChips(
-                                startValue = pageUiState.pageFilter.pictureCategories,
-                                selectedValue = { selectedCategories.value = it }
+                            CategoriesChoice(
+                                options = state.categories,
+                                onSelect = onSelectCategories,
                             )
                             Box(modifier = Modifier.fillMaxWidth()) {
                                 PixelsSurfaceButton(
                                     text = stringResource(R.string.done),
-                                    onClick = {
-                                        doneNewPageFilter.invoke(
-                                            pageUiState.pageQuery,
-                                            PageFilter(
-                                                pictureSorting = selectedSorting.value,
-                                                pictureOrder = selectedOrder.value,
-                                                picturePurities = selectedPurities.value,
-                                                pictureCategories = selectedCategories.value,
-                                                pictureColor = pageUiState.pageFilter.pictureColor,
-                                            )
-                                        )
-                                    },
+                                    onClick = onDone,
                                     modifier = Modifier
                                         .align(Alignment.CenterEnd)
                                         .padding(Dimensions.LargePadding)
