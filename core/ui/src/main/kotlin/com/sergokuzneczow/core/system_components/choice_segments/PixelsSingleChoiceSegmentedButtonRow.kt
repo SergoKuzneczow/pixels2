@@ -14,10 +14,58 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import com.sergokuzneczow.core.ui.Dimensions
 import com.sergokuzneczow.core.ui.PixelsIcons
 import com.sergokuzneczow.core.ui.PixelsTheme
 import com.sergokuzneczow.core.utilites.ThemePreviews
+
+@Composable
+public fun <T> PixelsOutlinedChoiceSegmentedButtonRow(
+    values: List<T>,
+    isSelected: (itemIndex: Int, itemValue: T) -> Boolean,
+    isTitle: (itemIndex: Int, itemValue: T) -> String,
+    onSelect: (selectedIndex: Int, selectedValue: T) -> Unit,
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true,
+    isIcon: ((itemIndex: Int, itemValue: T) -> ImageVector?)? = null,
+    isColor: @Composable ((color: SegmentedButtonColors, itemIndex: Int, itemValue: T) -> SegmentedButtonColors?)? = null,
+) {
+    SingleChoiceSegmentedButtonRow(
+        modifier = modifier.fillMaxWidth(),
+        content = {
+            values.forEachIndexed { index, value ->
+                SegmentedButton(
+                    selected = isSelected.invoke(index, value),
+                    onClick = { onSelect.invoke(index, value) },
+                    shape = SegmentedButtonDefaults.itemShape(
+                        index = index,
+                        count = values.size
+                    ),
+                    enabled = enabled,
+                    colors = isColor?.invoke(segmentButtonColors(), index, value) ?: segmentButtonColors(),
+                    border = Dimensions.Border,
+                    icon = {
+                        isIcon?.invoke(index, value)?.let { vectorIcon ->
+                            Icon(
+                                imageVector = vectorIcon,
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.onPrimary,
+                            )
+                        }
+                    },
+                    label = {
+                        Text(
+                            text = isTitle.invoke(index, value),
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = if (isSelected.invoke(index, value)) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface,
+                        )
+                    },
+                )
+            }
+        }
+    )
+}
 
 @Composable
 public fun <T> PixelsSingleChoiceSegmentedButtonRow(

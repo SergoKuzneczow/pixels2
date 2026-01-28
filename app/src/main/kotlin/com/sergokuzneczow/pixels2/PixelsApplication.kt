@@ -2,7 +2,7 @@ package com.sergokuzneczow.pixels2
 
 import android.app.Application
 import com.sergokuzneczow.application_setup.impl.di.ApplicationSetupFeatureDependencies
-import com.sergokuzneczow.bottom_sheet_page_filter.impl.di.BottomSheetPageFilterDependencies
+import com.sergokuzneczow.bottom_sheet_page_filter.impl.di.BottomSheetPageFilterFeatureDependencies
 import com.sergokuzneczow.bottom_sheet_picture_info.impl.di.BottomSheetPictureInformationFeatureDependencies
 import com.sergokuzneczow.dialog_page_filter.impl.di.DialogPageFilterDependencies
 import com.sergokuzneczow.home.impl.di.HomeFeatureDependencies
@@ -21,7 +21,7 @@ public class PixelsApplication : Application(),
     SettingsFeatureDependencies.Contract,
     SuitablePicturesFeatureDependencies.Contract,
     DialogPageFilterDependencies.Contract,
-    BottomSheetPageFilterDependencies.Contract,
+    BottomSheetPageFilterFeatureDependencies.Contract,
     SearchSuitablePicturesFeatureDependencies.Contract,
     SelectedPictureFeatureDependencies.Contract,
     BottomSheetPictureInformationFeatureDependencies.Contract,
@@ -43,7 +43,7 @@ public class PixelsApplication : Application(),
 
     override fun dialogPageFilterDependenciesProvider(): DialogPageFilterDependencies = pixelsComponent
 
-    override fun bottomSheetPageFilterDependenciesProvider(): BottomSheetPageFilterDependencies = pixelsComponent
+    override fun bottomSheetPageFilterDependenciesProvider(): BottomSheetPageFilterFeatureDependencies = pixelsComponent
 
     override fun searchSuitablePicturesDependenciesProvider(): SearchSuitablePicturesFeatureDependencies = pixelsComponent
 

@@ -3,7 +3,7 @@ package com.sergokuzneczow.pixels2.di
 import android.content.Context
 import androidx.annotation.NonUiContext
 import com.sergokuzneczow.application_setup.impl.di.ApplicationSetupFeatureDependencies
-import com.sergokuzneczow.bottom_sheet_page_filter.impl.di.BottomSheetPageFilterDependencies
+import com.sergokuzneczow.bottom_sheet_page_filter.impl.di.BottomSheetPageFilterFeatureDependencies
 import com.sergokuzneczow.bottom_sheet_picture_info.impl.di.BottomSheetPictureInformationFeatureDependencies
 import com.sergokuzneczow.dialog_page_filter.impl.di.DialogPageFilterDependencies
 import com.sergokuzneczow.domain.getPage.GetPage
@@ -40,7 +40,7 @@ internal interface PixelsComponent :
     SettingsFeatureDependencies,
     SuitablePicturesFeatureDependencies,
     DialogPageFilterDependencies,
-    BottomSheetPageFilterDependencies,
+    BottomSheetPageFilterFeatureDependencies,
     SearchSuitablePicturesFeatureDependencies,
     SelectedPictureFeatureDependencies,
     BottomSheetPictureInformationFeatureDependencies,
